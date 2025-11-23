@@ -87,7 +87,14 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "start": [
+            "Composer\\Config::disableProcessTimeout",
+            "symfony serve"
+        ],
+        "scripts-descriptions": {
+            "start" : "Run the Symfony test web server"
+        }
     },
     "conflict": {
         "symfony/symfony": "*"

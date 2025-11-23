@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
@@ -23,14 +25,33 @@ class Order
     #[ORM\Column(length: 1)]
     private ?string $status = null;
 
-    #[ORM\Column(length: 150)]
+    #[ORM\Column(length: 150, nullable: true)]
     private ?string $deliveryAddress = null;
 
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $deliveryCity = null;
 
-    #[ORM\Column(length: 5)]
+    #[ORM\Column(length: 5, nullable: true)]
     private ?string $deliveryPostalCode = null;
+
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Restaurant $restaurant = null;
+
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $customer = null;
+
+    /**
+     * @var Collection<int, OrderItem>
+     */
+    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'customerOrder')]
+    private Collection $orderItems;
+
+    public function __construct()
+    {
+        $this->orderItems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +126,60 @@ class Order
     public function setDeliveryPostalCode(string $deliveryPostalCode): static
     {
         $this->deliveryPostalCode = $deliveryPostalCode;
+
+        return $this;
+    }
+
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function setRestaurant(?Restaurant $restaurant): static
+    {
+        $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    public function getCustomer(): ?User
+    {
+        return $this->customer;
+    }
+
+    public function setCustomer(?User $customer): static
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderItem>
+     */
+    public function getOrderItems(): Collection
+    {
+        return $this->orderItems;
+    }
+
+    public function addOrderItem(OrderItem $orderItem): static
+    {
+        if (!$this->orderItems->contains($orderItem)) {
+            $this->orderItems->add($orderItem);
+            $orderItem->setCustomerOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderItem(OrderItem $orderItem): static
+    {
+        if ($this->orderItems->removeElement($orderItem)) {
+            // set the owning side to null (unless already changed)
+            if ($orderItem->getCustomerOrder() === $this) {
+                $orderItem->setCustomerOrder(null);
+            }
+        }
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RestaurantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,6 +45,38 @@ class Restaurant
 
     #[ORM\Column]
     private ?bool $darkKitchen = null;
+
+    /**
+     * @var Collection<int, Statistic>
+     */
+    #[ORM\OneToMany(targetEntity: Statistic::class, mappedBy: 'restaurant')]
+    private Collection $statistics;
+
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'restaurant')]
+    private Collection $reservations;
+
+    /**
+     * @var Collection<int, Order>
+     */
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'restaurant', orphanRemoval: true)]
+    private Collection $orders;
+
+    /**
+     * @var Collection<int, Stock>
+     */
+    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'restaurant')]
+    private Collection $stocks;
+
+    public function __construct()
+    {
+        $this->statistics = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
+        $this->orders = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -165,6 +199,126 @@ class Restaurant
     public function setDarkKitchen(bool $darkKitchen): static
     {
         $this->darkKitchen = $darkKitchen;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Statistic>
+     */
+    public function getStatistics(): Collection
+    {
+        return $this->statistics;
+    }
+
+    public function addStatistic(Statistic $statistic): static
+    {
+        if (!$this->statistics->contains($statistic)) {
+            $this->statistics->add($statistic);
+            $statistic->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStatistic(Statistic $statistic): static
+    {
+        if ($this->statistics->removeElement($statistic)) {
+            // set the owning side to null (unless already changed)
+            if ($statistic->getRestaurant() === $this) {
+                $statistic->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): static
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getRestaurant() === $this) {
+                $reservation->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): static
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): static
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getRestaurant() === $this) {
+                $order->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stock>
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): static
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks->add($stock);
+            $stock->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): static
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getRestaurant() === $this) {
+                $stock->setRestaurant(null);
+            }
+        }
 
         return $this;
     }

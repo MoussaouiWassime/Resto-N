@@ -87,7 +87,48 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "start": [
+            "Composer\\Config::disableProcessTimeout",
+            "symfony serve"
+        ],
+        "test:phpcs" : [
+            "php vendor/bin/php-cs-fixer fix --dry-run"
+        ],
+        "fix:phpcs" : [
+            "php vendor/bin/php-cs-fixer fix"
+        ],
+        "test:twigcs" : [
+            "vendor/bin/twig-cs-fixer lint ../"
+        ],
+        "fix:twigcs" : [
+            "vendor/bin/twig-cs-fixer lint --fix ../"
+        ],
+        "test" : [
+            "@test:phpcs",
+            "@test:twigcs"
+        ],
+        "fix" : [
+            "@fix:phpcs",
+            "@fix:twigcs"
+        ],
+        "test:codeception": [
+            "php vendor/bin/codecept clean",
+            "bin/console doctrine:database:drop --force --quiet --env=test",
+            "bin/console doctrine:database:create --quiet --env=test",
+            "bin/console doctrine:schema:create --quiet --env=test",
+            "php vendor/bin/codecept run"
+        ],
+        "scripts-descriptions": {
+            "start" : "Run the Symfony test web server",
+            "test:phpcs" : "Run the PHP CS Fixer verification command.",
+            "fix:phpcs" : "Run the PHP CS Fixer fix command.",
+            "test:twigcs" : "Run the Twig CS Fixer verification command.",
+            "fix:twigcs" : "Run the Twig CS Fixer fix command.",
+            "test" : "Run the PHP CS Fixer and Twig CS Fixer verification command.",
+            "fix" : "Run the PHP CS Fixer and Twig CS Fixer fix command.",
+            "test:codeception": "Clean the output and generated code of Codeception, destroy and created the database for the test and run Test by Codeception"
+        }
     },
     "conflict": {
         "symfony/symfony": "*"

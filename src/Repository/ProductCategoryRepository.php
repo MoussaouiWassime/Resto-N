@@ -17,7 +17,7 @@ class ProductCategoryRepository extends ServiceEntityRepository
     }
 
     //    /**
-    //     * @return ProductCategory[] Returns an array of ProductCategory objects
+    //     * @return ProductCategory.json[] Returns an array of ProductCategory.json objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class ProductCategoryRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?ProductCategory
+    //    public function findOneBySomeField($value): ?ProductCategory.json
     //    {
     //        return $this->createQueryBuilder('p')
     //            ->andWhere('p.exampleField = :val')

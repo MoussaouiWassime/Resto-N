@@ -24,11 +24,11 @@ class Reservation
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Restaurant $restaurant = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $customer = null;
+    private ?Restaurant $restaurant = null;
 
     public function getId(): ?int
     {
@@ -71,6 +71,18 @@ class Reservation
         return $this;
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
     public function getRestaurant(): ?Restaurant
     {
         return $this->restaurant;
@@ -79,18 +91,6 @@ class Reservation
     public function setRestaurant(?Restaurant $restaurant): static
     {
         $this->restaurant = $restaurant;
-
-        return $this;
-    }
-
-    public function getCustomer(): ?User
-    {
-        return $this->customer;
-    }
-
-    public function setCustomer(?User $customer): static
-    {
-        $this->customer = $customer;
 
         return $this;
     }

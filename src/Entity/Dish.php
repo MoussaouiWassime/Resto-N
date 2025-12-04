@@ -15,26 +15,17 @@ class Dish
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column]
     private ?int $price = null;
 
-    #[ORM\Column(length: 1)]
-    private ?string $category = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
-
-    /**
-     * @var Collection<int, Role>
-     */
-    #[ORM\ManyToMany(targetEntity: Role::class, mappedBy: 'dishes')]
-    private Collection $roles;
 
     /**
      * @var Collection<int, OrderItem>
@@ -42,9 +33,14 @@ class Dish
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'dish')]
     private Collection $orderItems;
 
+    #[ORM\Column(length: 1)]
+    private ?string $category = null;
+
+    #[ORM\ManyToOne(inversedBy: 'dishes')]
+    private ?Restaurant $restaurant = null;
+
     public function __construct()
     {
-        $this->roles = new ArrayCollection();
         $this->orderItems = new ArrayCollection();
     }
 
@@ -70,7 +66,7 @@ class Dish
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
@@ -89,53 +85,14 @@ class Dish
         return $this;
     }
 
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(string $category): static
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
     public function getPhoto(): ?string
     {
         return $this->photo;
     }
 
-    public function setPhoto(string $photo): static
+    public function setPhoto(?string $photo): static
     {
         $this->photo = $photo;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Role>
-     */
-    public function getRoles(): Collection
-    {
-        return $this->roles;
-    }
-
-    public function addRole(Role $role): static
-    {
-        if (!$this->roles->contains($role)) {
-            $this->roles->add($role);
-            $role->addDish($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRole(Role $role): static
-    {
-        if ($this->roles->removeElement($role)) {
-            $role->removeDish($this);
-        }
 
         return $this;
     }
@@ -166,6 +123,30 @@ class Dish
                 $orderItem->setDish(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function setRestaurant(?Restaurant $restaurant): static
+    {
+        $this->restaurant = $restaurant;
 
         return $this;
     }

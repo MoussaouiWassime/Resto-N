@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
 class User
 {
     #[ORM\Id]
@@ -28,32 +27,32 @@ class User
     #[ORM\Column(length: 128)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 20)]
     private ?string $phone = null;
+
+    /**
+     * @var Collection<int, Role>
+     */
+    #[ORM\OneToMany(targetEntity: Role::class, mappedBy: 'user')]
+    private Collection $roles;
 
     /**
      * @var Collection<int, Reservation>
      */
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'customer', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user')]
     private Collection $reservations;
 
     /**
      * @var Collection<int, Order>
      */
-    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'customer', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
     private Collection $orders;
-
-    /**
-     * @var Collection<int, Role>
-     */
-    #[ORM\OneToMany(targetEntity: Role::class, mappedBy: 'employee')]
-    private Collection $roles;
 
     public function __construct()
     {
+        $this->roles = new ArrayCollection();
         $this->reservations = new ArrayCollection();
         $this->orders = new ArrayCollection();
-        $this->roles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,6 +121,36 @@ class User
     }
 
     /**
+     * @return Collection<int, Role>
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): static
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles->add($role);
+            $role->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): static
+    {
+        if ($this->roles->removeElement($role)) {
+            // set the owning side to null (unless already changed)
+            if ($role->getUser() === $this) {
+                $role->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Reservation>
      */
     public function getReservations(): Collection
@@ -133,7 +162,7 @@ class User
     {
         if (!$this->reservations->contains($reservation)) {
             $this->reservations->add($reservation);
-            $reservation->setCustomer($this);
+            $reservation->setUser($this);
         }
 
         return $this;
@@ -143,8 +172,8 @@ class User
     {
         if ($this->reservations->removeElement($reservation)) {
             // set the owning side to null (unless already changed)
-            if ($reservation->getCustomer() === $this) {
-                $reservation->setCustomer(null);
+            if ($reservation->getUser() === $this) {
+                $reservation->setUser(null);
             }
         }
 
@@ -163,7 +192,7 @@ class User
     {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);
-            $order->setCustomer($this);
+            $order->setUser($this);
         }
 
         return $this;
@@ -173,38 +202,8 @@ class User
     {
         if ($this->orders->removeElement($order)) {
             // set the owning side to null (unless already changed)
-            if ($order->getCustomer() === $this) {
-                $order->setCustomer(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Role>
-     */
-    public function getRoles(): Collection
-    {
-        return $this->roles;
-    }
-
-    public function addRole(Role $role): static
-    {
-        if (!$this->roles->contains($role)) {
-            $this->roles->add($role);
-            $role->setEmployee($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRole(Role $role): static
-    {
-        if ($this->roles->removeElement($role)) {
-            // set the owning side to null (unless already changed)
-            if ($role->getEmployee() === $this) {
-                $role->setEmployee(null);
+            if ($order->getUser() === $this) {
+                $order->setUser(null);
             }
         }
 

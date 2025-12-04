@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\RoleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
@@ -16,71 +14,53 @@ class Role
     private ?int $id = null;
 
     #[ORM\Column(length: 1)]
-    private ?string $roleName = null;
-
-    /**
-     * @var Collection<int, Dish>
-     */
-    #[ORM\ManyToMany(targetEntity: Dish::class, inversedBy: 'roles')]
-    private Collection $dishes;
+    private ?string $role = null;
 
     #[ORM\ManyToOne(inversedBy: 'roles')]
-    private ?User $employee = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
-    public function __construct()
-    {
-        $this->dishes = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'roles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Restaurant $restaurant = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getRoleName(): ?string
+    public function getRole(): ?string
     {
-        return $this->roleName;
+        return $this->role;
     }
 
-    public function setRoleName(string $roleName): static
+    public function setRole(string $role): static
     {
-        $this->roleName = $roleName;
+        $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Dish>
-     */
-    public function getDishes(): Collection
+    public function getUser(): ?User
     {
-        return $this->dishes;
+        return $this->user;
     }
 
-    public function addDish(Dish $dish): static
+    public function setUser(?User $user): static
     {
-        if (!$this->dishes->contains($dish)) {
-            $this->dishes->add($dish);
-        }
+        $this->user = $user;
 
         return $this;
     }
 
-    public function removeDish(Dish $dish): static
+    public function getRestaurant(): ?Restaurant
     {
-        $this->dishes->removeElement($dish);
-
-        return $this;
+        return $this->restaurant;
     }
 
-    public function getEmployee(): ?User
+    public function setRestaurant(?Restaurant $restaurant): static
     {
-        return $this->employee;
-    }
-
-    public function setEmployee(?User $employee): static
-    {
-        $this->employee = $employee;
+        $this->restaurant = $restaurant;
 
         return $this;
     }

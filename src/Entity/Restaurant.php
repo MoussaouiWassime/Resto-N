@@ -46,7 +46,7 @@ class Restaurant
     /**
      * @var Collection<int, restaurantCategory>
      */
-    #[ORM\ManyToMany(targetEntity: restaurantCategory::class, inversedBy: 'restaurant')]
+    #[ORM\ManyToMany(targetEntity: RestaurantCategory::class, inversedBy: 'restaurant')]
     private Collection $categories;
 
     /**

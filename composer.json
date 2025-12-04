@@ -119,6 +119,12 @@
             "bin/console doctrine:schema:create --quiet --env=test",
             "php vendor/bin/codecept run"
         ],
+        "db" : [
+            "php bin/console doctrine:database:drop --force --if-exists",
+            "php bin/console doctrine:database:create",
+            "php bin/console doctrine:migrations:migrate --no-interaction",
+            "php bin/console doctrine:fixtures:load --no-interaction"
+        ],
         "scripts-descriptions": {
             "start" : "Run the Symfony test web server",
             "test:phpcs" : "Run the PHP CS Fixer verification command.",
@@ -127,7 +133,8 @@
             "fix:twigcs" : "Run the Twig CS Fixer fix command.",
             "test" : "Run the PHP CS Fixer and Twig CS Fixer verification command.",
             "fix" : "Run the PHP CS Fixer and Twig CS Fixer fix command.",
-            "test:codeception": "Clean the output and generated code of Codeception, destroy and created the database for the test and run Test by Codeception"
+            "test:codeception": "Clean the output and generated code of Codeception, destroy and created the database for the test and run Test by Codeception",
+            "db" : "Build the database"
         }
     },
     "conflict": {

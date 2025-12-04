@@ -5,9 +5,10 @@ namespace App\DataFixtures;
 use App\Factory\RestaurantCategoryFactory;
 use App\Factory\RestaurantFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class RestaurantFixtures extends Fixture
+class RestaurantFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -16,5 +17,12 @@ class RestaurantFixtures extends Fixture
         RestaurantFactory::createMany(10, fn () => [
             'categories' => RestaurantCategoryFactory::randomRange(1, 3),
         ]);
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            RestaurantCategoryFixtures::class,
+        ];
     }
 }

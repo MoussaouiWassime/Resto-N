@@ -32,6 +32,7 @@ final class DishFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
+            // E = Entree, P = Plat, D = Dessert, B = Boisson
             'category' => self::faker()->randomElement(['E', 'P', 'D', 'B']),
             'name' => mb_convert_case(self::faker()->words(3, true), MB_CASE_TITLE),
             'price' => self::faker()->numberBetween(500, 3500),

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\StatisticRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StatisticRepository::class)]
@@ -17,8 +16,8 @@ class Statistic
     #[ORM\Column(length: 40)]
     private ?string $statisticType = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    private ?string $value = null;
+    #[ORM\Column(nullable: true)]
+    private ?float $value = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $date = null;
@@ -44,12 +43,12 @@ class Statistic
         return $this;
     }
 
-    public function getValue(): ?string
+    public function getValue(): ?float
     {
         return $this->value;
     }
 
-    public function setValue(?string $value): static
+    public function setValue(?float $value): static
     {
         $this->value = $value;
 

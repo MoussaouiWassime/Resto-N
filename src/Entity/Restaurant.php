@@ -16,7 +16,7 @@ class Restaurant
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 100)]
     private ?string $name = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -34,23 +34,38 @@ class Restaurant
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTime $openingTime = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTime $closingTime = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\Column(length: 1, nullable: true)]
-    private ?string $category = null;
-
     #[ORM\Column]
     private ?bool $darkKitchen = null;
+
+    /**
+     * @var Collection<int, restaurantCategory>
+     */
+    #[ORM\ManyToMany(targetEntity: RestaurantCategory::class, inversedBy: 'restaurant')]
+    private Collection $categories;
+
+    /**
+     * @var Collection<int, Stock>
+     */
+    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'restaurant')]
+    private Collection $stocks;
 
     /**
      * @var Collection<int, Statistic>
      */
     #[ORM\OneToMany(targetEntity: Statistic::class, mappedBy: 'restaurant')]
     private Collection $statistics;
+
+    /**
+     * @var Collection<int, Role>
+     */
+    #[ORM\OneToMany(targetEntity: Role::class, mappedBy: 'restaurant')]
+    private Collection $roles;
 
     /**
      * @var Collection<int, Reservation>
@@ -61,21 +76,24 @@ class Restaurant
     /**
      * @var Collection<int, Order>
      */
-    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'restaurant', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'restaurant')]
     private Collection $orders;
 
     /**
-     * @var Collection<int, Stock>
+     * @var Collection<int, Dish>
      */
-    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'restaurant')]
-    private Collection $stocks;
+    #[ORM\OneToMany(targetEntity: Dish::class, mappedBy: 'restaurant')]
+    private Collection $dishes;
 
     public function __construct()
     {
+        $this->categories = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
         $this->statistics = new ArrayCollection();
+        $this->roles = new ArrayCollection();
         $this->reservations = new ArrayCollection();
         $this->orders = new ArrayCollection();
-        $this->stocks = new ArrayCollection();
+        $this->dishes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,7 +178,7 @@ class Restaurant
         return $this->closingTime;
     }
 
-    public function setClosingTime(\DateTime $closingTime): static
+    public function setClosingTime(?\DateTime $closingTime): static
     {
         $this->closingTime = $closingTime;
 
@@ -179,18 +197,6 @@ class Restaurant
         return $this;
     }
 
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?string $category): static
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
     public function isDarkKitchen(): ?bool
     {
         return $this->darkKitchen;
@@ -199,6 +205,60 @@ class Restaurant
     public function setDarkKitchen(bool $darkKitchen): static
     {
         $this->darkKitchen = $darkKitchen;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, restaurantCategory>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(restaurantCategory $category): static
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(restaurantCategory $category): static
+    {
+        $this->categories->removeElement($category);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stock>
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): static
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks->add($stock);
+            $stock->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): static
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getRestaurant() === $this) {
+                $stock->setRestaurant(null);
+            }
+        }
 
         return $this;
     }
@@ -227,6 +287,36 @@ class Restaurant
             // set the owning side to null (unless already changed)
             if ($statistic->getRestaurant() === $this) {
                 $statistic->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Role>
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): static
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles->add($role);
+            $role->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): static
+    {
+        if ($this->roles->removeElement($role)) {
+            // set the owning side to null (unless already changed)
+            if ($role->getRestaurant() === $this) {
+                $role->setRestaurant(null);
             }
         }
 
@@ -294,29 +384,29 @@ class Restaurant
     }
 
     /**
-     * @return Collection<int, Stock>
+     * @return Collection<int, Dish>
      */
-    public function getStocks(): Collection
+    public function getDishes(): Collection
     {
-        return $this->stocks;
+        return $this->dishes;
     }
 
-    public function addStock(Stock $stock): static
+    public function addDish(Dish $dish): static
     {
-        if (!$this->stocks->contains($stock)) {
-            $this->stocks->add($stock);
-            $stock->setRestaurant($this);
+        if (!$this->dishes->contains($dish)) {
+            $this->dishes->add($dish);
+            $dish->setRestaurant($this);
         }
 
         return $this;
     }
 
-    public function removeStock(Stock $stock): static
+    public function removeDish(Dish $dish): static
     {
-        if ($this->stocks->removeElement($stock)) {
+        if ($this->dishes->removeElement($dish)) {
             // set the owning side to null (unless already changed)
-            if ($stock->getRestaurant() === $this) {
-                $stock->setRestaurant(null);
+            if ($dish->getRestaurant() === $this) {
+                $dish->setRestaurant(null);
             }
         }
 

@@ -36,16 +36,16 @@ class Order
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Restaurant $restaurant = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $customer = null;
+    private ?Restaurant $restaurant = null;
 
     /**
      * @var Collection<int, OrderItem>
      */
-    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'customerOrder')]
+    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order')]
     private Collection $orderItems;
 
     public function __construct()
@@ -99,7 +99,7 @@ class Order
         return $this->deliveryAddress;
     }
 
-    public function setDeliveryAddress(string $deliveryAddress): static
+    public function setDeliveryAddress(?string $deliveryAddress): static
     {
         $this->deliveryAddress = $deliveryAddress;
 
@@ -123,9 +123,21 @@ class Order
         return $this->deliveryPostalCode;
     }
 
-    public function setDeliveryPostalCode(string $deliveryPostalCode): static
+    public function setDeliveryPostalCode(?string $deliveryPostalCode): static
     {
         $this->deliveryPostalCode = $deliveryPostalCode;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
@@ -142,18 +154,6 @@ class Order
         return $this;
     }
 
-    public function getCustomer(): ?User
-    {
-        return $this->customer;
-    }
-
-    public function setCustomer(?User $customer): static
-    {
-        $this->customer = $customer;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, OrderItem>
      */
@@ -166,7 +166,7 @@ class Order
     {
         if (!$this->orderItems->contains($orderItem)) {
             $this->orderItems->add($orderItem);
-            $orderItem->setCustomerOrder($this);
+            $orderItem->setOrder($this);
         }
 
         return $this;
@@ -176,8 +176,8 @@ class Order
     {
         if ($this->orderItems->removeElement($orderItem)) {
             // set the owning side to null (unless already changed)
-            if ($orderItem->getCustomerOrder() === $this) {
-                $orderItem->setCustomerOrder(null);
+            if ($orderItem->getOrder() === $this) {
+                $orderItem->setOrder(null);
             }
         }
 

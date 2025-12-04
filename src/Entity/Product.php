@@ -18,8 +18,9 @@ class Product
     #[ORM\Column(length: 100)]
     private ?string $productName = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $productCategory = null;
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProductCategory $category = null;
 
     /**
      * @var Collection<int, Stock>
@@ -49,14 +50,14 @@ class Product
         return $this;
     }
 
-    public function getProductCategory(): ?string
+    public function getCategory(): ?ProductCategory
     {
-        return $this->productCategory;
+        return $this->category;
     }
 
-    public function setProductCategory(string $productCategory): static
+    public function setCategory(?ProductCategory $category): static
     {
-        $this->productCategory = $productCategory;
+        $this->category = $category;
 
         return $this;
     }

@@ -1,0 +1,5 @@
+actor: ControllerTester
+suite_namespace: App\\Tests\Controller
+modules:
+    # enable helpers as array
+    enabled: []

@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Dish;
 
-use App\\Tests\Support\ControllerTester;
+use App\Tests\Support\ControllerTester;
 
 final class IndexCest
 {

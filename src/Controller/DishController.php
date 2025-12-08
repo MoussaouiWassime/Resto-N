@@ -13,8 +13,10 @@ final class DishController extends AbstractController
     #[Route('/dish', name: 'app_dish')]
     public function index(DishRepository $dishes, #[MapQueryParameter] string $search = ''): Response
     {
+
         return $this->render('dish/index.html.twig', [
             'dishes' => $dishes->search($search),
+            'search' => $search,
         ]);
     }
 }

@@ -52,7 +52,7 @@ class DishRepository extends ServiceEntityRepository
                 ->select(['d.id', 'd.name', 'd.description', 'd.price', 'd.category', 'd.photo'])
                 ->where('d.name LIKE :text')
                 ->setParameter('text', '%'.$text.'%')
-                ->orderBy('c.name', 'ASC');
+                ->orderBy('d.name', 'ASC');
         }
         $query = $qb->getQuery();
 

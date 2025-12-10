@@ -15,7 +15,7 @@
         {% for element in dishes %}
 
             <li>
-                <a href="{{ path('app_dish', {id: element.id}) }}">
+                <a href="{{ path('app_dish_show', {id: element.id}) }}">
                     <span class="name">{{ element.name}}</span>,
                     <span class="description">{{ element.description }}</span>
                     <span class="category">{{ element.category }}</span>

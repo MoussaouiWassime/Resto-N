@@ -10,15 +10,15 @@ use App\Tests\Support\ControllerTester;
 
 final class IndexCest
 {
-    public function contactListContainsRightNumberOfDishes(ControllerTester $I): void
+    public function dishListContainsRightNumberOfDishes(ControllerTester $I): void
     {
         DishFactory::createMany(5);
-        $I->amOnPage('/contact');
+        $I->amOnPage('/dish');
         $I->seeResponseCodeIsSuccessful();
-        $I->seeInTitle('Liste des contacts');
-        $I->see('Liste des contacts', 'h1');
-        $I->seeElement('ul.contacts');
-        $I->seeNumberOfElements('ul.contacts > li', 5);
+        $I->seeInTitle('Liste des Plats');
+        $I->see('Liste des Plats', 'h1');
+        $I->seeElement('ul.dish');
+        $I->seeNumberOfElements('ul.dish > li', 5);
     }
 
 }

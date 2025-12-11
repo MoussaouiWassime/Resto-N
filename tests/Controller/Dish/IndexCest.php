@@ -21,4 +21,15 @@ final class IndexCest
         $I->seeNumberOfElements('ul.dish > li', 5);
     }
 
+    /*
+    public function linkIsFirstDish(ControllerTester $I): void
+    {
+        DishFactory::createOne(['name' => 'Pizza', 'description' => 'Une bonne pizza miam']);
+        DishFactory::createMany(5);
+        $I->amOnPage('/dish');
+        $I->click('Pizza, Une bonne pizza miam');
+        $I->seeResponseCodeIsSuccessful();
+        $I->seeCurrentRouteIs('app_dish_show', ['id' => 1]);
+    }*/
+
 }

@@ -16,8 +16,8 @@ final class IndexCest
         $I->seeResponseCodeIsSuccessful();
         $I->seeInTitle('Liste des Plats');
         $I->see('Liste des Plats', 'h1');
-        $I->seeElement('ul.dish');
-        $I->seeNumberOfElements('ul.dish > li', 5);
+        $I->seeElement('ul.list-group');
+        $I->seeNumberOfElements('ul.list-group > li', 5);
     }
 
     public function linkIsFirstDish(ControllerTester $I): void

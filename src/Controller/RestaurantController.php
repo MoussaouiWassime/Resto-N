@@ -22,7 +22,7 @@ final class RestaurantController extends AbstractController
     public function show(#[MapEntity(expr: 'repository.findWithId(id)')] Restaurant $restaurant): Response
     {
         return $this->render('restaurant/show.html.twig', [
-            'controller_name' => 'RestaurantController',
+            'restaurant' => $restaurant,
         ]);
     }
 }

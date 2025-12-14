@@ -3,5 +3,16 @@
 {% block title %}{{ restaurant.name }}{% endblock %}
 
 {% block main %}
+    <img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}">
+    {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
+    <span class="description">{{ restaurant.description }}</span>
+    <div class="adress"><span>{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div>
+    {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
+    restaurant. Pour cela, il faut que la connexion ai été géré.#}
+    <nav class="action-restaurant">
+        <a href="reservation.html.twig">Réserver une table</a>
+        {# <a href="commander.html.twig">Commander</a>  A priori, inutile si on part sur le choix expliqué ci-dessous#}
+    </nav>
+
 
 {% endblock %}

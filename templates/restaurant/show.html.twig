@@ -35,27 +35,33 @@
         const plats = document.querySelectorAll('.plat');
 
         function filtrerPlats(category) {
+            //On retire les marqueurs active pour retirer les plats que l'on ne veut plus afficher
             plats.forEach(plat => {
                 plat.classList.remove('active');
             });
 
+            //On ajoute les marqueurs active pour les plats correspondant a la category voulue
             const platAfficher = document.querySelectorAll(`.plat[data-category*="${category}"]`);
             platAfficher.forEach(plat => {
                 plat.classList.add('active');
             })
         }
 
+        //On ajoute un event en cas de clic sur les boutons des catégories
         filtres.forEach(link => {
             link.addEventListener('click', function(event) {
                 event.preventDefault();
                 document.querySelector('.filtres-dish a.active').classList.remove('active');
                 this.classList.add('active');
+                //On récupère la category voulue
                 const category = this.getAttribute('data-category');
+                //On filtre les plats pour afficher ceux correspondant à la category voulue
                 filtrerPlats(category);
             });
         });
+        //On a défini la catégorie par défaut à afficher
         const DefaultCategory = document.querySelector('.filtres-dish a.active').getAttribute('data-category');
-
+        //On filtre pour afficher les plats de la category par défaut
         filtrerPlats(DefaultCategory);
     </script>
 {% endblock %}

@@ -1,12 +1,46 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ restaurant.name }}{% endblock %}
-
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
 {% block main %}
+    <script>
+        fetch("https://nominatim.openstreetmap.org/search?format=json&q={{ restaurant.address }} {{ restaurant.postalCode }} {{ restaurant.city }}")
+            .then(res => res.json())
+            .then(data => {
+                // On n'affiche la map que si l'adresse est valide (elle a été trouvé sur OpenStreetMap
+                if (!data.length) {
+                    return;
+                }
+                //On récupère les coordonnées du restaurant
+                const lat = data[0].lat;
+                const lon = data[0].lon;
+                //On modifie la div de la map, pour permettre son affichage
+                const mapDiv = document.getElementById("map");
+                mapDiv.style.display = "block";
+
+                //On créer la map (Voir doc de Leaflet)
+                const map = L.map('map').setView([lat, lon], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                //On ajoute le marqueur sur la carte (Voir doc de Leaflet)
+                L.marker([lat, lon]).addTo(map)
+                    .bindPopup("{{ restaurant.address }}, {{ restaurant.city }}");
+            })
+            .catch(() => {
+                // Si l'on n'obtient pas de réponse, l'on n'affiche pas la map.
+                document.getElementById("map").style.display = "none";
+            });
+    </script>
     <img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}">
     {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
     <span class="description">{{ restaurant.description }}</span>
     <div class="adress"><span>{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div>
+    <div id="map" style="height: 300px; width: 100%; display: none"></div>
     {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
     restaurant. Pour cela, il faut que la connexion ai été géré.#}
     <nav class="action-restaurant">

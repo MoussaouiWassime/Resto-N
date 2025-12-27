@@ -1,20 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Accueil - Resto'N{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block main %}
+    {% for category in categories %} 
+        <h2>{{ category.name }}</h2>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/wassi/OneDrive/Belgeler/BUT/SAE/sae3-01/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/wassi/OneDrive/Belgeler/BUT/SAE/sae3-01/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+        {% if category.restaurants is empty %}
+            Aucun restaurant
+        {% else %}
+            <ul>
+                {% for restaurant in category.restaurants %}
+                    <li>
+                        <h3>{{ restaurant.name }}</h3>
+                        {{ restaurant.description }}
+                        <a href="#">Commander</a> | <a href="#"> Réserver une table </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        Aucune catégorie
+    {% endfor %}
 {% endblock %}

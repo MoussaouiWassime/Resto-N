@@ -32,9 +32,9 @@ final class RestaurantTableFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'capacity' => self::faker()->randomNumber(),
-            'number' => self::faker()->randomNumber(),
-            'restaurant' => RestaurantFactory::new(),
+            'capacity' => self::faker()->numberBetween(2, 8),
+            'number' => (string) self::faker()->unique()->numberBetween(1, 20),
+            'restaurant' => RestaurantFactory::random(),
         ];
     }
 

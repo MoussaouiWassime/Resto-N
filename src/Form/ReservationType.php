@@ -6,6 +6,7 @@ use App\Entity\Reservation;
 use App\Entity\Restaurant;
 use App\Entity\RestaurantTable;
 use App\Entity\User;
+use Doctrine\DBAL\Types\DateTimeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,20 +17,12 @@ class ReservationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('reservationDate')
-            ->add('numberOfPeople')
-            ->add('status')
-            ->add('restaurant', EntityType::class, [
-                'class' => Restaurant::class,
-                'choice_label' => 'id',
+            ->add('reservationDate', DateTimeType::class, [
+                'label' => 'Date et heure de réservation',
+                'widget' => 'single_text',
             ])
-            ->add('restaurantTable', EntityType::class, [
-                'class' => RestaurantTable::class,
-                'choice_label' => 'id',
-            ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
+            ->add('numberOfPeople', IntegerType::class, [
+                'label' => 'Nombre de personnes',
             ])
         ;
     }

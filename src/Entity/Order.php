@@ -36,10 +36,6 @@ class Order
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
-
-    #[ORM\ManyToOne(inversedBy: 'orders')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?Restaurant $restaurant = null;
 
     /**
@@ -47,6 +43,9 @@ class Order
      */
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order')]
     private Collection $orderItems;
+
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -130,18 +129,6 @@ class Order
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getRestaurant(): ?Restaurant
     {
         return $this->restaurant;
@@ -180,6 +167,18 @@ class Order
                 $orderItem->setOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

@@ -33,7 +33,7 @@ final class RestaurantTableFactory extends PersistentProxyObjectFactory
     {
         return [
             'capacity' => self::faker()->numberBetween(2, 8),
-            'number' => (string) self::faker()->unique()->numberBetween(1, 20),
+            'number' => (string) self::faker()->numberBetween(1, 20),
             'restaurant' => RestaurantFactory::random(),
         ];
     }

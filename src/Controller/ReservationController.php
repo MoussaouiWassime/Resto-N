@@ -42,9 +42,9 @@ final class ReservationController extends AbstractController
             $closingTime = $restaurant->getClosingTime();
 
             if ($openingTime && $closingTime) {
-                $resaTime = (clone $reservation)->getReservationDate();
-                $openCheck = (clone $openingTime);
-                $closeCheck = (clone $closingTime);
+                $resaTime = clone $reservation->getReservationDate();
+                $openCheck = clone $openingTime;
+                $closeCheck = clone $closingTime;
 
                 // Tout a la même date pour comparer heure
                 $resaTime->setDate(2000, 1, 1);
@@ -79,6 +79,6 @@ final class ReservationController extends AbstractController
             'form' => $form->createView(),
             'restaurant' => $restaurant,
             'error' => $errorMessage,
-        ]);
+        ], new Response(null, $form->isSubmitted() ? 422 : 200));
     }
 }

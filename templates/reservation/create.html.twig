@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver{% endblock %}
+
+{% block main %}
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {{ form_start(form) }}
+
+    {{ form_row(form.reservationDate) }}
+    {{ form_row(form.numberOfPeople) }}
+
+    <button type="submit">Valider</button>
+
+    <a href="{{ path('app_home') }}">Annuler</a>
+
+    {{ form_end(form) }}
+{% endblock %}

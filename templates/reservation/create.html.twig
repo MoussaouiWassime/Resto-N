@@ -9,6 +9,17 @@
         </div>
     {% endif %}
 
+    <div>
+        <h5>Horaires d'ouverture</h5>
+        <p>
+            {% if restaurant.openingTime and restaurant.closingTime %}
+                Ce restaurant est ouvert de {{ restaurant.openingTime|date('H:i') }} à {{ restaurant.closingTime|date('H:i') }}
+            {% else %}
+                Ce restaurant est ouvert 24h/24.
+            {% endif %}
+        </p>
+    </div>
+
     {{ form_start(form) }}
 
     {{ form_row(form.reservationDate) }}

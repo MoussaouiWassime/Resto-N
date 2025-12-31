@@ -38,20 +38,40 @@ final class ReservationController extends AbstractController
         $errorMessage = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $assignedTable = $tableRepository->findAvailableTable(
-                $restaurant,
-                $reservation->getReservationDate(),
-                $reservation->getNumberOfPeople()
-            );
+            $openingTime = $restaurant->getOpeningTime();
+            $closingTime = $restaurant->getClosingTime();
 
-            if ($assignedTable) {
-                $reservation->setRestaurantTable($assignedTable);
-                $entityManager->persist($reservation);
-                $entityManager->flush();
+            if ($openingTime && $closingTime) {
+                $resaTime = (clone $reservation)->getReservationDate();
+                $openCheck = (clone $openingTime);
+                $closeCheck = (clone $closingTime);
 
-                return $this->redirectToRoute('app_home');
-            } else {
-                $errorMessage = 'Aucune table disponible pour ce créneau.';
+                // Tout a la même date pour comparer heure
+                $resaTime->setDate(2000, 1, 1);
+                $openCheck->setDate(2000, 1, 1);
+                $closeCheck->setDate(2000, 1, 1);
+
+                if ($resaTime < $openCheck || $resaTime > $closeCheck) {
+                    $errorMessage = 'Le restaurant est fermé à cette heure (Horaires : '.$openingTime->format('H:i').' - '.$closingTime->format('H:i').')';
+                }
+            }
+
+            if (!$errorMessage) {
+                $assignedTable = $tableRepository->findAvailableTable(
+                    $restaurant,
+                    $reservation->getReservationDate(),
+                    $reservation->getNumberOfPeople()
+                );
+
+                if ($assignedTable) {
+                    $reservation->setRestaurantTable($assignedTable);
+                    $entityManager->persist($reservation);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_home');
+                } else {
+                    $errorMessage = 'Aucune table disponible pour ce créneau.';
+                }
             }
         }
 

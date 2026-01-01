@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
+use App\Entity\Restaurant;
 use App\Form\ReservationType;
+use App\Repository\ReservationRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\RestaurantTableRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,6 +17,20 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ReservationController extends AbstractController
 {
+    #[Route('/reservation/restaurant/{id}', name: 'app_reservation_index_restaurant')]
+    public function index(Restaurant $restaurant, ReservationRepository $reservationRepository): Response
+    {
+        $reservations = $reservationRepository->findBy(
+            ['restaurant' => $restaurant],
+            ['reservationDate' => 'ASC']
+        );
+
+        return $this->render('reservation/index.html.twig', [
+            'restaurant' => $restaurant,
+            'reservations' => $reservations,
+        ]);
+    }
+
     #[Route('/reservation/create/{id}', name: 'app_reservation_create')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function create(

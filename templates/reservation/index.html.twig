@@ -1,20 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ReservationController!{% endblock %}
+{% block title %}Réservations{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block main %}
+    <h1>Réservations : {{ restaurant.name }}</h1>
+    <a href="{{ path('app_home') }}">Retour</a>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
     <ul>
-        <li>Your controller at <code>C:/Users/wassi/OneDrive/Belgeler/BUT/SAE/sae3-01/src/Controller/ReservationController.php</code></li>
-        <li>Your template at <code>C:/Users/wassi/OneDrive/Belgeler/BUT/SAE/sae3-01/templates/reservation/index.html.twig</code></li>
+        {% for reservation in reservations %}
+            <li>
+                {{ reservation.reservationDate|date('d/m/Y H:i') }} -
+                {% if reservation.user %}
+                    {# rajouter une redirection vers les profiles quand ça sera fait #}
+                    Nom : {{ reservation.user.lastName }} {{ reservation.user.firstName }}
+                {% else %}
+                    'Client inconnu'
+                {% endif %}
+                ({{ reservation.numberOfPeople }} pers.)
+                - Statut : {{ reservation.status }}
+                {% if reservation.restaurantTable %}
+                    - Table {{ reservation.restaurantTable.number }}
+                {% endif %}
+            </li>
+        {% else %}
+            <li>Aucune réservation.</li>
+        {% endfor %}
     </ul>
-</div>
 {% endblock %}

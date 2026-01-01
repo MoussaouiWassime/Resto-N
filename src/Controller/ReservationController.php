@@ -101,7 +101,7 @@ final class ReservationController extends AbstractController
         ], new Response(null, $form->isSubmitted() ? 422 : 200));
     }
 
-    #[Route('reservation/update/{id}', name: 'app_reservation_update')]
+    #[Route('/reservation/update/{id}', name: 'app_reservation_update')]
     public function update(Request $request, EntityManagerInterface $entityManager, Reservation $reservation): Response
     {
         $form = $this->createForm(ReservationType::class, $reservation);

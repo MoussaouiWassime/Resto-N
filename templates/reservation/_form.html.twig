@@ -1,0 +1,12 @@
+{% block main %}
+    {{ form_start(form) }}
+    {{ form_row(form.reservationDate, {label: 'Date et heure'}) }}
+    {{ form_row(form.numberOfPeople, {label: 'Nombre de couverts'}) }}
+
+    <button type="submit" class="btn btn-primary w-100 p-3 mt-3">
+        {{ submit_label|default('Enregistrer') }}
+    </button>
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}

@@ -10,6 +10,7 @@ use App\Repository\RestaurantRepository;
 use App\Repository\RestaurantTableRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -115,6 +116,32 @@ final class ReservationController extends AbstractController
         }
 
         return $this->render('reservation/update.html.twig', [
+            'reservation' => $reservation,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/reservation/delete/{id}', name: 'app_reservation_delete')]
+    public function delete(Reservation $reservation, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $restaurantId = $reservation->getRestaurant()->getId();
+
+        $form = $this->createFormBuilder()
+            ->add('delete', SubmitType::class, ['label' => 'Supprimer'])
+            ->add('cancel', SubmitType::class, ['label' => 'Annuler'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('delete')->isClicked()) {
+                $entityManager->remove($reservation);
+                $entityManager->flush();
+            }
+            return $this->redirectToRoute('app_reservation_index_restaurant', ['id' => $restaurantId]);
+        }
+
+        return $this->render('reservation/delete.html.twig', [
             'reservation' => $reservation,
             'form' => $form,
         ]);

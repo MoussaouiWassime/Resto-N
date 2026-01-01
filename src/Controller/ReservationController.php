@@ -49,6 +49,8 @@ final class ReservationController extends AbstractController
         $reservation->setUser($this->getUser());
 
         $form = $this->createForm(ReservationType::class, $reservation);
+        $form->remove('status');
+        $form->remove('restaurantTable');
         $form->handleRequest($request);
 
         $errorMessage = null;
@@ -96,5 +98,25 @@ final class ReservationController extends AbstractController
             'restaurant' => $restaurant,
             'error' => $errorMessage,
         ], new Response(null, $form->isSubmitted() ? 422 : 200));
+    }
+
+    #[Route('reservation/update/{id}', name: 'app_reservation_update')]
+    public function update(Request $request, EntityManagerInterface $entityManager, Reservation $reservation): Response
+    {
+        $form = $this->createForm(ReservationType::class, $reservation);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_reservation_index_restaurant', [
+                'id' => $reservation->getRestaurant()->getId(),
+            ]);
+        }
+
+        return $this->render('reservation/update.html.twig', [
+            'reservation' => $reservation,
+            'form' => $form,
+        ]);
     }
 }

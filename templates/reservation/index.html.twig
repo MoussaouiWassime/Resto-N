@@ -21,6 +21,13 @@
                 {% if reservation.restaurantTable %}
                     - Table {{ reservation.restaurantTable.number }}
                 {% endif %}
+
+                <a href="{{ path('app_reservation_update', {'id': reservation.id}) }}" class="btn btn-sm btn-warning">
+                    Modifier
+                </a>
+                <a href="{{ path('app_reservation_delete', {'id': reservation.id}) }}" class="btn btn-sm btn-danger">
+                    Supprimer
+                </a>
             </li>
         {% else %}
             <li>Aucune réservation.</li>

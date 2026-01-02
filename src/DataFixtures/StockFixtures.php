@@ -19,7 +19,7 @@ class StockFixtures extends Fixture implements DependentFixtureInterface
         $restaurants = RestaurantFactory::all();
 
         foreach ($restaurants as $restaurant) {
-            $products = ProductFactory::createMany(5);
+            $products = ProductFactory::randomSet(3);
 
             foreach ($products as $product) {
                 StockFactory::createOne([

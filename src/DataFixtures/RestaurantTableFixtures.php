@@ -14,7 +14,7 @@ class RestaurantTableFixtures extends Fixture implements DependentFixtureInterfa
         // $product = new Product();
         // $manager->persist($product);
 
-        RestaurantTableFactory::createMany(100);
+        RestaurantTableFactory::createMany(30);
     }
 
     public function getDependencies(): array

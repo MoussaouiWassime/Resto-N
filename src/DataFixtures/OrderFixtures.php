@@ -21,12 +21,12 @@ class OrderFixtures extends Fixture implements DependentFixtureInterface
         foreach ($restaurants as $restaurant) {
             $dishes = DishFactory::findBy(['restaurant' => $restaurant]);
 
-            $orders = OrderFactory::createMany(5, [
+            $orders = OrderFactory::createMany(3, [
                 'restaurant' => $restaurant,
             ]);
 
             foreach ($orders as $order) {
-                OrderItemFactory::createMany(rand(2, 4), function () use ($order, $dishes) {
+                OrderItemFactory::createMany(rand(1, 3), function () use ($order, $dishes) {
                     return [
                         'order' => $order,
                         'dish' => $dishes[array_rand($dishes)],

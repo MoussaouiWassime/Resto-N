@@ -26,7 +26,7 @@ class Reservation
     #[ORM\JoinColumn(nullable: false)]
     private ?Restaurant $restaurant = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reservations')]
+    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'reservations')]
     private ?RestaurantTable $restaurantTable = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]

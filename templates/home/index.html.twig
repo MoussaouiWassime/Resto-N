@@ -3,7 +3,7 @@
 {% block title %}Accueil - Resto'N{% endblock %}
 
 {% block main %}
-    {% for category in categories %} 
+    {% for category in categories %}
         <h2>{{ category.name }}</h2>
 
         {% if category.restaurants is empty %}
@@ -14,7 +14,11 @@
                     <li>
                         <h3>{{ restaurant.name }}</h3>
                         {{ restaurant.description }}
-                        <a href="#">Commander</a> | <a href="#"> Réserver une table </a>
+                        <a href="#">Commander</a>
+                        |
+                        <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}">
+                            Réserver une table
+                        </a>
                     </li>
                 {% endfor %}
             </ul>

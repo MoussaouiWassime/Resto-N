@@ -9,3 +9,23 @@ body {
 .plat.active {
     display: block;
 }
+
+.listPlat {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-start;
+}
+
+a {
+    margin: 0.3rem;
+}
+
+.adress {
+    color: #4A4645;
+    font-weight: bold;
+}
+
+body {
+    background-color: #F5F5F5;
+}

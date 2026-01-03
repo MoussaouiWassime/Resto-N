@@ -1,5 +1,5 @@
 body {
-    background-color: #F5F5F5;
+    background-color: #B6D9F7;
 }
 
 .plat {
@@ -28,4 +28,25 @@ a {
 
 li:nth-child(even) {
     background-color: var(--bs-light);
+}
+
+.btn {
+    background-color: #064789;
+}
+
+.btn.active {
+    background-color: #043362;
+}
+
+.card {
+    background-color: #DAECFB;
+}
+
+.action-restaurant {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.reservCommand {
+    font-size: 2rem;
 }

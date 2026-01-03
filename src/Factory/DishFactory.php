@@ -37,7 +37,7 @@ final class DishFactory extends PersistentProxyObjectFactory
             'name' => mb_convert_case(self::faker()->words(3, true), MB_CASE_TITLE),
             'price' => self::faker()->numberBetween(500, 3500),
             'photo' => 'https://placehold.co/100x100',
-            'restaurant' => RestaurantFactory::random(),
+            'restaurant' => RestaurantFactory::new(),
             'description' => self::faker()->sentence(5),
         ];
     }

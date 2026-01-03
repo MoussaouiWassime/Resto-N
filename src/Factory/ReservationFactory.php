@@ -46,12 +46,16 @@ final class ReservationFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(fn(Reservation $reservation) => $reservation->setRestaurantTable(
-                RestaurantTableFactory::new([
-                    'restaurant' => $reservation->getRestaurant(),
-                    'capacity' => self::faker()->numberBetween($reservation->getNumberOfPeople() ?? 2, 10),
-                ])->create()->_real()
-            ))
+            ->afterInstantiate(function(Reservation $reservation) {
+                if (!$reservation->getRestaurantTable()) {
+                    $reservation->setRestaurantTable(
+                        RestaurantTableFactory::new([
+                            'restaurant' => $reservation->getRestaurant(),
+                            'capacity' => self::faker()->numberBetween($reservation->getNumberOfPeople() ?? 2, 10),
+                        ])->create()->_real()
+                    );
+                }
+            })
         ;
     }
 }

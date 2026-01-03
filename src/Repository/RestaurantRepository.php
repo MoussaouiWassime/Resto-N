@@ -16,6 +16,21 @@ class RestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, Restaurant::class);
     }
 
+    public function search(string $text): array
+    {
+        $qb = $this->createQueryBuilder('c');
+        if ('' != $text) {
+            $qb->where('c.name LIKE :text')
+                ->setParameter('text', "%{$text}%");
+        }
+
+        return $qb->orderBy('c.name', 'ASC')
+            ->leftJoin('c.categories', 'cat')
+            ->addSelect('cat')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findWithId(int $id): ?Restaurant
     {
         return $this->createQueryBuilder('r')

@@ -35,7 +35,7 @@ final class ReservationFactory extends PersistentProxyObjectFactory
             'reservationDate' => self::faker()->dateTimeBetween('2025-12-01', '2025-12-31'),
             'restaurant' => RestaurantFactory::new(),
             'status' => self::faker()->randomElement(['E', 'C', 'A']), // E = En attente, C = confirmé, A = annulé
-            'user' => UserFactory::random(),
+            'user' => UserFactory::new(),
             'numberOfPeople' => self::faker()->numberBetween(1, 10),
         ];
     }

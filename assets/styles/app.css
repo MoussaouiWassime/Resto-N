@@ -1,5 +1,5 @@
 body {
-    background-color: skyblue;
+    background-color: #F5F5F5;
 }
 
 .plat {
@@ -26,6 +26,6 @@ a {
     font-weight: bold;
 }
 
-body {
-    background-color: #F5F5F5;
+li:nth-child(even) {
+    background-color: var(--bs-light);
 }

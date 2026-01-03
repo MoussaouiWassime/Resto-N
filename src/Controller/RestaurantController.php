@@ -13,10 +13,13 @@ use Symfony\Component\Routing\Attribute\Route;
 final class RestaurantController extends AbstractController
 {
     #[Route('/restaurant', name: 'app_restaurant')]
-    public function index(): Response
+    public function index(RestaurantRepository $restaurant, #[MapQueryParameter] string $search = ''): Response
     {
+        $restaurants = $restaurant->search($search);
+
         return $this->render('restaurant/index.html.twig', [
-            'controller_name' => 'RestaurantController',
+            'restaurants' => $restaurants,
+            'search' => $search,
         ]);
     }
 

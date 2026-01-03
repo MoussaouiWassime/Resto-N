@@ -40,6 +40,7 @@ li:nth-child(even) {
 
 .card {
     background-color: #DAECFB;
+    color: #064789;
 }
 
 .action-restaurant {

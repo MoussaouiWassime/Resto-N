@@ -1,5 +1,78 @@
 body {
-    background-color: skyblue;
+    background-color: #B6D9F7;
+}
+
+.plat {
+    display: none;
+}
+
+.plat.active {
+    display: block;
+}
+
+.listPlat {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-start;
+}
+
+a {
+    margin: 0.3rem;
+}
+
+.adress {
+    color: #4A4645;
+    font-weight: bold;
+}
+
+li:nth-child(even) {
+    background-color: var(--bs-light);
+}
+
+.btn {
+    background-color: #064789;
+    color: #DAECFB;
+}
+
+.btn.active {
+    background-color: #043362;
+}
+
+.card {
+    background-color: #DAECFB;
+    color: #064789;
+}
+
+.action-restaurant {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.reservCommand {
+    font-size: 2rem;
+}
+
+.reservCommand-index {
+    font-size: 1rem;
+}
+
+.restaurant {
+    display: none;
+}
+
+.restaurant-item {
+    background-color: #DAECFB;
+}
+
+.restaurant.active {
+    display: block;
+}
+
+.name-index {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #064789;
 }
 
 li:nth-child(even) {

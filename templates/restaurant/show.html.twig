@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ restaurant.name }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+{% block main %}
+    <script>
+        fetch("https://nominatim.openstreetmap.org/search?format=json&q={{ restaurant.address }} {{ restaurant.postalCode }} {{ restaurant.city }}")
+            .then(res => res.json())
+            .then(data => {
+                // On n'affiche la map que si l'adresse est valide (elle a été trouvé sur OpenStreetMap
+                if (!data.length) {
+                    return;
+                }
+                //On récupère les coordonnées du restaurant
+                const lat = data[0].lat;
+                const lon = data[0].lon;
+                //On modifie la div de la map, pour permettre son affichage
+                const mapDiv = document.getElementById("map");
+                mapDiv.style.display = "block";
+
+                //On créer la map (Voir doc de Leaflet)
+                const map = L.map('map').setView([lat, lon], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                //On ajoute le marqueur sur la carte (Voir doc de Leaflet)
+                L.marker([lat, lon]).addTo(map)
+                    .bindPopup("{{ restaurant.address }}, {{ restaurant.city }}");
+            })
+            .catch(() => {
+                // Si l'on n'obtient pas de réponse, l'on n'affiche pas la map.
+                document.getElementById("map").style.display = "none";
+            });
+    </script>
+    <img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}">
+    {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
+    <span class="description">{{ restaurant.description }}</span>
+    <div class="adress"><span>{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div>
+    <div id="map" style="height: 300px; width: 100%; display: none"></div>
+    {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
+    restaurant. Pour cela, il faut que la connexion ai été géré.#}
+    <nav class="filtres-dish">
+        <a href="#" data-category="B" class="active btn btn-secondary">Les boissons</a>
+        <a href="#" data-category="E" class="btn btn-secondary">Les entrées</a>
+        <a href="#" data-category="P" class="btn btn-secondary">Les plats</a>
+        <a href="#" data-category="D" class="btn btn-secondary">Les desserts</a>
+    </nav>
+    <div id="liste-plats" class="listPlat">
+        {% for dish in restaurant.dishes %}
+            <div class="plat" data-category="{{ dish.category }}">
+                <div class="card" style="width: 18rem;">
+                    <img src="{{ dish.photo }}" class="card-img-top" alt="Photo de : {{ dish.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ dish.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ dish.price }} €</h6>
+                        <p class="card-text">{{ dish.description }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <nav class="action-restaurant">
+        <a href="{# {{ path('app_reservation_create', {id: restaurant.id}) }} #}" class="btn btn-primary reservCommand">Réserver une table</a>
+        <a href="{# {{ path('app_commande_create', {id: restaurant.id}) }} #}" class="btn btn-primary reservCommand">Commander</a>
+    </nav>
+    <script>
+        const filtres = document.querySelectorAll('.filtres-dish a');
+        const plats = document.querySelectorAll('.plat');
+
+        function filtrerPlats(category) {
+            //On retire les marqueurs active pour retirer les plats que l'on ne veut plus afficher
+            plats.forEach(plat => {
+                plat.classList.remove('active');
+            });
+
+            //On ajoute les marqueurs active pour les plats correspondant a la category voulue
+            const platAfficher = document.querySelectorAll(`.plat[data-category*="${category}"]`);
+            platAfficher.forEach(plat => {
+                plat.classList.add('active');
+            })
+        }
+
+        //On ajoute un event en cas de clic sur les boutons des catégories
+        filtres.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                document.querySelector('.filtres-dish a.active').classList.remove('active');
+                this.classList.add('active');
+                //On récupère la category voulue
+                const category = this.getAttribute('data-category');
+                //On filtre les plats pour afficher ceux correspondant à la category voulue
+                filtrerPlats(category);
+            });
+        });
+        //On a défini la catégorie par défaut à afficher
+        const DefaultCategory = document.querySelector('.filtres-dish a.active').getAttribute('data-category');
+        //On filtre pour afficher les plats de la category par défaut
+        filtrerPlats(DefaultCategory);
+    </script>
+{% endblock %}

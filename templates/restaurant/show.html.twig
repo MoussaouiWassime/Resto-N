@@ -60,7 +60,14 @@
         qui enverra vers les formulaires nécéssaire pour la suite.#}
         {% for dish in restaurant.dishes %}
             <div class="plat" data-category="{{ dish.category }}">
-                {{ dish.name }}
+                <div class="card" style="width: 18rem;">
+                    <img src="{{ dish.photo }}" class="card-img-top" alt="Photo de : {{ dish.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ dish.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ dish.price }} €</h6>
+                        <p class="card-text">{{ dish.description }}</p>
+                    </div>
+                </div>
             </div>
         {% endfor %}
     </div>

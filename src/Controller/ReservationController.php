@@ -102,6 +102,7 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/reservation/update/{id}', name: 'app_reservation_update')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function update(Request $request, EntityManagerInterface $entityManager, Reservation $reservation): Response
     {
         $form = $this->createForm(ReservationType::class, $reservation);
@@ -122,6 +123,7 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/reservation/delete/{id}', name: 'app_reservation_delete')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function delete(Reservation $reservation, Request $request, EntityManagerInterface $entityManager): Response
     {
         $restaurantId = $reservation->getRestaurant()->getId();

@@ -43,10 +43,6 @@
     <div id="map" style="height: 300px; width: 100%; display: none"></div>
     {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
     restaurant. Pour cela, il faut que la connexion ai été géré.#}
-    <nav class="action-restaurant">
-        <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}" class="btn btn-primary">Réserver une table</a>
-        <a href="{{ path('app_commande_create', {id: restaurant.id}) }}" class="btn btn-primary">Commander</a>
-    </nav>
     <nav class="filtres-dish">
         <a href="#" data-category="B" class="active btn btn-secondary">Les boissons</a>
         <a href="#" data-category="E" class="btn btn-secondary">Les entrées</a>
@@ -67,6 +63,10 @@
             </div>
         {% endfor %}
     </div>
+    <nav class="action-restaurant">
+        <a href="{# {{ path('app_reservation_create', {id: restaurant.id}) }} #}" class="btn btn-primary reservCommand">Réserver une table</a>
+        <a href="{# {{ path('app_commande_create', {id: restaurant.id}) }} #}" class="btn btn-primary reservCommand">Commander</a>
+    </nav>
     <script>
         const filtres = document.querySelectorAll('.filtres-dish a');
         const plats = document.querySelectorAll('.plat');

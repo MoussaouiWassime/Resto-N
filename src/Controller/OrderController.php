@@ -6,6 +6,7 @@ use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Form\OrderType;
 use App\Repository\DishRepository;
+use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,11 +17,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class OrderController extends AbstractController
 {
-    #[Route('/order', name: 'app_order')]
-    public function index(): Response
+    #[Route('/order', name: 'app_order_index')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function index(OrderRepository $orderRepository): Response
     {
         return $this->render('order/index.html.twig', [
-            'controller_name' => 'OrderController',
+            'orders' => $orderRepository->findBy(['user' => $this->getUser()], ['orderDate' => 'DESC']),
         ]);
     }
 
@@ -63,7 +65,7 @@ final class OrderController extends AbstractController
                 $entityManager->persist($order);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('app_home');
+                return $this->redirectToRoute('app_order_index');
             }
         }
 

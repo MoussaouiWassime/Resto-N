@@ -1,20 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello OrderController!{% endblock %}
+{% block title %}Mes Commandes{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block main %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
+        </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        {% for order in orders %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        {{ order.orderDate|date('d/m/Y à H:i') }}
+                    </h5>
+                    <div class="text-muted">
+                        Chez {{ order.restaurant.name }}
+                    </div>
+                </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/wassi/OneDrive/Belgeler/BUT/SAE/sae3-01/src/Controller/OrderController.php</code></li>
-        <li>Your template at <code>C:/Users/wassi/OneDrive/Belgeler/BUT/SAE/sae3-01/templates/order/index.html.twig</code></li>
-    </ul>
-</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {% if order.orderType == 'S' %}
+                            <div class="badge bg-primary">Sur place</div>
+                        {% elseif order.orderType == 'E' %}
+                            <div class="badge bg-info text-dark">A emporter</div>
+                        {% elseif order.orderType == 'L' %}
+                            <div class="badge bg-warning text-dark">Livraison</div>
+                        {% endif %}
+
+                        {% if order.status == 'C' %}
+                            <div class="badge bg-secondary">En attente</div>
+                        {% else %}
+                            <div class="badge bg-success">{{ order.status }}</div>
+                        {% endif %}
+                    </div>
+
+                    <ul class="list-group list-group-flush mb-3">
+                        {% set total = 0 %}
+
+                        {% for item in order.orderItems %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    {{ item.quantity }}x {{ item.dish.name }}
+                                </div>
+                                <div>
+                                {{ (item.dish.price * item.quantity) / 100 }} €
+                            </div>
+                            </li>
+
+                            {% set total = total + (item.dish.price * item.quantity) %}
+                        {% endfor %}
+                    </ul>
+
+                    <div class="d-flex justify-content-end">
+                        <h4 class="fw-bold">
+                            Total : {{ total / 100 }} €
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="alert alert-info text-center">
+                Aucune commande
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

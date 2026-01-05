@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class ReservationController extends AbstractController
 {
     #[Route('/reservation/restaurant/{id}', name: 'app_reservation_index_restaurant')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(Restaurant $restaurant, ReservationRepository $reservationRepository): Response
     {
         $reservations = $reservationRepository->findBy(

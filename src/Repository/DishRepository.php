@@ -61,6 +61,4 @@ class DishRepository extends ServiceEntityRepository
         // to get just one result:
         // $product = $query->setMaxResults(1)->getOneOrNullResult();
     }
-
-
 }

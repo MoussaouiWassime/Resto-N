@@ -41,7 +41,7 @@ final class OrderController extends AbstractController
         $order->setRestaurant($restaurant);
         $order->setUser($this->getUser());
         $order->setOrderDate(new \DateTime());
-        $order->setStatus('C');
+        $order->setStatus('E');
 
         $dishes = $dishRepository->findBy(['restaurant' => $restaurant]);
         foreach ($dishes as $dish) {

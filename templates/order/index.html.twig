@@ -29,10 +29,12 @@
                             <div class="badge bg-warning text-dark">Livraison</div>
                         {% endif %}
 
-                        {% if order.status == 'C' %}
+                        {% if order.status == 'E' %}
                             <div class="badge bg-secondary">En attente</div>
-                        {% else %}
-                            <div class="badge bg-success">{{ order.status }}</div>
+                        {% elseif order.status == 'P' %}
+                            <div class="badge bg-secondary">Prêt, en livraison</div>
+                        {% elseif order.status == 'P' %}
+                            <div class="badge bg-success">Commande livré</div>
                         {% endif %}
                     </div>
 
@@ -45,8 +47,8 @@
                                     {{ item.quantity }}x {{ item.dish.name }}
                                 </div>
                                 <div>
-                                {{ (item.dish.price * item.quantity) / 100 }} €
-                            </div>
+                                    {{ (item.dish.price * item.quantity) / 100 }} €
+                                </div>
                             </li>
 
                             {% set total = total + (item.dish.price * item.quantity) %}

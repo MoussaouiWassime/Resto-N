@@ -10,12 +10,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(RestaurantCategoryRepository $categoryRepository): Response
+    public function index(): Response
     {
-        $categories = $categoryRepository->findAll();
-
-        return $this->render('home/index.html.twig', [
-            'categories' => $categories,
-        ]);
+        return $this->redirect('/restaurant', 307);
     }
 }

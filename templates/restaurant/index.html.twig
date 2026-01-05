@@ -3,7 +3,7 @@
 {% if search is defined and search != '' %}
     {% set textSearch = 'contenant : ' %}
 {% endif %}
-{% block title %}Liste des Restaurants {{ textSearch }}<em>{{ search }}</em>{% endblock %}
+{% block title %}Liste des restaurants {{ textSearch }}<em>{{ search }}</em>{% endblock %}
 {% block main %}
     <nav class="filtres-restaurant">
         <a href="#" data-category="1" class="active btn btn-secondary">Italien</a>

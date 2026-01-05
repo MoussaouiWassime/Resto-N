@@ -25,7 +25,7 @@ final class DeleteCest
 
     public function pageShowsConfirmationDetails(ControllerTester $I): void
     {
-        $user = UserFactory::createOne(['email' => 'test@test.com'])->_real();
+        $user = UserFactory::createOne(['lastName' => 'aaa', 'firstName' => 'bb'])->_real();
         $I->amLoggedInAs($user);
 
         $restaurant = RestaurantFactory::createOne();
@@ -40,7 +40,7 @@ final class DeleteCest
 
         $I->amOnPage('/reservation/delete/'.$reservation->getId());
         $I->see('Êtes-vous sûr de vouloir supprimer cette réservation ?', 'h3');
-        $I->see('test@test.com');
+        $I->see('aaa bb');
         $I->see('Couverts :4 personnes');
         $I->see('N°99');
         $I->see('Supprimer', 'button');

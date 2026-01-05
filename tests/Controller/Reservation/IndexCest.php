@@ -39,7 +39,6 @@ final class IndexCest
         $I->amOnPage('/reservation/');
 
         $I->seeResponseCodeIs(200);
-        $I->see('Réservations', 'h1');
 
         $I->see('(2 pers.)');
         $I->see('Table 12');

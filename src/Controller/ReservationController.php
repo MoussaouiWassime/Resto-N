@@ -18,16 +18,25 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ReservationController extends AbstractController
 {
-    #[Route('/reservation/restaurant/{id}', name: 'app_reservation')]
+    #[Route('/reservation', name: 'app_reservation')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function index(Restaurant $restaurant, ReservationRepository $reservationRepository): Response
+    public function index(ReservationRepository $reservationRepository): Response
+    {
+        return $this->render('reservation/index.html.twig', [
+            'reservations' => $reservationRepository->findBy(['user' => $this->getUser()], ['reservationDate' => 'DESC']),
+        ]);
+    }
+
+    #[Route('/reservation/restaurant/{id}', name: 'app_reservation_restaurant')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function byRestaurant(Restaurant $restaurant, ReservationRepository $reservationRepository): Response
     {
         $reservations = $reservationRepository->findBy(
             ['restaurant' => $restaurant],
             ['reservationDate' => 'ASC']
         );
 
-        return $this->render('reservation/index.html.twig', [
+        return $this->render('reservation/byRestaurant.html.twig', [
             'restaurant' => $restaurant,
             'reservations' => $reservations,
         ]);
@@ -88,7 +97,9 @@ final class ReservationController extends AbstractController
                     $entityManager->persist($reservation);
                     $entityManager->flush();
 
-                    return $this->redirectToRoute('app_reservation');
+                    return $this->redirectToRoute('app_reservation', [
+                        'id' => $reservation->getRestaurant()->getId(),
+                    ]);
                 } else {
                     $errorMessage = 'Aucune table disponible pour ce créneau.';
                 }
@@ -112,7 +123,7 @@ final class ReservationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_reservation_index_restaurant', [
+            return $this->redirectToRoute('app_reservation', [
                 'id' => $reservation->getRestaurant()->getId(),
             ]);
         }
@@ -141,6 +152,7 @@ final class ReservationController extends AbstractController
                 $entityManager->remove($reservation);
                 $entityManager->flush();
             }
+
             return $this->redirectToRoute('app_reservation', ['id' => $restaurantId]);
         }
 

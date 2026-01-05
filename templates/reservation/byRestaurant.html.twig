@@ -1,14 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reservation{% endblock %}
+{% block title %}Réservations{% endblock %}
 
 {% block main %}
+    <h1>Réservations : {{ restaurant.name }}</h1>
     <a href="{{ path('app_home') }}">Retour</a>
 
     <ul>
         {% for reservation in reservations %}
             <li>
                 {{ reservation.reservationDate|date('d/m/Y H:i') }} -
+                {% if reservation.user %}
+                    {# rajouter une redirection vers les profiles quand ça sera fait #}
+                    Nom : {{ reservation.user.lastName }} {{ reservation.user.firstName }}
+                {% else %}
+                    'Client inconnu'
+                {% endif %}
                 ({{ reservation.numberOfPeople }} pers.)
                 - Statut : {{ reservation.status }}
                 {% if reservation.restaurantTable %}

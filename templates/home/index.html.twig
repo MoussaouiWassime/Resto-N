@@ -14,10 +14,8 @@
                     <li>
                         <h3>{{ restaurant.name }}</h3>
                         {{ restaurant.description }}
-                        <a href="#">Commander</a>
-                        |
-                        <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}">
-                            Réserver une table
+                        <a href="{{ path('app_restaurant_show', {id: restaurant.id}) }}">
+                            Voir la carte
                         </a>
                     </li>
                 {% endfor %}

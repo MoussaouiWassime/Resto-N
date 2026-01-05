@@ -39,10 +39,10 @@
     <img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}">
     {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
     <span class="description">{{ restaurant.description }}</span>
-    <div class="adress"><span>{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div>
+    <div class="address"><span class="address">{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div>
     <div id="map" style="height: 300px; width: 100%; display: none"></div>
     {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
-    restaurant. Pour cela, il faut que la connexion ai été géré.#}
+    restaurant. Pour cela, il faut que la connexion ai été géré. #}
     <nav class="filtres-dish">
         <a href="#" data-category="B" class="active btn btn-secondary">Les boissons</a>
         <a href="#" data-category="E" class="btn btn-secondary">Les entrées</a>
@@ -58,6 +58,7 @@
                         <h5 class="card-title">{{ dish.name }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ dish.price }} €</h6>
                         <p class="card-text">{{ dish.description }}</p>
+                        <a href="{{ path('app_dish_show', {id: dish.id}) }}" class="btn btn-primary">Détails</a>
                     </div>
                 </div>
             </div>

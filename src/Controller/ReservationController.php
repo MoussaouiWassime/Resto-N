@@ -97,9 +97,7 @@ final class ReservationController extends AbstractController
                     $entityManager->persist($reservation);
                     $entityManager->flush();
 
-                    return $this->redirectToRoute('app_reservation', [
-                        'id' => $reservation->getRestaurant()->getId(),
-                    ]);
+                    return $this->redirectToRoute('app_reservation');
                 } else {
                     $errorMessage = 'Aucune table disponible pour ce créneau.';
                 }
@@ -123,9 +121,7 @@ final class ReservationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_reservation', [
-                'id' => $reservation->getRestaurant()->getId(),
-            ]);
+            return $this->redirectToRoute('app_reservation');
         }
 
         return $this->render('reservation/update.html.twig', [
@@ -153,7 +149,7 @@ final class ReservationController extends AbstractController
                 $entityManager->flush();
             }
 
-            return $this->redirectToRoute('app_reservation', ['id' => $restaurantId]);
+            return $this->redirectToRoute('app_reservation');
         }
 
         return $this->render('reservation/delete.html.twig', [

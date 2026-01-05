@@ -9,11 +9,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ProfileController extends AbstractController
 {
-    #[Route('/profile', name: 'app_profile')]
+    #[Route('/profile', name: 'app_profile_show')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function index(): Response
+    public function show(): Response
     {
-        return $this->render('profile/index.html.twig', [
+        return $this->render('profile/show.html.twig', [
             'user' => $this->getUser(),
         ]);
     }

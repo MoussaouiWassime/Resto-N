@@ -10,7 +10,7 @@ use App\Factory\RestaurantTableFactory;
 use App\Factory\UserFactory;
 use App\Tests\Support\ControllerTester;
 
-final class IndexCest
+final class ByRestaurantCest
 {
     public function accessIsRestrictedToAuthenticatedUsers(ControllerTester $I): void
     {

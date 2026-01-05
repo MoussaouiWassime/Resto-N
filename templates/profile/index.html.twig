@@ -1,20 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfileController!{% endblock %}
+{% block title %}Profil de {{ user.firstName }}, {{ user.lastName}} {% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/wassi/OneDrive/Belgeler/BUT/SAE/sae3-01/src/Controller/ProfileController.php</code></li>
-        <li>Your template at <code>C:/Users/wassi/OneDrive/Belgeler/BUT/SAE/sae3-01/templates/profile/index.html.twig</code></li>
-    </ul>
-</div>
+{% block main %}
+    {{ user.firstName }}, {{ user.lastName}}
+    <br>
+    Tel : {{ user.phone }}
+    <br>
+    Email : {{ user.email }}
+    <br>
+    <a href="{{ path('app_reservation') }}" class="btn">Historique des réservations</a>
+    <a href="{{ path('app_order') }}" class="btn">Historique des commandes</a>
 {% endblock %}

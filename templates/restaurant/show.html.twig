@@ -64,8 +64,8 @@
         {% endfor %}
     </div>
     <nav class="action-restaurant">
-        <a href="{# {{ path('app_reservation_create', {id: restaurant.id}) }} #}" class="btn btn-primary reservCommand">Réserver une table</a>
-        <a href="{# {{ path('app_commande_create', {id: restaurant.id}) }} #}" class="btn btn-primary reservCommand">Commander</a>
+        <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Réserver une table</a>
+        <a href="{{ path('app_order_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Commander</a>
     </nav>
     <script>
         const filtres = document.querySelectorAll('.filtres-dish a');

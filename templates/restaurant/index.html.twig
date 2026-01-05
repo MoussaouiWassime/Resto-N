@@ -22,7 +22,7 @@
                 ><span class="name-index">{{ restaurant.name }}</span>
                     <nav class="action-restaurant">
                         <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand-index">Réserver une table</a>
-                        <a href="{{ path('app_commande_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand-index">Commander</a>
+                        <a href="{{ path('app_order_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand-index">Commander</a>
                     </nav>
                 </a>
             </div>

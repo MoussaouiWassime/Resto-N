@@ -8,6 +8,7 @@
     <ul>
         {% for reservation in reservations %}
             <li>
+                {{ reservation.restaurant.name }} -
                 {{ reservation.reservationDate|date('d/m/Y H:i') }} -
                 ({{ reservation.numberOfPeople }} pers.)
                 {% if reservation.restaurantTable %}

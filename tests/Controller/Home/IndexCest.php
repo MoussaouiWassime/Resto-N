@@ -35,8 +35,7 @@ final class HomeCest
         $I->see('La Pizza del Mama', 'h3');
         $I->see('Les meilleures pizzas');
 
-        $I->see('Commander');
-        $I->see('Réserver une table');
+        $I->see('Voir la carte');
 
         $I->see('Vegan', 'h2');
         $I->see('Aucun restaurant');

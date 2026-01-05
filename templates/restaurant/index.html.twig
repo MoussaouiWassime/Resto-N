@@ -3,7 +3,7 @@
 {% if search is defined and search != '' %}
     {% set textSearch = 'contenant : ' %}
 {% endif %}
-{% block title %}Liste des restaurants {{ textSearch }}<em>{{ search }}</em>{% endblock %}
+{% block title %}Liste des Restaurants {{ textSearch }}<em>{{ search }}</em>{% endblock %}
 {% block main %}
     <nav class="filtres-restaurant">
         <a href="#" data-category="1" class="active btn btn-secondary">Italien</a>
@@ -19,12 +19,11 @@
             <div class="restaurant" data-category=",{{ restaurant.categories|map(c => c.id)|join(',') }},">
                 <li class="list-group-item list-group-item-action restaurant-item">
                 <a href="{{ path('app_restaurant_show', {id: restaurant.id}) }}"
-                ><span class="name-index">{{ restaurant.name }}</span>
+                ><span class="name-index">{{ restaurant.name }}</span></a>
                     <nav class="action-restaurant">
                         <a href="{# {{ path('app_reservation_create', {id: restaurant.id}) }} #}" class="btn btn-primary reservCommand-index">Réserver une table</a>
                         <a href="{# {{ path('app_commande_create', {id: restaurant.id}) }} #}" class="btn btn-primary reservCommand-index">Commander</a>
                     </nav>
-                </a>
             </div>
             {% endfor %}
         </ul>

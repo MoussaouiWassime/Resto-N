@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ReservationController extends AbstractController
 {
-    #[Route('/reservation/restaurant/{id}', name: 'app_reservation_index_restaurant')]
+    #[Route('/reservation/restaurant/{id}', name: 'app_reservation')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(Restaurant $restaurant, ReservationRepository $reservationRepository): Response
     {
@@ -88,7 +88,7 @@ final class ReservationController extends AbstractController
                     $entityManager->persist($reservation);
                     $entityManager->flush();
 
-                    return $this->redirectToRoute('app_home');
+                    return $this->redirectToRoute('app_reservation');
                 } else {
                     $errorMessage = 'Aucune table disponible pour ce créneau.';
                 }

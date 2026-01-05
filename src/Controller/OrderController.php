@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class OrderController extends AbstractController
 {
-    #[Route('/order', name: 'app_order_index')]
+    #[Route('/order', name: 'app_order')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(OrderRepository $orderRepository): Response
     {
@@ -65,7 +65,7 @@ final class OrderController extends AbstractController
                 $entityManager->persist($order);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('app_order_index');
+                return $this->redirectToRoute('app_order');
             }
         }
 

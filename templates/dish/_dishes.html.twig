@@ -6,7 +6,6 @@
     {% set currentSearch = '' %}
 {% endif %}
 
-
 {% block title %}Liste des Plats{% endblock %}
 
 {% block main %}
@@ -16,7 +15,7 @@
 
             <li class="list-group-item nav-item"
             ><a class="nav-link" href="{{ path('app_dish_show', {id: dish.id}) }}">
-                    <span class="name">{{ dish.name}}</span
+                    <span class="name">{{ dish.name }}</span
                     >, <span class="description">{{ dish.description }}</span
                     ></a
                 ></li>

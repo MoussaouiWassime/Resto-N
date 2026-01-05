@@ -7,7 +7,7 @@
 {% block main %}
     <h3>Êtes-vous sûr de vouloir supprimer cette réservation ?</h3>
     Date : {{ reservation.reservationDate|date('d/m/Y H:i') }}
-    Client : {{ reservation.user ? reservation.user.lastName reservation.user.firstName : 'Inconnu' }}
+    Client : {{ reservation.user.lastName }} {{ reservation.user.firstName }}
     Couverts :{{ reservation.numberOfPeople }} personnes
 
     Table :

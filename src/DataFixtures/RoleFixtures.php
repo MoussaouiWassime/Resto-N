@@ -21,7 +21,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
                 'role' => 'P',
             ]);
 
-            RoleFactory::createMany(10, [
+            RoleFactory::createMany(3, [
                 'restaurant' => $restaurant,
                 'role' => 'S',
             ]);

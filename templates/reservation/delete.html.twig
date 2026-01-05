@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Suppression de la réservation
+{% endblock %}
+
+{% block main %}
+    <h3>Êtes-vous sûr de vouloir supprimer cette réservation ?</h3>
+    Date : {{ reservation.reservationDate|date('d/m/Y H:i') }}
+    Client : {{ reservation.user.lastName }} {{ reservation.user.firstName }}
+    Couverts :{{ reservation.numberOfPeople }} personnes
+
+    Table :
+    {% if reservation.restaurantTable %}
+        N°{{ reservation.restaurantTable.number }}
+    {% else %}
+        Aucune table assignée
+    {% endif %}
+
+    {{ form_start(form, {attr: {class: 'd-flex gap-2'}}) }}
+    {{ form_row(form.delete, {label: 'Supprimer', attr: {class: 'btn btn-danger'}}) }}
+    {{ form_row(form.cancel, {label: 'Annuler', attr: {class: 'btn btn-secondary'}}) }}
+    {{ form_end(form) }}
+{% endblock %}

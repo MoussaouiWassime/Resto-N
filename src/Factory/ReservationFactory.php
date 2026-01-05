@@ -33,9 +33,9 @@ final class ReservationFactory extends PersistentProxyObjectFactory
     {
         return [
             'reservationDate' => self::faker()->dateTimeBetween('2025-12-01', '2025-12-31'),
-            'restaurant' => RestaurantFactory::random(),
+            'restaurant' => RestaurantFactory::new(),
             'status' => self::faker()->randomElement(['E', 'C', 'A']), // E = En attente, C = confirmé, A = annulé
-            'user' => UserFactory::random(),
+            'user' => UserFactory::new(),
             'numberOfPeople' => self::faker()->numberBetween(1, 10),
         ];
     }
@@ -46,7 +46,16 @@ final class ReservationFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Reservation $reservation): void {})
+            ->afterInstantiate(function(Reservation $reservation) {
+                if (!$reservation->getRestaurantTable()) {
+                    $reservation->setRestaurantTable(
+                        RestaurantTableFactory::new([
+                            'restaurant' => $reservation->getRestaurant(),
+                            'capacity' => self::faker()->numberBetween($reservation->getNumberOfPeople() ?? 2, 10),
+                        ])->create()->_real()
+                    );
+                }
+            })
         ;
     }
 }

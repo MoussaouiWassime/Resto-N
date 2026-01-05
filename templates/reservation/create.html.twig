@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver{% endblock %}
+
+{% block main %}
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div class="mb-4">
+        <h5>Horaires d'ouverture</h5>
+        <p>
+            {% if restaurant.openingTime and restaurant.closingTime %}
+                Ce restaurant est ouvert de {{ restaurant.openingTime|date('H:i') }} à {{ restaurant.closingTime|date('H:i') }}
+            {% else %}
+                Ce restaurant est ouvert 24h/24.
+            {% endif %}
+        </p>
+    </div>
+
+    {{ include('reservation/_form.html.twig', {
+        form: form,
+        submit_label: 'Valider'
+    }, with_context: false) }}
+
+    <div class="mt-3">
+        <a href="{{ path('app_reservation', {id: restaurant.id}) }}">Annuler</a>
+    </div>
+{% endblock %}

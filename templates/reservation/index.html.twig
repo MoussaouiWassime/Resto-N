@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reservations{% endblock %}
+
+{% block main %}
+    <a href="{{ path('app_home') }}">Retour</a>
+
+    <ul>
+        {% for reservation in reservations %}
+            <li>
+                {{ reservation.restaurant.name }} -
+                {{ reservation.reservationDate|date('d/m/Y H:i') }} -
+                ({{ reservation.numberOfPeople }} pers.)
+                {% if reservation.restaurantTable %}
+                    - Table {{ reservation.restaurantTable.number }}
+                {% endif %}
+
+                <a href="{{ path('app_reservation_update', {'id': reservation.id}) }}" class="btn btn-sm btn-warning">
+                    Modifier
+                </a>
+                <a href="{{ path('app_reservation_delete', {'id': reservation.id}) }}" class="btn btn-sm btn-danger">
+                    Supprimer
+                </a>
+            </li>
+        {% else %}
+            <li>Aucune réservation.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la réservation{% endblock %}
+
+{% block main %}
+
+    {{ include('reservation/_form.html.twig', {
+        form: form,
+        submit_label: 'Mettre à jour'
+    }, with_context: false) }}
+
+    <div class="mt-3">
+        <a href="{{ path('app_reservation', {'id': reservation.restaurant.id}) }}">Retour aux réservations</a>
+    </div>
+{% endblock %}

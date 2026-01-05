@@ -13,7 +13,7 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
     {
         // $product = new Product();
         // $manager->persist($product);
-        ReservationFactory::createMany(50);
+        ReservationFactory::createMany(5);
     }
 
     public function getDependencies(): array

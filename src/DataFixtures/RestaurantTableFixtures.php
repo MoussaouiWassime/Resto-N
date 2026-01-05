@@ -2,26 +2,19 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\RestaurantFactory;
-use App\Factory\StatisticFactory;
+use App\Factory\RestaurantTableFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class StatisticFixtures extends Fixture implements DependentFixtureInterface
+class RestaurantTableFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
         // $product = new Product();
         // $manager->persist($product);
 
-        $restaurants = RestaurantFactory::all();
-
-        foreach ($restaurants as $restaurant) {
-            StatisticFactory::createMany(2, [
-                'restaurant' => $restaurant,
-            ]);
-        }
+        RestaurantTableFactory::createMany(30);
     }
 
     public function getDependencies(): array

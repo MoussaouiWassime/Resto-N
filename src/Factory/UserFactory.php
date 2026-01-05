@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\User;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -10,16 +11,15 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class UserFactory extends PersistentProxyObjectFactory
 {
-    private \Transliterator $transliterator;
-
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      *
      * @todo inject services if required
      */
-    public function __construct()
-    {
-        $this->transliterator = \Transliterator::create('Any-Latin; Latin-ASCII');
+    public function __construct(
+        private ?UserPasswordHasherInterface $passwordHasher = null,
+    ) {
+        parent::__construct();
     }
 
     public static function class(): string
@@ -34,33 +34,14 @@ final class UserFactory extends PersistentProxyObjectFactory
      */
     protected function defaults(): array|callable
     {
-        $firstName = self::faker()->firstName();
-        $lastName = self::faker()->lastName();
-
-        $email = $this->normalizeName($firstName)
-            .'.'
-            .$this->normalizeName($lastName)
-            .'@'
-            .self::faker()->freeEmailDomain();
-
-        $phone = substr(self::faker()->phoneNumber(), 0, 20);
-
         return [
-            'email' => $email,
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'password' => self::faker()->text(128),
-            'phone' => $phone,
+            'email' => self::faker()->unique()->numerify('user-###@example.com'),
+            'lastName' => self::faker()->lastName(),
+            'firstName' => self::faker()->firstName(),
+            'password' => 'test',
+            'roles' => [],
+            'phone' => substr(self::faker()->phoneNumber(), 0, 20),
         ];
-    }
-
-    protected function normalizeName(string $name): string
-    {
-        return mb_strtolower(
-            $this->transliterator->transliterate(
-                preg_replace('/ /', '-', $name)
-            )
-        );
     }
 
     /**
@@ -69,7 +50,11 @@ final class UserFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(UserFixtures $user): void {})
+            ->afterInstantiate(function (User $user) {
+                if (null !== $this->passwordHasher) {
+                    $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
+                }
+            })
         ;
     }
 }

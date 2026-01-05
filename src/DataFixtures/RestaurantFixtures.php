@@ -14,7 +14,7 @@ class RestaurantFixtures extends Fixture implements DependentFixtureInterface
     {
         // $product = new Product();
         // $manager->persist($product);
-        RestaurantFactory::createMany(10, fn () => [
+        RestaurantFactory::createMany(5, fn () => [
             'categories' => RestaurantCategoryFactory::randomRange(1, 3),
         ]);
     }

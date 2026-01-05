@@ -13,6 +13,6 @@ class UserFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
 
-        UserFactory::createMany(20);
+        UserFactory::createMany(5);
     }
 }

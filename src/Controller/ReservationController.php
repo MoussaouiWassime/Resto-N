@@ -141,7 +141,7 @@ final class ReservationController extends AbstractController
                 $entityManager->remove($reservation);
                 $entityManager->flush();
             }
-            return $this->redirectToRoute('app_reservation_index_restaurant', ['id' => $restaurantId]);
+            return $this->redirectToRoute('app_reservation', ['id' => $restaurantId]);
         }
 
         return $this->render('reservation/delete.html.twig', [

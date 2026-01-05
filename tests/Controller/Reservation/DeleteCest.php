@@ -58,7 +58,7 @@ final class DeleteCest
         $I->amOnPage('/reservation/delete/'.$reservationId);
         $I->click('Supprimer');
         $I->dontSeeInRepository(Reservation::class, ['id' => $reservationId]);
-        $I->seeCurrentRouteIs('app_reservation_index_restaurant', [
+        $I->seeCurrentRouteIs('app_reservation', [
             'id' => $reservation->getRestaurant()->getId(),
         ]);
     }

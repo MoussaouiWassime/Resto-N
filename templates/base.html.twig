@@ -31,6 +31,13 @@
                     <input class="form-control me-2" name="search" type="search" placeholder="Search" aria-label="Search"/>
                     <button class="btn btn-outline-success" type="submit" >Search</button>
                 </form>
+                <div class="d-flex ms-2">
+                    {% if app.user %}
+                        <a class="btn btn-secondary" href="{{ path('app_profile_show') }}">Mon profil</a>
+                    {% else %}
+                        <a class="btn btn-primary" href="{{ path('app_login') }}">Connexion</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>

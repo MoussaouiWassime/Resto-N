@@ -51,10 +51,10 @@
 
             {% endfor %}
         </ul>
-
         <button type="submit" class="btn btn-success w-100">Valider la commande</button>
-        <a href="{{ path('app_order') }}">Retour</a>
-
+        <div class="mt-2">
+            <a href="{{ path('app_order') }}" class="btn btn-secondary action-btn">Retour</a>
+        </div>
         {{ form_end(form) }}
     </div>
 {% endblock %}

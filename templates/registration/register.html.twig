@@ -9,7 +9,9 @@
         {{ form_row(registration.email) }}
         {{ form_row(registration.phone) }}
         {{ form_row(registration.password) }}
-    <button type="submit" class="btn">S'inscrire</button>
-    <a href="{{ path('app_login') }}">Déjà un compte ?</a>
+    <div class="action-register gap-2">
+    <button type="submit" class="btn btn-primary">S'inscrire</button>
+    <a href="{{ path('app_login') }}" class="btn btn-secondary">Déjà un compte ?</a>
+    </div>
     {{ form_end(registration) }}
 {% endblock %}

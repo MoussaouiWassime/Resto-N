@@ -3,12 +3,13 @@
 {% block title %}Profil de {{ user.firstName }}, {{ user.lastName}} {% endblock %}
 
 {% block main %}
-    Nom : {{ user.firstName }}, {{ user.lastName}}
-    <br>
-    Tel : {{ user.phone }}
-    <br>
-    Email : {{ user.email }}
-    <br>
+    <div class="mb-3">
+        <div class="card-body">
+            <p><strong>Nom :</strong> {{ user.firstName }}, {{ user.lastName}}</p>
+            <p><strong>Tel :</strong> <span class="badge bg-primary">{{ user.phone }}</span></p>
+            <p><strong>Email :</strong> <span class="badge bg-info">{{ user.email }}</span></p>
+        </div>
+    </div>
     <h3>Actions</h3>
     <a href="{{ path('app_profile_update') }}" class="btn">Modifier mes informations</a>
     <a href="{{ path('app_logout') }}" class="btn">Déconnexion</a>

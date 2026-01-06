@@ -75,7 +75,11 @@ li:nth-child(even) {
     color: #064789;
 }
 
-li:nth-child(even) {
-    background-color: var(--bs-light);
+.action-register {
+    display: flex;
+    justify-content: flex-end;
 }
 
+.action-register a {
+    margin: 0;
+}

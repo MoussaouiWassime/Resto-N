@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer mon compte{% endblock %}
+
+{% block main %}
+    Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.
+
+    {{ form_start(form) }}
+        {{ form_row(form.delete, {label: 'Supprimer', attr: {class: 'btn btn-primary'}}) }}
+        {{ form_row(form.cancel, {label: 'Annuler', attr: {class: 'btn btn-secondary'}}) }}
+    {{ form_end(form) }}
+{% endblock %}

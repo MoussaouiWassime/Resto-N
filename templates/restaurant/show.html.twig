@@ -38,8 +38,8 @@
     </script>
     <img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}">
     {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
-    <span class="description">{{ restaurant.description }}</span>
-    <div class="address"><span class="address">{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div>
+    <div><span class="description">{{ restaurant.description }}</span></div>
+    <div class="address badge bg-info"><span class="address">{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div>
     <div id="map" style="height: 300px; width: 100%; display: none"></div>
     {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
     restaurant. Pour cela, il faut que la connexion ai été géré. #}

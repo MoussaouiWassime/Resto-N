@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ProfileType;
+use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -50,6 +51,7 @@ final class ProfileController extends AbstractController
         EntityManagerInterface $entityManager,
         TokenStorageInterface $tokenStorage,
         SessionInterface $session,
+        RoleRepository $roleRepository,
     ): Response {
         $user = $this->getUser();
 
@@ -62,6 +64,19 @@ final class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('delete')->isClicked()) {
+                foreach ($user->getReservations() as $reservation) {
+                    $reservation->setUser(null);
+                }
+
+                foreach ($user->getOrders() as $order) {
+                    $order->setUser(null);
+                }
+
+                $roles = $roleRepository->findBy(['user' => $user]);
+                foreach ($roles as $role) {
+                    $entityManager->remove($role);
+                }
+
                 $tokenStorage->setToken(null);
                 $session->invalidate();
 

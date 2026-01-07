@@ -24,6 +24,9 @@ class Stock
     #[ORM\Column]
     private ?int $quantity = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $measureUnit = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +64,18 @@ class Stock
     public function setQuantity(int $quantity): static
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getMeasureUnit(): ?string
+    {
+        return $this->measureUnit;
+    }
+
+    public function setMeasureUnit(string $measureUnit): static
+    {
+        $this->measureUnit = $measureUnit;
 
         return $this;
     }

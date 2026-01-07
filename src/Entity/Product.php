@@ -28,9 +28,6 @@ class Product
     #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'product')]
     private Collection $stocks;
 
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $measureUnit = null;
-
     public function __construct()
     {
         $this->stocks = new ArrayCollection();
@@ -91,18 +88,6 @@ class Product
                 $stock->setProduct(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getMeasureUnit(): ?string
-    {
-        return $this->measureUnit;
-    }
-
-    public function setMeasureUnit(?string $measureUnit): static
-    {
-        $this->measureUnit = $measureUnit;
 
         return $this;
     }

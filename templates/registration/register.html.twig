@@ -3,14 +3,18 @@
 {% block title %}Inscription{% endblock %}
 
 {% block main %}
-    {{ form_start(registration) }}
-        {{ form_row(registration.firstName) }}
-        {{ form_row(registration.lastName) }}
-        {{ form_row(registration.email) }}
-        {{ form_row(registration.phone) }}
-        {{ form_row(registration.password) }}
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm) }}
+    {{ form_row(registrationForm.firstName) }}
+    {{ form_row(registrationForm.lastName) }}
+    {{ form_row(registrationForm.email) }}
+    {{ form_row(registrationForm.phone) }}
+    {{ form_row(registrationForm.plainPassword) }}
+    {{ form_row(registrationForm.agreeTerms) }}
+
     <div class="action-register gap-2">
         <button type="submit" class="btn btn-primary">Inscription</button>
     </div>
-    {{ form_end(registration) }}
+    {{ form_end(registrationForm) }}
 {% endblock %}

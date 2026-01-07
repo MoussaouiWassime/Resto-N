@@ -22,7 +22,7 @@
 
     {{ include('reservation/_form.html.twig', {
         form: form,
-        submit_label: 'Valider'
+        submit_label: 'Valider',
     }, with_context: false) }}
     <div class="mb-3 pt-3">
     <a href="{{ path('app_reservation', {id: restaurant.id}) }}" class="btn btn-secondary form-btn">Annuler</a>

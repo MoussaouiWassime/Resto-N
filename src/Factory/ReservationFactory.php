@@ -46,7 +46,7 @@ final class ReservationFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function(Reservation $reservation) {
+            ->afterInstantiate(function (Reservation $reservation) {
                 if (!$reservation->getRestaurantTable()) {
                     $reservation->setRestaurantTable(
                         RestaurantTableFactory::new([

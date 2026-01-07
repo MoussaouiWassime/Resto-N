@@ -6,11 +6,11 @@
 <div class="container mt-3">
     {{ include('reservation/_form.html.twig', {
         form: form,
-        submit_label: 'Mettre à jour'
+        submit_label: 'Mettre à jour',
     }, with_context: false) }}
 
     <div class="mb-3">
-        <a href="{{ path('app_reservation', {'id': reservation.restaurant.id}) }}" class="btn btn-secondary action-btn mt-3">Retour aux réservations</a>
+        <a href="{{ path('app_reservation', {id: reservation.restaurant.id}) }}" class="btn btn-secondary action-btn mt-3">Retour aux réservations</a>
     </div>
 </div>
 {% endblock %}

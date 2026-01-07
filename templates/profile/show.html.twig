@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil de {{ user.firstName }}, {{ user.lastName}} {% endblock %}
+{% block title %}Profil de {{ user.firstName }}, {{ user.lastName }} {% endblock %}
 
 {% block main %}
     <div class="container mt-3">
     <div class="mb-3">
         <div class="card-body">
-            <p><strong>Nom :</strong> {{ user.firstName }}, {{ user.lastName}}</p>
+            <p><strong>Nom :</strong> {{ user.firstName }}, {{ user.lastName }}</p>
             <p><strong>Tel :</strong> <span class="badge bg-primary">{{ user.phone }}</span></p>
             <p><strong>Email :</strong> <span class="badge bg-info">{{ user.email }}</span></p>
         </div>

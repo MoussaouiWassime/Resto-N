@@ -28,10 +28,10 @@
                             <div><span class="title-card-reservation">Table : </span><span class="badge bg-success">Table {{ reservation.restaurantTable.number }}</span></div>
                         {% endif %}
                         <nav class="action-reservation">
-                            <a href="{{ path('app_reservation_update', {'id': reservation.id}) }}" class="btn btn-sm btn-warning">
+                            <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-warning">
                                 Modifier
                             </a>
-                            <a href="{{ path('app_reservation_delete', {'id': reservation.id}) }}" class="btn btn-sm btn-danger">
+                            <a href="{{ path('app_reservation_delete', {id: reservation.id}) }}" class="btn btn-sm btn-danger">
                                 Supprimer
                             </a>
                         </nav>

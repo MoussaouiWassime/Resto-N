@@ -34,7 +34,6 @@ final class ProductFactory extends PersistentProxyObjectFactory
         return [
             'category' => ProductCategoryFactory::random(),
             'productName' => mb_convert_case(self::faker()->word(), MB_CASE_TITLE),
-            'measureUnit' => self::faker()->randomElement(['pcs', 'kg', 'g', 'L', 'cL', 'btl', 'part']),
         ];
     }
 

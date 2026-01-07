@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+    <div class="container mt-3">
     <h3>Êtes-vous sûr de vouloir supprimer cette réservation ?</h3>
     <div class="mb-3">
         <div class="card-body">
@@ -22,8 +23,14 @@
         </div>
     </div>
 
+
     {{ form_start(form, {attr: {class: 'd-flex gap-2'}}) }}
-    {{ form_row(form.delete, {label: 'Supprimer', attr: {class: 'btn btn-danger'}}) }}
-    {{ form_row(form.cancel, {label: 'Annuler', attr: {class: 'btn btn-secondary'}}) }}
+        <div class="mb-3">
+            {{ form_row(form.delete, {label: 'Supprimer', attr: {class: 'btn btn-danger'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.cancel, {label: 'Annuler', attr: {class: 'btn btn-secondary'}}) }}
+        </div>
     {{ form_end(form) }}
+    </div>
 {% endblock %}

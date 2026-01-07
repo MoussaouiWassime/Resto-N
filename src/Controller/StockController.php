@@ -6,6 +6,8 @@ use App\Entity\Product;
 use App\Entity\Restaurant;
 use App\Entity\Stock;
 use App\Form\ProductType;
+use App\Form\StockType;
+use App\Repository\ProductRepository;
 use App\Repository\StockRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -29,28 +31,57 @@ final class StockController extends AbstractController
         ]);
     }
 
-    #[Route('/restaurant/{id}/stock/create', name: 'app_stock_create')]
-    public function create(Restaurant $restaurant, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/restaurant/{id}/stock/add', name: 'app_stock_add_list')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function addList(Restaurant $restaurant, ProductRepository $productRepository, Request $request): Response
     {
-        $product = new Product();
-        $form = $this->createForm(ProductType::class, $product);
+        $searchText = $request->query->get('q');
 
-        $form->add('quantity', IntegerType::class, [
-            'label' => 'Quantité',
-            'mapped' => false,
-            'attr' => ['min' => 0],
+        if ($searchText) {
+            $products = $productRepository->createQueryBuilder('p')
+                ->where('p.productName LIKE :term')
+                ->setParameter('term', '%'.$searchText.'%')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $products = $productRepository->findAll();
+        }
+
+        return $this->render('stock/add_list.html.twig', [
+            'restaurant' => $restaurant,
+            'products' => $products,
+            'searchText' => $searchText,
+        ]);
+    }
+
+    #[Route('/restaurant/{id}/stock/create/{productId}', name: 'app_stock_create')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function createStock(
+        Restaurant $restaurant,
+        #[MapEntity(mapping: ['productId' => 'id'])] Product $product,
+        Request $request,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        $existingStock = $entityManager->getRepository(Stock::class)->findOneBy([
+            'restaurant' => $restaurant,
+            'product' => $product,
         ]);
 
+        if ($existingStock) {
+            return $this->redirectToRoute('app_stock_update', [
+                'id' => $restaurant->getId(),
+                'productId' => $product->getId(),
+            ]);
+        }
+
+        $stock = new Stock();
+        $stock->setRestaurant($restaurant);
+        $stock->setProduct($product);
+
+        $form = $this->createForm(StockType::class, $stock);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($product);
-
-            $stock = new Stock();
-            $stock->setProduct($product);
-            $stock->setRestaurant($restaurant);
-            $stock->setQuantity($form->get('quantity')->getData());
-
             $entityManager->persist($stock);
             $entityManager->flush();
 
@@ -58,6 +89,30 @@ final class StockController extends AbstractController
         }
 
         return $this->render('stock/create.html.twig', [
+            'form' => $form->createView(),
+            'restaurant' => $restaurant,
+            'product' => $product,
+        ]);
+    }
+
+    #[Route('/restaurant/{id}/stock/new-product', name: 'app_product_new')]
+    public function newProduct(Restaurant $restaurant, Request $request, EntityManagerInterface $em): Response
+    {
+        $product = new Product();
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($product);
+            $em->flush();
+
+            return $this->redirectToRoute('app_stock_create', [
+                'id' => $restaurant->getId(),
+                'productId' => $product->getId(),
+            ]);
+        }
+
+        return $this->render('stock/new_product.html.twig', [
             'form' => $form->createView(),
             'restaurant' => $restaurant,
         ]);

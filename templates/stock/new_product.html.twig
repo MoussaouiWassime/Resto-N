@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Produit{% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        Attention, ce produit sera visible par tous
+
+        {{ form_start(form) }}
+            {{ form_rest(form) }}
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                <a href="{{ path('app_stock_add_list', {'id': restaurant.id}) }}" class="btn btn-secondary">Annuler</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

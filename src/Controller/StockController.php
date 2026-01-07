@@ -60,4 +60,37 @@ final class StockController extends AbstractController
             'restaurant' => $restaurant,
         ]);
     }
+
+    #[Route('/restaurant/{id}/stock/update', name: 'app_stock_update')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function update(Restaurant $restaurant, Product $product, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $stock = $entityManager->getRepository(Stock::class)->findOneBy([
+            'restaurant' => $restaurant,
+            'product' => $product,
+        ]);
+
+        $form = $this->createForm(ProductType::class, $product);
+
+        $form->add('quantity', IntegerType::class, [
+            'label' => 'Quantité',
+            'mapped' => false,
+            'attr' => ['min' => 0],
+            'data' => $stock->getQuantity(),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $stock->setQuantity($form->get('quantity')->getData());
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_stock_index', ['id' => $restaurant->getId()]);
+        }
+
+        return $this->render('stock/update.html.twig', [
+            'form' => $form->createView(),
+            'restaurant' => $restaurant,
+        ]);
+    }
 }

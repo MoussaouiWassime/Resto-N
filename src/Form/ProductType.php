@@ -26,18 +26,6 @@ class ProductType extends AbstractType
                 'label' => 'Catégorie',
                 'placeholder' => 'Choisir une catégorie...',
             ])
-            ->add('measureUnit', ChoiceType::class, [
-                'label' => 'Unité de mesure',
-                'choices' => [
-                    'Pièce(s)' => 'pcs',
-                    'Kilogramme (kg)' => 'kg',
-                    'Gramme (g)' => 'g',
-                    'Litre (L)' => 'L',
-                    'Centilitre (cL)' => 'cL',
-                    'Bouteille' => 'btl',
-                    'Portion' => 'part',
-                ],
-            ])
         ;
     }
 

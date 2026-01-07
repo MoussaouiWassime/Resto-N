@@ -4,6 +4,9 @@
 
 {% block main %}
     <div class="container mt-4">
+        <a href="{{ path('app_stock_create', {'id': restaurant.id}) }}" class="btn btn-primary">
+            Ajouter Produit
+        </a>
         <table class="table table-bordered">
             <tr>
                 <th>Produit</th>

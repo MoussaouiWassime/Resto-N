@@ -14,7 +14,7 @@
                 <tr>
                     <td>{{ stock.product.productName }}</td>
                     <td>{{ stock.product.category.name }}</td>
-                    <td>{{ stock.quantity }}</td>
+                    <td>{{ stock.quantity }} {{ stock.product.measureUnit }}</td>
                 </tr>
             {% else %}
                 <tr>

@@ -10,11 +10,11 @@
         {% for reservation in reservations %}
             <ul>
             <li>
-                {{ reservation.restaurant.name }} -
-                {{ reservation.reservationDate|date('d/m/Y H:i') }} -
-                ({{ reservation.numberOfPeople }} pers.)
+                <strong>{{ reservation.restaurant.name }}</strong>
+                <span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span>
+                <span class="badge bg-info">({{ reservation.numberOfPeople }} pers.)</span>
                 {% if reservation.restaurantTable %}
-                    - Table {{ reservation.restaurantTable.number }}
+                    <span class="badge bg-success">Table {{ reservation.restaurantTable.number }}</span>
                 {% endif %}
 
                 <a href="{{ path('app_reservation_update', {'id': reservation.id}) }}" class="btn btn-sm btn-warning">

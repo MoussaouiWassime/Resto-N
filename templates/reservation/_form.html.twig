@@ -1,15 +1,21 @@
 {% block main %}
-    {{ form_start(form) }}
-
+{{ form_start(form) }}
+    <div class="mb-3">
     {{ form_row(form.reservationDate, {label: 'Date et heure'}) }}
+    </div>
+    <div class="mb-3">
     {{ form_row(form.numberOfPeople, {label: 'Nombre de couverts'}) }}
-
+    </div>
     {% if form.status is defined %}
-        {{ form_row(form.status, {label: 'Statut de la réservation'}) }}
+    <div class="mb-3">
+    {{ form_row(form.status, {label: 'Statut de la réservation'}) }}
+    </div>
     {% endif %}
 
     {% if form.restaurantTable is defined %}
-        {{ form_row(form.restaurantTable, {label: 'Table attribuée'}) }}
+    <div class="mb-3">
+    {{ form_row(form.restaurantTable, {label: 'Table attribuée'}) }}
+    </div>
     {% endif %}
 
     <button type="submit" class="btn btn-primary w-100 p-3 mt-3">

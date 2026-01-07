@@ -8,6 +8,7 @@ use App\Entity\Stock;
 use App\Form\ProductType;
 use App\Repository\StockRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -62,9 +63,13 @@ final class StockController extends AbstractController
         ]);
     }
 
-    #[Route('/restaurant/{id}/stock/update', name: 'app_stock_update')]
+    #[Route('/restaurant/{id}/stock/update/{productId}', name: 'app_stock_update')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function update(Restaurant $restaurant, Product $product, Request $request, EntityManagerInterface $entityManager): Response
+    public function update(
+        Restaurant $restaurant,
+        #[MapEntity(mapping: ['productId' => 'id'])] Product $product,
+        Request $request,
+        EntityManagerInterface $entityManager): Response
     {
         $stock = $entityManager->getRepository(Stock::class)->findOneBy([
             'restaurant' => $restaurant,

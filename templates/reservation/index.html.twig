@@ -7,27 +7,33 @@
     <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
     <a href="{{ path('app_profile_show') }}" class="btn btn-secondary">Retour au profil</a>
     </div>
-        {% for reservation in reservations %}
-            <ul>
-            <li>
-                <strong>{{ reservation.restaurant.name }}</strong>
-                <span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span>
-                <span class="badge bg-info">({{ reservation.numberOfPeople }} pers.)</span>
+    <ul class="reservation list-group">
+    {% for reservation in reservations %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                <span class="name-index">{{ reservation.restaurant.name }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div><span class="title-card-reservation">Date : </span><span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span></div>
+                <div><span class="title-card-reservation">Nombre de couverts : </span><span class="badge bg-info">{{ reservation.numberOfPeople }} pers.</span></div>
                 {% if reservation.restaurantTable %}
-                    <span class="badge bg-success">Table {{ reservation.restaurantTable.number }}</span>
+                    <div><span class="title-card-reservation">Table : </span><span class="badge bg-success">Table {{ reservation.restaurantTable.number }}</span></div>
                 {% endif %}
-
+                <nav class="action-reservation">
                 <a href="{{ path('app_reservation_update', {'id': reservation.id}) }}" class="btn btn-sm btn-warning">
                     Modifier
                 </a>
                 <a href="{{ path('app_reservation_delete', {'id': reservation.id}) }}" class="btn btn-sm btn-danger">
                     Supprimer
                 </a>
-            </li>
-            </ul>
+                </nav>
+            </div>
         {% else %}
             <div class="alert alert-info text-center">
             Aucune réservation.
             </div>
         {% endfor %}
+    </ul>
 {% endblock %}

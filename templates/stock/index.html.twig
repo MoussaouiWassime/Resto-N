@@ -18,7 +18,7 @@
                 <tr>
                     <td>{{ stock.product.productName }}</td>
                     <td>{{ stock.product.category.name }}</td>
-                    <td>{{ stock.quantity }} {{ stock.product.measureUnit }}</td>
+                    <td>{{ stock.quantity }} {{ stock.measureUnit }}</td>
                     <td>
                         <div>
                             <a href="{{ path('app_stock_update', {'id': restaurant.id, 'productId': stock.product.id}) }}" class="btn">Modifier</a>

@@ -89,7 +89,7 @@ final class StockController extends AbstractController
         }
 
         return $this->render('stock/create.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'restaurant' => $restaurant,
             'product' => $product,
         ]);
@@ -113,7 +113,7 @@ final class StockController extends AbstractController
         }
 
         return $this->render('stock/new_product.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'restaurant' => $restaurant,
         ]);
     }
@@ -150,7 +150,7 @@ final class StockController extends AbstractController
         }
 
         return $this->render('stock/update.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'restaurant' => $restaurant,
         ]);
     }
@@ -179,7 +179,7 @@ final class StockController extends AbstractController
 
         return $this->render('stock/delete.html.twig', [
             'stock' => $stock,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 }

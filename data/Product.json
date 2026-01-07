@@ -1,23 +1,30 @@
 [
     {
-        "productName": "Tomate"
+        "productName": "Tomate",
+        "measureUnit": "kg"
     },
     {
-        "productName": "Farine"
+        "productName": "Farine",
+        "measureUnit": "kg"
     },
     {
-        "productName": "Mozzarella"
+        "productName": "Mozzarella",
+        "measureUnit": "pièces"
     },
     {
-        "productName": "Oeufs"
+        "productName": "Oeufs",
+        "measureUnit": "pièces"
     },
     {
-        "productName": "Lait"
+        "productName": "Lait",
+        "measureUnit": "L"
     },
     {
-        "productName": "Beurre"
+        "productName": "Beurre",
+        "measureUnit": "g"
     },
     {
-        "productName": "Sucre"
+        "productName": "Sucre",
+        "measureUnit": "kg"
     }
 ]

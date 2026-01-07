@@ -1,16 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mise a jour{% endblock %}
+{% block title %}Modifier le stock{% endblock %}
 
 {% block main %}
     <div class="container mt-4">
         <div class="col-md-6">
-            {{ include('stock/_form.html.twig', {
-                form: form,
-                restaurant: restaurant,
-                submit_label: 'Valider'
-            }, with_context: false)
-            }}
+            <div class="mb-3">
+                {{ form_row(form.quantity) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.measureUnit) }}
+            </div>
+
+            <button class="btn btn-warning">Mettre à jour</button>
+            <a href="{{ path('app_stock_index', {'id': restaurant.id}) }}" class="btn btn-secondary">Retour</a>
         </div>
     </div>
 {% endblock %}

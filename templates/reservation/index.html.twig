@@ -3,12 +3,17 @@
 {% block title %}Reservations{% endblock %}
 
 {% block main %}
+    <div class="container mt-3">
     <div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
-    <a href="{{ path('app_profile_show') }}" class="btn btn-secondary">Retour au profil</a>
+        <div class="mb-3">
+            <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
+        </div>
+        <div clas="mb-3">
+            <a href="{{ path('app_profile_show') }}" class="btn btn-secondary">Retour au profil</a>
+        </div>
     </div>
-    <ul class="reservation list-group">
     {% for reservation in reservations %}
+        <div class="mb-3">
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
@@ -35,5 +40,7 @@
             Aucune réservation.
             </div>
         {% endfor %}
-    </ul>
+        </div>
+        </div>
+    </div>
 {% endblock %}

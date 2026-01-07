@@ -16,8 +16,7 @@ class DishFixtures extends Fixture implements DependentFixtureInterface
         // $manager->persist($product);
         $restaurants = RestaurantFactory::all();
         foreach ($restaurants as $restaurant) {
-            // On crée entre 10 et 20 plats pour ce restaurant
-            DishFactory::createMany(10, [
+            DishFactory::createMany(5, [
                 'restaurant' => $restaurant,
             ]);
         }

@@ -35,6 +35,7 @@ final class StockFactory extends PersistentProxyObjectFactory
             'product' => ProductFactory::random(),
             'quantity' => self::faker()->numberBetween(1, 100),
             'restaurant' => RestaurantFactory::random(),
+            'measureUnit' => self::faker()->randomElement(['pcs', 'kg', 'g', 'L', 'cL', 'btl', 'part']),
         ];
     }
 

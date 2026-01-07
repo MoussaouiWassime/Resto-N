@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion Stock : {{ restaurant.name }}{% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        <a href="{{ path('app_stock_add_list', {'id': restaurant.id}) }}" class="btn btn-primary">
+            Ajouter Produit
+        </a>
+        <table class="table table-bordered">
+            <tr>
+                <th>Produit</th>
+                <th>Catégorie</th>
+                <th>Quantité</th>
+                <th>Actions</th>
+            </tr>
+            {% for stock in stocks %}
+                <tr>
+                    <td>{{ stock.product.productName }}</td>
+                    <td>{{ stock.product.category.name }}</td>
+                    <td>{{ stock.quantity }} {{ stock.measureUnit }}</td>
+                    <td>
+                        <div>
+                            <a href="{{ path('app_stock_update', {'id': restaurant.id, 'productId': stock.product.id}) }}" class="btn">Modifier</a>
+                            <a href="{{ path('app_stock_delete', {'id': stock.id}) }}" class="btn">Supprimer</a>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">Vide</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

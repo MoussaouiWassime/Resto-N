@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue{% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        <h2>Ajouter un produit au stock</h2>
+
+        <p>
+            <a href="{{ path('app_stock_index', {'id': restaurant.id}) }}">Retour au stock</a>
+        </p>
+
+        <form method="get" class="mb-3">
+            <div class="row">
+                <div class="col-md-8">
+                    <label>
+                        <input type="text" name="q" class="form-control" placeholder="Rechercher..." value="{{ searchText }}">
+                    </label>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Chercher</button>
+                    {% if searchText %}
+                        <a href="{{ path('app_stock_add_list', {'id': restaurant.id}) }}" class="btn btn-secondary">Annuler</a>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+
+        <div class="mb-3">
+            Pas dans la liste ?
+            <a href="{{ path('app_product_new', {'id': restaurant.id}) }}">Créer un nouveau produit</a>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Catégorie</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.productName }}</td>
+                    <td>{{ product.category.name }}</td>
+                    <td>
+                        <a href="{{ path('app_stock_create', {'id': restaurant.id, 'productId': product.id}) }}" class="btn btn-success btn-sm">
+                            Choisir
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3">Aucun produit trouvé.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

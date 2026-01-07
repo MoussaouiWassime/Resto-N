@@ -11,14 +11,14 @@
             <p><strong>Date :</strong> <span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span></p>
             <p><strong>Client :</strong> {{ reservation.user.lastName }} {{ reservation.user.firstName }}</p>
             <p><strong>Couverts :</strong> <span class="badge bg-info">{{ reservation.numberOfPeople }} personnes</span></p>
-            <p class="mb-0">
+            <div class="mb-0">
                 <strong>Table :</strong>
                 {% if reservation.restaurantTable %}
                     <span class="badge bg-success">N°{{ reservation.restaurantTable.number }}</span>
                 {% else %}
                     <p>Aucune table assignée</p>
                 {% endif %}
-            </p>
+            </div>
         </div>
     </div>
 

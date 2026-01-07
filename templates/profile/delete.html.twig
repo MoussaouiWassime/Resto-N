@@ -3,10 +3,19 @@
 {% block title %}Supprimer mon compte{% endblock %}
 
 {% block main %}
-    Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.
-
+    <div class="container mt-3">
+        <div class="mb-3">
+    <div class="alert alert-warning" role="alert">
+        <strong>Attention !</strong> Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.
+    </div>
+        </div>
     {{ form_start(form) }}
+        <div class="mb-3">
         {{ form_row(form.delete, {label: 'Supprimer', attr: {class: 'btn btn-primary'}}) }}
+        </div>
+        <div class="mb-3">
         {{ form_row(form.cancel, {label: 'Annuler', attr: {class: 'btn btn-secondary'}}) }}
+        </div>
     {{ form_end(form) }}
+    </div>
 {% endblock %}

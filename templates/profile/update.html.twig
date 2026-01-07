@@ -3,13 +3,24 @@
 {% block title %}Modifier mon profil{% endblock %}
 
 {% block main %}
+<div class="container mt-3">
+
     {{ form_start(form) }}
+    <div class="mb-3">
         {{ form_row(form.email) }}
+    </div>
+    <div class="mb-3">
         {{ form_row(form.firstName) }}
+    </div>
+    <div class="mb-3">
         {{ form_row(form.lastName) }}
+    </div>
+    <div class="mb-3">
         {{ form_row(form.phone) }}
+    </div>
         <br>
-        <button type="submit">Enregistrer</button>
-        <a href="{{ path('app_profile_show') }}">Annuler</a>
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+        <a class="btn btn-secondary" href="{{ path('app_profile_show') }}">Annuler</a>
     {{ form_end(form) }}
+</div>
 {% endblock %}

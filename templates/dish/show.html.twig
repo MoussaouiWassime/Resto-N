@@ -5,7 +5,13 @@
 {% endblock %}
 
 {% block main %}
-
-    {{ dish.name }}, {{ dish.description }}
-
+    <div class="container mt-3">
+        <div class="mb-3">
+            <div class="card-body">
+                <div class="mb-3"><img src="{{ dish.photo }}" class="rounded float-right" alt="Photo de {{ dish.name }}"></div>
+                <p><strong>Description : </strong>{{ dish.description }}</p>
+                <p><strong>Prix : </strong><span class="badge bg-info">{{ dish.price }} €</span></p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

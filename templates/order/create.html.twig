@@ -9,19 +9,19 @@
 
         {{ form_start(form) }}
         <div class="mb-3">
-            {{ form_row(form.orderType, {'attr': {'class': 'form-select'}}) }}
+            {{ form_row(form.orderType, {attr: {class: 'form-select'}}) }}
         </div>
 
         <div class="mb-3">
-            {{ form_row(form.deliveryAddress, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.deliveryAddress, {attr: {class: 'form-control'}}) }}
         </div>
 
         <div class="mb-3">
-            {{ form_row(form.deliveryPostalCode, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.deliveryPostalCode, {attr: {class: 'form-control'}}) }}
         </div>
 
         <div class="mb-3">
-            {{ form_row(form.deliveryCity, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.deliveryCity, {attr: {class: 'form-control'}}) }}
         </div>
 
         <hr>
@@ -40,21 +40,21 @@
                     </div>
                     <div>
                         {{ form_widget(itemField.quantity, {
-                            'attr': {
-                                'class': 'form-control',
-                                'style': 'width: 80px',
-                                'min': '0'
-                            }
+                            attr: {
+                                class: 'form-control',
+                                style: 'width: 80px',
+                                min: '0',
+                            },
                         }) }}
                     </div>
                 </li>
 
             {% endfor %}
         </ul>
-
         <button type="submit" class="btn btn-success w-100">Valider la commande</button>
-        <a href="{{ path('app_order') }}">Retour</a>
-
+        <div class="mt-2">
+            <a href="{{ path('app_order') }}" class="btn btn-secondary action-btn">Retour</a>
+        </div>
         {{ form_end(form) }}
     </div>
 {% endblock %}

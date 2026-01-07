@@ -75,7 +75,24 @@ li:nth-child(even) {
     color: #064789;
 }
 
-li:nth-child(even) {
-    background-color: var(--bs-light);
+.action-register {
+    display: flex;
+    justify-content: flex-end;
 }
 
+.form-btn {
+    margin: 0;
+}
+
+.action-btn {
+    margin: 0;
+}
+
+.action-reservation {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.title-card-reservation {
+    font-weight: bold;
+}

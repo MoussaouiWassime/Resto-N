@@ -1,19 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil de {{ user.firstName }}, {{ user.lastName}} {% endblock %}
+{% block title %}Profil de {{ user.firstName }}, {{ user.lastName }} {% endblock %}
 
 {% block main %}
-    Nom : {{ user.firstName }}, {{ user.lastName}}
-    <br>
-    Tel : {{ user.phone }}
-    <br>
-    Email : {{ user.email }}
-    <br>
+    <div class="container mt-3">
+    <div class="mb-3">
+        <div class="card-body">
+            <p><strong>Nom :</strong> {{ user.firstName }}, {{ user.lastName }}</p>
+            <p><strong>Tel :</strong> <span class="badge bg-primary">{{ user.phone }}</span></p>
+            <p><strong>Email :</strong> <span class="badge bg-info">{{ user.email }}</span></p>
+        </div>
+    </div>
     <h3>Actions</h3>
-    <a href="{{ path('app_profile_update') }}" class="btn">Modifier mes informations</a>
-    <a href="{{ path('app_logout') }}" class="btn">Déconnexion</a>
-    <a href="{{ path('app_profile_delete') }}" class="btn">Supprimer mon compte</a>
+    <a href="{{ path('app_profile_update') }}" class="btn btn-primary">Modifier mes informations</a>
+    <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
+    <a href="{{ path('app_profile_delete') }}" class="btn btn-primary">Supprimer mon compte</a>
     <h3>Historique</h3>
-    <a href="{{ path('app_reservation') }}" class="btn">Historique des réservations</a>
-    <a href="{{ path('app_order') }}" class="btn">Historique des commandes</a>
+    <a href="{{ path('app_reservation') }}" class="btn btn-primary">Historique des réservations</a>
+    <a href="{{ path('app_order') }}" class="btn btn-primary">Historique des commandes</a>
+    </div>
 {% endblock %}

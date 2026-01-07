@@ -5,6 +5,7 @@
 {% endif %}
 {% block title %}Liste des restaurants {{ textSearch }}<em>{{ search }}</em>{% endblock %}
 {% block main %}
+    <div class="container mt-3">
     <nav class="filtres-restaurant">
         <a href="#" data-category="1" class="active btn btn-secondary">Italien</a>
         <a href="#" data-category="2" class="btn btn-secondary">Japonais</a>
@@ -14,6 +15,7 @@
         <a href="#" data-category="6" class="btn btn-secondary">Brasserie</a>
         <a href="#" data-category="7" class="btn btn-secondary">Pizzeria</a>
     </nav>
+        <div class="pt-3">
         <ul class="restaurants list-group">
             {% for restaurant in restaurants %}
             <div class="restaurant" data-category=",{{ restaurant.categories|map(c => c.id)|join(',') }},">
@@ -27,6 +29,7 @@
             </div>
             {% endfor %}
         </ul>
+        </div>
     <script>
         const filtres = document.querySelectorAll('.filtres-restaurant a');
         const restaurants = document.querySelectorAll('.restaurant');
@@ -61,4 +64,5 @@
         //On filtre pour afficher les restaurants de la category par défaut
         filtrerRestaurants(DefaultCategory);
     </script>
+    </div>
 {% endblock %}

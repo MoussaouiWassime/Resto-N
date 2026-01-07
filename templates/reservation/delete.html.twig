@@ -5,20 +5,31 @@
 {% endblock %}
 
 {% block main %}
+    <div class="container mt-3">
     <h3>Êtes-vous sûr de vouloir supprimer cette réservation ?</h3>
-    Date : {{ reservation.reservationDate|date('d/m/Y H:i') }}
-    Client : {{ reservation.user.lastName }} {{ reservation.user.firstName }}
-    Couverts :{{ reservation.numberOfPeople }} personnes
-
-    Table :
-    {% if reservation.restaurantTable %}
-        N°{{ reservation.restaurantTable.number }}
-    {% else %}
-        Aucune table assignée
-    {% endif %}
+    <div class="mb-3">
+        <div class="card-body">
+            <p><strong>Date :</strong> <span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span></p>
+            <p><strong>Client :</strong> {{ reservation.user.lastName }} {{ reservation.user.firstName }}</p>
+            <p><strong>Couverts :</strong> <span class="badge bg-info">{{ reservation.numberOfPeople }} personnes</span></p>
+            <div class="mb-0">
+                <strong>Table :</strong>
+                {% if reservation.restaurantTable %}
+                    <span class="badge bg-success">N°{{ reservation.restaurantTable.number }}</span>
+                {% else %}
+                    <p>Aucune table assignée</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
     {{ form_start(form, {attr: {class: 'd-flex gap-2'}}) }}
-    {{ form_row(form.delete, {label: 'Supprimer', attr: {class: 'btn btn-danger'}}) }}
-    {{ form_row(form.cancel, {label: 'Annuler', attr: {class: 'btn btn-secondary'}}) }}
+        <div class="mb-3">
+            {{ form_row(form.delete, {label: 'Supprimer', attr: {class: 'btn btn-danger'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.cancel, {label: 'Annuler', attr: {class: 'btn btn-secondary'}}) }}
+        </div>
     {{ form_end(form) }}
+    </div>
 {% endblock %}

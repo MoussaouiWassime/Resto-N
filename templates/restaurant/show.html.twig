@@ -6,6 +6,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 {% endblock %}
 {% block main %}
+    <div class="container mt-3">
     <script>
         fetch("https://nominatim.openstreetmap.org/search?format=json&q={{ restaurant.address }} {{ restaurant.postalCode }} {{ restaurant.city }}")
             .then(res => res.json())
@@ -36,21 +37,24 @@
                 document.getElementById("map").style.display = "none";
             });
     </script>
-    <img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}">
-    {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
-    <span class="description">{{ restaurant.description }}</span>
-    <div class="address"><span class="address">{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div>
+        <div class="mb-3"><img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}"></div>
+        {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
+        <div class="mb-3"><div><span class="description">{{ restaurant.description }}</span></div></div>
+        <div class="mb-3"><div class="address badge bg-info"><span class="address">{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div></div>
     <div id="map" style="height: 300px; width: 100%; display: none"></div>
     {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
     restaurant. Pour cela, il faut que la connexion ai été géré. #}
-    <nav class="filtres-dish">
-        <a href="#" data-category="B" class="active btn btn-secondary">Les boissons</a>
-        <a href="#" data-category="E" class="btn btn-secondary">Les entrées</a>
-        <a href="#" data-category="P" class="btn btn-secondary">Les plats</a>
-        <a href="#" data-category="D" class="btn btn-secondary">Les desserts</a>
-    </nav>
+        <div class="mb-3">
+            <nav class="filtres-dish">
+                <a href="#" data-category="B" class="active btn btn-secondary">Les boissons</a>
+                <a href="#" data-category="E" class="btn btn-secondary">Les entrées</a>
+                <a href="#" data-category="P" class="btn btn-secondary">Les plats</a>
+                <a href="#" data-category="D" class="btn btn-secondary">Les desserts</a>
+            </nav>
+        </div>
     <div id="liste-plats" class="listPlat">
         {% for dish in restaurant.dishes %}
+            <div class="mb-3">
             <div class="plat" data-category="{{ dish.category }}">
                 <div class="card" style="width: 18rem;">
                     <img src="{{ dish.photo }}" class="card-img-top" alt="Photo de : {{ dish.name }}">
@@ -61,6 +65,7 @@
                         <a href="{{ path('app_dish_show', {id: dish.id}) }}" class="btn btn-primary">Détails</a>
                     </div>
                 </div>
+            </div>
             </div>
         {% endfor %}
     </div>
@@ -102,4 +107,5 @@
         //On filtre pour afficher les plats de la category par défaut
         filtrerPlats(DefaultCategory);
     </script>
+    </div>
 {% endblock %}

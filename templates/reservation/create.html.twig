@@ -8,8 +8,8 @@
             {{ error }}
         </div>
     {% endif %}
-
-    <div class="mb-4">
+<div class="container mt-3">
+    <div class="mb-3">
         <h5>Horaires d'ouverture</h5>
         <p>
             {% if restaurant.openingTime and restaurant.closingTime %}
@@ -22,10 +22,10 @@
 
     {{ include('reservation/_form.html.twig', {
         form: form,
-        submit_label: 'Valider'
+        submit_label: 'Valider',
     }, with_context: false) }}
-
-    <div class="mt-3">
-        <a href="{{ path('app_reservation', {id: restaurant.id}) }}">Annuler</a>
+    <div class="mb-3 pt-3">
+    <a href="{{ path('app_reservation', {id: restaurant.id}) }}" class="btn btn-secondary form-btn">Annuler</a>
     </div>
+</div>
 {% endblock %}

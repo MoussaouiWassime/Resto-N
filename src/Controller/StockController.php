@@ -10,6 +10,7 @@ use App\Repository\StockRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -91,6 +92,34 @@ final class StockController extends AbstractController
         return $this->render('stock/update.html.twig', [
             'form' => $form->createView(),
             'restaurant' => $restaurant,
+        ]);
+    }
+
+    #[Route('/restaurant/{id}/stock/delete', name: 'app_stock_delete')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function delete(Stock $stock, Request $request, EntityManagerInterface $em): Response
+    {
+        $restaurantId = $stock->getRestaurant()->getId();
+
+        $form = $this->createFormBuilder()
+            ->add('delete', SubmitType::class, ['label' => 'Supprimer', 'attr' => ['class' => 'btn btn-danger']])
+            ->add('cancel', SubmitType::class, ['label' => 'Annuler', 'attr' => ['class' => 'btn btn-secondary']])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('delete')->isClicked()) {
+                $em->remove($stock);
+                $em->flush();
+            }
+
+            return $this->redirectToRoute('app_stock_index', ['id' => $restaurantId]);
+        }
+
+        return $this->render('stock/delete.html.twig', [
+            'stock' => $stock,
+            'form' => $form->createView(),
         ]);
     }
 }

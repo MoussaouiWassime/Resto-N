@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Suppression du stock
+{% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        <h3>Êtes-vous sûr de vouloir retirer ce produit du stock ?</h3>
+
+        Produit : {{ stock.product.productName }}
+        <br>
+        Quantité actuelle : {{ stock.quantity }} {{ stock.product.measureUnit }}
+        <br>
+        Catégorie : {{ stock.product.category.name }}
+        <br>
+
+        {{ form_start(form) }}
+        {{ form_row(form.delete) }}
+        {{ form_row(form.cancel) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -8,6 +8,7 @@ use App\Form\ReservationType;
 use App\Repository\ReservationRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\RestaurantTableRepository;
+use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -113,8 +114,28 @@ final class ReservationController extends AbstractController
 
     #[Route('/reservation/update/{id}', name: 'app_reservation_update')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function update(Request $request, EntityManagerInterface $entityManager, Reservation $reservation): Response
+    public function update(
+        RestaurantRepository $restaurantRepository,
+        RoleRepository $roleRepository,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ?Reservation $reservation): Response
     {
+        if (!$reservation) {
+            throw $this->createNotFoundException('Réservation introuvable.');
+        }
+
+        $restaurant = $restaurantRepository->findOneBy(['id' => $reservation->getRestaurant()->getId()]);
+        $user = $this->getUser();
+        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+
+        if (null === $role) {
+            if ($reservation->getUser() !== $user) {
+                return $this->redirectToRoute('app_restaurant', [],
+                    307);
+            }
+        }
+
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
 

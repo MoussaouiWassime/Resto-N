@@ -56,10 +56,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, Role>
+     */
+    #[ORM\OneToMany(targetEntity: Role::class, mappedBy: 'user')]
+    private Collection $restaurantRoles;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->restaurantRoles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -233,6 +240,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($order->getUser() === $this) {
                 $order->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Role>
+     */
+    public function getRestaurantRoles(): Collection
+    {
+        return $this->restaurantRoles;
+    }
+
+    public function addRestaurantRole(Role $restaurantRole): static
+    {
+        if (!$this->restaurantRoles->contains($restaurantRole)) {
+            $this->restaurantRoles->add($restaurantRole);
+            $restaurantRole->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRestaurantRole(Role $restaurantRole): static
+    {
+        if ($this->restaurantRoles->removeElement($restaurantRole)) {
+            // set the owning side to null (unless already changed)
+            if ($restaurantRole->getUser() === $this) {
+                $restaurantRole->setUser(null);
             }
         }
 

@@ -6,9 +6,11 @@ use App\Entity\Restaurant;
 use App\Entity\Role;
 use App\Form\RestaurantType;
 use App\Repository\RestaurantRepository;
+use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -36,7 +38,7 @@ final class RestaurantController extends AbstractController
         ]);
     }
 
-    #[Route('/restaurant/create/{id}', name: 'app_restaurant_create')]
+    #[Route('/restaurant/create/', name: 'app_restaurant_create')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function create(
         EntityManagerInterface $entityManager,
@@ -68,5 +70,48 @@ final class RestaurantController extends AbstractController
                 'form' => $form,
             ]);
         }
+    }
+
+    #[Route('/restaurant/delete/{id}', name: 'app_restaurant_delete', requirements: ['id' => '\d+'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function delete(
+        int $id,
+        RestaurantRepository $restaurantRepository,
+        RoleRepository $roleRepository,
+        EntityManagerInterface $entityManager,
+        Request $request): Response
+    {
+        $user = $this->getUser();
+        $restaurant = $restaurantRepository->findOneBy(['id' => $id]);
+        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+
+        if (null === $role) {
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        }
+
+        $form = $this->createFormBuilder($restaurant)
+            ->add('delete', SubmitType::class)
+            ->add('cancel', SubmitType::class)
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('delete')->isClicked()) {
+                $entityManager->remove($restaurant);
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('app_restaurant', [], 307);
+        } else {
+            return $this->render('restaurant/delete.html.twig', [
+                'restaurant' => $restaurant,
+                'form' => $form,
+            ]);
+        }
+
+
     }
 }

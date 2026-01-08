@@ -29,6 +29,21 @@ final class OrderController extends AbstractController
         ]);
     }
 
+    #[Route('/order/restaurant/{id}', name: 'app_order_restaurant')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function byRestaurant(Restaurant $restaurant, OrderRepository $orderRepository): Response
+    {
+        $orders = $orderRepository->findBy(
+            ['restaurant' => $restaurant],
+            ['orderDate' => 'ASC']
+        );
+
+        return $this->render('order/byRestaurant.html.twig', [
+            'restaurant' => $restaurant,
+            'orders' => $orders,
+        ]);
+    }
+
     #[Route('/order/create/{id}', name: 'app_order_create')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function create(

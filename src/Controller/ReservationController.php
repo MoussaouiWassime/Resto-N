@@ -115,7 +115,6 @@ final class ReservationController extends AbstractController
     #[Route('/reservation/update/{id}', name: 'app_reservation_update')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function update(
-        RestaurantRepository $restaurantRepository,
         RoleRepository $roleRepository,
         Request $request,
         EntityManagerInterface $entityManager,
@@ -125,7 +124,7 @@ final class ReservationController extends AbstractController
             throw $this->createNotFoundException('Réservation introuvable.');
         }
 
-        $restaurant = $restaurantRepository->findOneBy(['id' => $reservation->getRestaurant()->getId()]);
+        $restaurant = $reservation->getRestaurant();
         $user = $this->getUser();
         $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
 
@@ -153,9 +152,22 @@ final class ReservationController extends AbstractController
 
     #[Route('/reservation/delete/{id}', name: 'app_reservation_delete')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function delete(Reservation $reservation, Request $request, EntityManagerInterface $entityManager): Response
+    public function delete(
+        RoleRepository $roleRepository,
+        Reservation $reservation,
+        Request $request,
+        EntityManagerInterface $entityManager): Response
     {
-        $restaurantId = $reservation->getRestaurant()->getId();
+        $restaurant = $reservation->getRestaurant();
+        $user = $this->getUser();
+        $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $user]);
+
+        if (null === $role) {
+            if ($reservation->getUser() !== $user) {
+                return $this->redirectToRoute('app_restaurant', [],
+                    307);
+            }
+        }
 
         $form = $this->createFormBuilder()
             ->add('delete', SubmitType::class, ['label' => 'Supprimer'])

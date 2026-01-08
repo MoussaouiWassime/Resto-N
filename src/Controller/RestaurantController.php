@@ -72,20 +72,22 @@ final class RestaurantController extends AbstractController
         }
     }
 
-    #[Route('/restaurant/delete/{id}', name: 'app_restaurant_delete', requirements: ['id' => '\d+'])]
+    #[Route('/restaurant/{id}/delete', name: 'app_restaurant_delete', requirements: ['id' => '\d+'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function delete(
-        int $id,
-        RestaurantRepository $restaurantRepository,
+        ?Restaurant $restaurant,
         RoleRepository $roleRepository,
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
+        if (!$restaurant) {
+            throw $this->createNotFoundException('Restaurant introuvable.');
+        }
+
         $user = $this->getUser();
-        $restaurant = $restaurantRepository->findOneBy(['id' => $id]);
         $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
 
-        if (null === $role) {
+        if (null === $role || 'P' != $role->getRole()) {
             return $this->redirectToRoute('app_restaurant_show', [
                 'id' => $restaurant->getId(),
             ], 307);
@@ -111,7 +113,43 @@ final class RestaurantController extends AbstractController
                 'form' => $form,
             ]);
         }
+    }
 
+    #[Route('/restaurant/{id}/update/', name: 'app_restaurant_update')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function update(
+        ?Restaurant $restaurant,
+        RoleRepository $roleRepository,
+        EntityManagerInterface $entityManager,
+        Request $request): Response
+    {
+        if (!$restaurant) {
+            throw $this->createNotFoundException('Restaurant introuvable.');
+        }
 
+        $user = $this->getUser();
+        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+
+        if (null === $role || 'P' != $role->getRole()) {
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        }
+
+        $form = $this->createForm(RestaurantType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        } else {
+            return $this->render('restaurant/update.html.twig', [
+                'restaurant' => $restaurant,
+                'form' => $form,
+            ]);
+        }
     }
 }

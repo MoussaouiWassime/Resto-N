@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Édition du restaurant {{ restaurant.name }} {% endblock %}
+
+{% block main %}
+
+    {{ include('restaurant/_form.html.twig', {submit_label : "Modifier", form}, with_context: false) }}
+
+{% endblock %}
+

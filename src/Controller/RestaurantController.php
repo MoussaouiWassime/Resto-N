@@ -6,8 +6,6 @@ use App\Entity\Restaurant;
 use App\Entity\Role;
 use App\Form\RestaurantType;
 use App\Repository\RestaurantRepository;
-use App\Repository\RoleRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,24 +38,13 @@ final class RestaurantController extends AbstractController
 
     #[Route('/restaurant/create/{id}', name: 'app_restaurant_create')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function create(int $id,
-        UserRepository $userRepository,
-        RoleRepository $roleRepository,
+    public function create(
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
-        $user = $userRepository->find($id);
-        $foundRole = $roleRepository->findOneBy(['user_id' => $user->getId()]);
-
-        // On vérifie si l'User est déjà propriétaire d'un restaurant,
-        // si oui, il est redirigé dans la page de son restaurant.
-        if ('P' === $foundRole->getRole()) {
-            return $this->redirectToRoute('app_restaurant_show', [
-                'id' => $foundRole->getRestaurant(),
-            ], 307);
-        }
-
         $restaurant = new Restaurant();
+
+        $user = $this->getUser();
 
         $form = $this->createForm(RestaurantType::class, $restaurant);
         $form->handleRequest($request);
@@ -67,8 +54,8 @@ final class RestaurantController extends AbstractController
 
             $newRole = new Role();
             $newRole->setRole('P')
-                ->setRestaurant($restaurant->getId())
-                ->setUser($user->getId());
+                ->setRestaurant($restaurant)
+                ->setUser($user);
             $entityManager->persist($newRole);
 
             $entityManager->flush();

@@ -103,7 +103,7 @@ final class OrderController extends AbstractController
         ]);
     }
 
-    #[Route('/order/{id}/cancel', name: 'app_order_cancel', requirements: ['id' => '\d+'])]
+    #[Route('/order/{id}/delete', name: 'app_order_delete', requirements: ['id' => '\d+'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function delete(
         ?Order $order,

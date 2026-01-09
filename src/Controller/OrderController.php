@@ -31,8 +31,18 @@ final class OrderController extends AbstractController
 
     #[Route('/order/restaurant/{id}', name: 'app_order_restaurant')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function byRestaurant(Restaurant $restaurant, OrderRepository $orderRepository): Response
+    public function byRestaurant(
+        Restaurant $restaurant,
+        RoleRepository $roleRepository,
+        OrderRepository $orderRepository): Response
     {
+        $user = $this->getUser();
+        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+
+        if (null === $role) {
+            return $this->redirectToRoute('app_restaurant', [], 307);
+        }
+
         $orders = $orderRepository->findBy(
             ['restaurant' => $restaurant],
             ['orderDate' => 'ASC']
@@ -83,7 +93,7 @@ final class OrderController extends AbstractController
                 $entityManager->persist($order);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('app_order');
+                return $this->redirectToRoute('app_order', [], 307);
             }
         }
 

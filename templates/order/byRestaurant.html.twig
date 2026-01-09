@@ -1,40 +1,86 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Commandes : {{ restaurant.name }}{% endblock %}
+{% block title %}Commandes du restaurant {{ restaurant.name }}{% endblock %}
 
 {% block main %}
     <div class="container mt-3">
-        {% for order in orders %}
         <a href="{{ path('app_home') }}" class="btn btn-primary action-btn mb-3">Retour</a>
-        <div class="mb-3">
+        {% for order in orders %}
+        <div class="container m-3">
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
                         <span class="name-index">
                             {% if order.user %}
-                                {# rajouter une redirection vers les profiles quand ça sera fait #}
-                                {{ order.user.lastName }} {{ order.user.firstName }}
+                                <a class="link-offset-2 link-underline link-underline-opacity-0"
+                                   href="{{ path('app_profile_show', {id: order.user.id}) }}">
+                                    {{ order.user.lastName }} {{ order.user.firstName }}
+                                </a>
                             {% else %}
                                 'Client inconnu'
                             {% endif %}
                         </span>
+                        <span class="badge bg-primary">
+                            {% if order.orderType == 'L' %}
+                                Livraison
+                            {% elseif order.orderType == 'E' %}
+                                à Emporter
+                            {% else %}
+                                Sur place
+                            {% endif %}
+                        </span>
+                        {% if order.orderType == 'L' %}
+                        <span class="badge bg-success">
+                            Livré
+                        </span>
+                        {% elseif order.orderType == 'P' %}
+                            <span class="badge bg-success">
+                            Préparé
+                        </span>
+                        {% else %}
+                            <span class="badge bg-info">
+                            En cours
+                        </span>
+                        {% endif %}
+
+
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div><span class="title-card-reservation">Date : </span><span class="badge bg-primary">{{ order.orderDate|date('d/m/Y H:i') }}</span></div>
+                    <div>
+                        <span class="title-card-reservation">
+                            Date :
+                        </span>
+                        <span class="badge bg-primary">
+                            {{ order.orderDate|date('d/m/Y H:i') }}
+                        </span>
+                    </div>
+                    <div>
+                            {% if order.orderType == 'L' %}
+                            <span class="title-card-reservation">
+                                Adresse :
+                            </span>
+                            <span class="badge bg-primary">
+                                {{ order.deliveryAddress }}
+                                {{ order.deliveryCity }} ({{ order.deliveryPostalCode }})
+                            </span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    {# rajouter la liste des plats commandés #}
                     <nav class="action-reservation">
-                        <a href="{{ path('app_order_cancel', {id: order.id}) }}" class="btn btn-sm btn-danger">
-                            Supprimer
+                        <a href="{{ path('app_order_cancel', {id: order.id}) }}" class="btn bg-danger btn-sm btn-danger">
+                            Supprimer la Commande
                         </a>
                     </nav>
                 </div>
-                {% else %}
-                    <div class="alert alert-info text-center">
-                        Aucune réservation.
-                    </div>
-                {% endfor %}
             </div>
         </div>
+                {% else %}
+                    <div class="alert alert-info text-center">
+                        Aucune Commande.
+                    </div>
+        {% endfor %}
     </div>
 {% endblock %}
 

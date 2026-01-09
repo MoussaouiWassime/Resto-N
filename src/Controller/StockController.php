@@ -13,6 +13,7 @@ use App\Repository\StockRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -200,15 +201,27 @@ final class StockController extends AbstractController
             'product' => $product,
         ]);
 
-        $form = $this->createForm(ProductType::class, $product);
-
-        $form->add('quantity', IntegerType::class, [
-            'label' => 'Quantité',
-            'mapped' => false,
-            'attr' => ['min' => 0],
-            'data' => $stock->getQuantity(),
-        ]);
-
+        $form = $this->createForm(ProductType::class, $product)
+            ->add('quantity', IntegerType::class, [
+                'label' => 'Quantité',
+                'mapped' => false,
+                'attr' => ['min' => 0],
+                'data' => $stock->getQuantity(),
+            ])
+            ->add('measureUnit', ChoiceType::class, [
+                'label' => 'Unité',
+                'mapped' => false,
+                'choices' => [
+                    'Pièce(s)' => 'pcs',
+                    'Kilogramme (kg)' => 'kg',
+                    'Gramme (g)' => 'g',
+                    'Litre (L)' => 'L',
+                    'Centilitre (cL)' => 'cL',
+                    'Bouteille' => 'btl',
+                    'Portion' => 'part',
+                ],
+                'data' => $stock->getMeasureUnit(),
+            ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -221,6 +234,7 @@ final class StockController extends AbstractController
         return $this->render('stock/update.html.twig', [
             'form' => $form,
             'restaurant' => $restaurant,
+            'stock' => $stock,
         ]);
     }
 

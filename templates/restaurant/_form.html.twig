@@ -1,0 +1,20 @@
+{{ form_start(form) }}
+
+{{ form_row(form.name, {label: 'Nom du restaurant'}) }}
+{{ form_row(form.description, {label: 'Description'}) }}
+{{ form_row(form.address, {label: 'Adresse'}) }}
+{{ form_row(form.postalCode, {label: 'Code Postal'}) }}
+{{ form_row(form.city, {label: 'Ville'}) }}
+{{ form_row(form.openingTime, {label: "Heure d'ouverture"}) }}
+{{ form_row(form.closingTime, {label: "Heure de fermeture"}) }}
+{{ form_row(form.image, {label: "Logo"}) }}
+{{ form_row(form.darkKitchen, {label: "Dark Kitchen ?"}) }}
+{{ form_row(form.categories, {label: "Catégories"}) }}
+
+<button type="submit" class="btn btn-primary w-100 p-3 mt-3">
+    {{ submit_label|default('Enregistrer') }}
+</button>
+
+
+{{ form_rest(form) }}
+{{ form_end(form) }}

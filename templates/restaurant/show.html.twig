@@ -6,6 +6,23 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 {% endblock %}
 {% block main %}
+    {% if role %}
+        {% if role.role == 'P' %}
+            <a href="{{ path('app_restaurant_delete', {'id': restaurant.id}) }}">
+                <span class="badge bg-secondary">Supprimer le restaurant</span>
+            </a>
+            <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}">
+                <span class="badge bg-secondary">Mettre à jour le restaurant</span>
+            </a>
+        {% endif %}
+        <a href="{{ path('app_reservation_restaurant', {'id': restaurant.id}) }}">
+            <span class="badge bg-secondary">Gérer les Réservations</span>
+        </a>
+        <a href="{{ path('app_order_restaurant', {'id': restaurant.id}) }}">
+            <span class="badge bg-secondary">Gérer les Commandes</span>
+        </a>
+    {% endif %}
+
     <div class="container mt-3">
     <script>
         fetch("https://nominatim.openstreetmap.org/search?format=json&q={{ restaurant.address }} {{ restaurant.postalCode }} {{ restaurant.city }}")

@@ -31,10 +31,15 @@ final class RestaurantController extends AbstractController
     }
 
     #[Route('/restaurant/{id}', name: 'app_restaurant_show', requirements: ['id' => '\d+'])]
-    public function show(#[MapEntity(expr: 'repository.findWithId(id)')] Restaurant $restaurant): Response
+    public function show(
+        RoleRepository $roleRepository,
+        #[MapEntity(expr: 'repository.findWithId(id)')] Restaurant $restaurant): Response
     {
+        $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $this->getUser()]);
+
         return $this->render('restaurant/show.html.twig', [
             'restaurant' => $restaurant,
+            'role' => $role,
         ]);
     }
 

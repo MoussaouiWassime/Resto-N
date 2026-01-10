@@ -6,9 +6,27 @@
     <div class="container mt-3">
     <div class="mb-3">
         <div class="card-body">
+
             <p><strong>Nom :</strong> {{ user.firstName }}, {{ user.lastName }}</p>
             <p><strong>Tel :</strong> <span class="badge bg-primary">{{ user.phone }}</span></p>
             <p><strong>Email :</strong> <span class="badge bg-info">{{ user.email }}</span></p>
+
+            {# damien : je peaufinerai le css plus tard quand j'aurai terminé toutes les principales features. #}
+            <div> Vous travaillez dans ces restaurants :
+                {% if roles %}
+                    {% for role in roles %}
+                        {% if role.role == 'P' %}
+                            <a href="{{ path('app_restaurant_show', {'id': role.restaurant.id }) }}">
+                                <span class="badge bg-primary"> {{ role.restaurant.name }}</span>
+                            </a>
+                        {% else %}
+                            <a href="{{ path('app_restaurant_show', {'id': role.restaurant.id }) }}">
+                                <span class="badge bg-secondary"> {{ role.restaurant.name }}</span>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
     </div>
     <h3>Actions</h3>

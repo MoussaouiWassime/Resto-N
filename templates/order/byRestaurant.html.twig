@@ -4,7 +4,7 @@
 
 {% block main %}
     <div class="container mt-3">
-        <a href="{{ path('app_home') }}" class="btn btn-primary action-btn mb-3">Retour</a>
+        <a href="{{ path('app_restaurant_manage', {'id' : restaurant.id}) }}" class="btn btn-primary action-btn mb-3">Retour</a>
         {% for order in orders %}
         <div class="container m-3">
             <div class="card mb-4 shadow-sm">
@@ -93,7 +93,7 @@
                     </ul>
 
                     <nav class="action-reservation">
-                        <a href="{{ path('app_order_cancel', {id: order.id}) }}" class="btn bg-danger btn-sm btn-danger">
+                        <a href="{{ path('app_order_delete', {id: order.id}) }}" class="btn bg-danger btn-sm btn-danger">
                             Supprimer la Commande
                         </a>
                     </nav>

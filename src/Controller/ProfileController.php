@@ -18,10 +18,14 @@ final class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile_show')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function show(): Response
+    public function show(RoleRepository $roleRepository): Response
     {
+        $user = $this->getUser();
+        $roles = $roleRepository->findBy(['user' => $user]);
+
         return $this->render('profile/show.html.twig', [
-            'user' => $this->getUser(),
+            'user' => $user,
+            'roles' => $roles,
         ]);
     }
 

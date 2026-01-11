@@ -53,6 +53,11 @@ li:nth-child(even) {
     font-size: 2rem;
 }
 
+.manage {
+    font-size: 2rem;
+    background-color: grey;
+}
+
 .reservCommand-index {
     font-size: 1rem;
 }

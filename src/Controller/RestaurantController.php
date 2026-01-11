@@ -31,10 +31,28 @@ final class RestaurantController extends AbstractController
     }
 
     #[Route('/restaurant/{id}', name: 'app_restaurant_show', requirements: ['id' => '\d+'])]
-    public function show(#[MapEntity(expr: 'repository.findWithId(id)')] Restaurant $restaurant): Response
+    public function show(
+        RoleRepository $roleRepository,
+        #[MapEntity(expr: 'repository.findWithId(id)')] Restaurant $restaurant): Response
     {
+        $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $this->getUser()]);
+
         return $this->render('restaurant/show.html.twig', [
             'restaurant' => $restaurant,
+            'role' => $role,
+        ]);
+    }
+
+    #[Route('/restaurant/{id}/manage', name: 'app_restaurant_manage', requirements: ['id' => '\d+'])]
+    public function manage(
+        RoleRepository $roleRepository,
+        #[MapEntity(expr: 'repository.findWithId(id)')] Restaurant $restaurant): Response
+    {
+        $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $this->getUser()]);
+
+        return $this->render('restaurant/manage.html.twig', [
+            'restaurant' => $restaurant,
+            'role' => $role,
         ]);
     }
 
@@ -104,9 +122,15 @@ final class RestaurantController extends AbstractController
             if ($form->get('delete')->isClicked()) {
                 $entityManager->remove($restaurant);
                 $entityManager->flush();
+                return $this->redirectToRoute('app_restaurant', [], 307);
+            } elseif ($form->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('app_restaurant_manage', [
+                    'id' => $restaurant->getId(),
+                    'restaurant' => $restaurant,
+                    'role' => $role], 307);
             }
 
-            return $this->redirectToRoute('app_restaurant', [], 307);
+
         } else {
             return $this->render('restaurant/delete.html.twig', [
                 'restaurant' => $restaurant,

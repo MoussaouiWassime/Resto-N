@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Gérer le restaurant {{ restaurant.name }}
+{% endblock %}
+
+{% block main %}
+    {% if role %}
+        <div class="d-flex flex-column align-items-center justify-content-center">
+            <a href="{{ path('app_reservation_restaurant', {'id' : restaurant.id}) }}">
+                <span class="btn btn-primary bg-primary">Gérer les réservations</span>
+            </a>
+            <a href="{{ path('app_order_restaurant', {'id': restaurant.id}) }}">
+                <span class="btn btn-primary bg-primary">Gérer les commandes</span>
+            </a>
+            {% if role.role == 'P' %}
+                <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}">
+                    <span class="btn bg-info">Mettre à jour le Restaurant</span>
+                </a>
+                <a href="{{ path('app_restaurant_delete', {'id': restaurant.id}) }}">
+                    <span class="btn bg-danger">Supprimer le Restaurant</span>
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}
+

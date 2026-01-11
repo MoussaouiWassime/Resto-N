@@ -5,24 +5,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 {% endblock %}
-{% block main %}
-    {% if role %}
-        {% if role.role == 'P' %}
-            <a href="{{ path('app_restaurant_delete', {'id': restaurant.id}) }}">
-                <span class="badge bg-secondary">Supprimer le restaurant</span>
-            </a>
-            <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}">
-                <span class="badge bg-secondary">Mettre à jour le restaurant</span>
-            </a>
-        {% endif %}
-        <a href="{{ path('app_reservation_restaurant', {'id': restaurant.id}) }}">
-            <span class="badge bg-secondary">Gérer les Réservations</span>
-        </a>
-        <a href="{{ path('app_order_restaurant', {'id': restaurant.id}) }}">
-            <span class="badge bg-secondary">Gérer les Commandes</span>
-        </a>
-    {% endif %}
 
+{% block main %}
     <div class="container mt-3">
     <script>
         fetch("https://nominatim.openstreetmap.org/search?format=json&q={{ restaurant.address }} {{ restaurant.postalCode }} {{ restaurant.city }}")
@@ -87,6 +71,9 @@
         {% endfor %}
     </div>
     <nav class="action-restaurant">
+        {% if role %}
+            <a href="{{ path('app_restaurant_manage', {'id': restaurant.id}) }}" class="btn btn-primary manage">Gérer le restaurant</a>
+        {% endif %}
         <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Réserver une table</a>
         <a href="{{ path('app_order_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Commander</a>
     </nav>

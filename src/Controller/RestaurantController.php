@@ -3,15 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Restaurant;
+use App\Entity\Review;
+use App\Form\ReviewType;
 use App\Entity\Role;
 use App\Form\RestaurantType;
 use App\Repository\RestaurantRepository;
-use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\RoleRepository;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
@@ -32,14 +34,51 @@ final class RestaurantController extends AbstractController
 
     #[Route('/restaurant/{id}', name: 'app_restaurant_show', requirements: ['id' => '\d+'])]
     public function show(
-        RoleRepository $roleRepository,
-        #[MapEntity(expr: 'repository.findWithId(id)')] Restaurant $restaurant): Response
+        #[MapEntity(expr: 'repository.findWithId(id)')] Restaurant $restaurant,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        RoleRepository $roleRepository): Response
     {
         $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $this->getUser()]);
+
+        $review = new Review();
+        $form = $this->createForm(ReviewType::class, $review);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            if (!$user) {
+                $this->addFlash('danger', 'Vous devez être connecté pour laisser un avis.');
+                return $this->redirectToRoute('app_login');
+            }
+
+            $review->setUser($user);
+            $review->setRestaurant($restaurant);
+            $review->setCreatedAt(new \DateTimeImmutable());
+
+            $entityManager->persist($review);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
+        }
+
+        $reviews = $restaurant->getReviews();
+        $averageRating = null;
+
+        if (count($reviews) > 0) {
+            $total = 0;
+            foreach ($reviews as $review) {
+                $total += $review->getRating();
+            }
+            $averageRating = $total / count($reviews);
+        }
 
         return $this->render('restaurant/show.html.twig', [
             'restaurant' => $restaurant,
             'role' => $role,
+            'reviewForm' => $form->createView(),
+            'averageRating' => $averageRating,
+            'reviews' => $reviews,
         ]);
     }
 
@@ -129,14 +168,11 @@ final class RestaurantController extends AbstractController
                     'restaurant' => $restaurant,
                     'role' => $role], 307);
             }
-
-
-        } else {
-            return $this->render('restaurant/delete.html.twig', [
-                'restaurant' => $restaurant,
-                'form' => $form,
-            ]);
         }
+        return $this->render('restaurant/delete.html.twig', [
+            'restaurant' => $restaurant,
+            'form' => $form,
+        ]);
     }
 
     #[Route('/restaurant/{id}/update/', name: 'app_restaurant_update')]

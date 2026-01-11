@@ -112,4 +112,39 @@
         filtrerPlats(DefaultCategory);
     </script>
     </div>
+    <div class="container">
+        <h3>Avis clients</h3>
+        <div>
+            {% if averageRating %}
+                Note moyenne : {{ averageRating|number_format(1) }} / 5 ({{ reviews|length }} avis)</p>
+            {% else %}
+                Aucun avis
+            {% endif %}
+        </div>
+
+        <hr>
+
+        {% if app.user %}
+            <h4>Laisser un commentaire</h4>
+            {{ form_start(reviewForm) }}
+                {{ form_row(reviewForm.rating) }}
+                {{ form_row(reviewForm.comment) }}
+            {{ form_end(reviewForm) }}
+            <hr>
+        {% else %}
+            <a href="{{ path('app_login') }}">Connectez-vous</a> pour noter ce restaurant.
+        {% endif %}
+
+        <div>
+            {% for review in reviews %}
+                <div class="border p-3 mb-2 rounded bg-white">
+                    {{ review.user.firstName }}
+                    <span class="text-muted">- {{ review.createdAt|date('d/m/Y') }}</span>
+
+                    <p class="mb-1">Note : {{ review.rating }}/5</p>
+                    {{ review.comment }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

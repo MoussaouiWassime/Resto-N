@@ -14,7 +14,7 @@ class Review
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $review = null;
+    private ?int $rating = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $comment = null;
@@ -35,14 +35,14 @@ class Review
         return $this->id;
     }
 
-    public function getReview(): ?int
+    public function getRating(): ?int
     {
-        return $this->review;
+        return $this->rating;
     }
 
-    public function setReview(int $review): static
+    public function setRating(int $rating): static
     {
-        $this->review = $review;
+        $this->rating = $rating;
 
         return $this;
     }

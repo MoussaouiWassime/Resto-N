@@ -9,6 +9,7 @@ use App\Entity\Reservation;
 use App\Entity\Restaurant;
 use App\Entity\RestaurantCategory;
 use App\Entity\Role;
+use App\Entity\Statistic;
 use App\Entity\Stock;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
@@ -43,5 +44,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Stocks', 'fas fa-list', Stock::class);
         yield MenuItem::linkToCrud('Commandes', 'fas fa-list', Order::class);
         yield MenuItem::linkToCrud('Réservations', 'fas fa-list', Reservation::class);
+        yield MenuItem::linkToCrud('Statistiques', 'fas fa-list', Statistic::class);
     }
 }

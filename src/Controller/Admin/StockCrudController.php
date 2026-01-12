@@ -54,7 +54,6 @@ class StockCrudController extends AbstractCrudController
                 ->setFormTypeOptions([
                     'attr' => [
                         'min' => 0,
-                        'value' => 0,
                     ],
                 ]),
         ];

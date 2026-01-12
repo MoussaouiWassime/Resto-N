@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Dish;
 use App\Entity\Order;
 use App\Entity\Product;
+use App\Entity\ProductCategory;
 use App\Entity\Reservation;
 use App\Entity\Restaurant;
 use App\Entity\RestaurantCategory;
@@ -41,6 +42,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Rôles', 'fas fa-list', Role::class);
         yield MenuItem::linkToCrud('Plats', 'fas fa-list', Dish::class);
         yield MenuItem::linkToCrud('Produits', 'fas fa-list', Product::class);
+        yield MenuItem::linkToCrud('Catégories du Produit', 'fas fa-list', ProductCategory::class);
         yield MenuItem::linkToCrud('Stocks', 'fas fa-list', Stock::class);
         yield MenuItem::linkToCrud('Commandes', 'fas fa-list', Order::class);
         yield MenuItem::linkToCrud('Réservations', 'fas fa-list', Reservation::class);

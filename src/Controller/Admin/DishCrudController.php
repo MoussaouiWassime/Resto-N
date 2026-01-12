@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -34,7 +35,8 @@ class DishCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name', 'Nom du Plat'),
-            TextEditorField::new('description', 'Description du Plat'),
+            TextareaField::new('description', 'Description du Plat')
+                ->setNumOfRows(15),
             AssociationField::new('restaurant', 'Restaurant associé')
                 ->setFormTypeOptions([
                     'choice_label' => 'name',

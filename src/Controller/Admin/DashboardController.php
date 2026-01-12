@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Dish;
+use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\Restaurant;
 use App\Entity\User;
@@ -33,5 +34,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-list', User::class);
         yield MenuItem::linkToCrud('Plats', 'fas fa-list', Dish::class);
         yield MenuItem::linkToCrud('Produits', 'fas fa-list', Product::class);
+        yield MenuItem::linkToCrud('Commandes', 'fas fa-list', Order::class);
     }
 }

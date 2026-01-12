@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Restaurant;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -13,6 +14,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 
 class RestaurantCrudController extends AbstractCrudController
 {
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInPlural('Restaurants')
+            ->setEntityLabelInSingular('Restaurant');
+    }
+
+
     public static function getEntityFqcn(): string
     {
         return Restaurant::class;

@@ -6,6 +6,7 @@ use App\Entity\Dish;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\Restaurant;
+use App\Entity\Stock;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -35,5 +36,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Plats', 'fas fa-list', Dish::class);
         yield MenuItem::linkToCrud('Produits', 'fas fa-list', Product::class);
         yield MenuItem::linkToCrud('Commandes', 'fas fa-list', Order::class);
+        yield MenuItem::linkToCrud('Stocks', 'fas fa-list', Stock::class);
     }
 }

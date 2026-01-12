@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TimeField;
 
@@ -21,7 +21,6 @@ class RestaurantCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Restaurant');
     }
 
-
     public static function getEntityFqcn(): string
     {
         return Restaurant::class;
@@ -32,7 +31,7 @@ class RestaurantCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name', 'Nom du Restaurant'),
-            TextEditorField::new('description', 'Description'),
+            TextareaField::new('description', 'Description'),
             TextField::new('address', 'Adresse'),
             TextField::new('postal_code', 'Code Postal'),
             TimeField::new('opening_time', "Horaire d'Ouverture")

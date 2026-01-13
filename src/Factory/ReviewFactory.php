@@ -34,7 +34,7 @@ final class ReviewFactory extends PersistentProxyObjectFactory
         return [
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'restaurant' => RestaurantFactory::new(),
-            'rating' => self::faker()->randomNumber(),
+            'rating' => self::faker()->numberBetween(0, 5),
             'user' => UserFactory::new(),
             'comment' => self::faker()->text(255),
         ];

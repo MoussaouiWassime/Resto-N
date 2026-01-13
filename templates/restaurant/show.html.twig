@@ -116,29 +116,33 @@
         <h3>Avis clients</h3>
         <div>
             {% if averageRating %}
-                Note moyenne : {{ averageRating|number_format(1) }} / 5 ({{ reviews|length }} avis)</p>
+                Note moyenne : {{ averageRating|number_format(1) }} / 5 ({{ reviews|length }} avis)
             {% else %}
-                Aucun avis
+                Aucun avis pour le moment.
             {% endif %}
         </div>
 
         <hr>
 
         {% if app.user %}
-            <h4>
-                {% if isEdit %}
-                    Modifier votre avis
-                {% else %}
-                    Laisser un commentaire
-                {% endif %}
-            </h4>
-            {{ form_start(reviewForm) }}
-                {{ form_row(reviewForm.rating) }}
-                {{ form_row(reviewForm.comment) }}
-            {{ form_end(reviewForm) }}
+            {% if userReview %}
+                <div class="alert alert-info d-flex justify-content-between align-items-center">
+                    Vous avez déjà donné votre avis sur ce restaurant.
+                    <div>
+                        <a href="{{ path('app_review_update', {id: userReview.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
+                        <a href="{{ path('app_review_delete', {id: userReview.id}) }}" class="btn btn-sm btn-danger">Supprimer</a>
+                    </div>
+                </div>
+            {% elseif reviewForm %}
+                <h4>Laisser un commentaire</h4>
+                {{ form_start(reviewForm) }}
+                    {{ form_row(reviewForm.rating) }}
+                    {{ form_row(reviewForm.comment) }}
+                {{ form_end(reviewForm) }}
+            {% endif %}
             <hr>
         {% else %}
-            <a href="{{ path('app_login') }}">Connectez-vous</a> pour noter ce restaurant.
+            <p><a href="{{ path('app_login') }}">Connectez-vous</a> pour noter ce restaurant.</p>
         {% endif %}
 
         <div>
@@ -147,8 +151,8 @@
                     {{ review.user.firstName }}
                     <span class="text-muted">- {{ review.createdAt|date('d/m/Y') }}</span>
 
-                    <p class="mb-1">Note : {{ review.rating }}/5</p>
-                    {{ review.comment }}
+                    <p class="mb-1 mt-2">Note : {{ review.rating }}/5
+                    <p>{{ review.comment }}</p>
                 </div>
             {% endfor %}
         </div>

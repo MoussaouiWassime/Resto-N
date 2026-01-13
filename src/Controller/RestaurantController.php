@@ -39,58 +39,45 @@ final class RestaurantController extends AbstractController
         EntityManagerInterface $entityManager,
         RoleRepository $roleRepository): Response
     {
-        $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $this->getUser()]);
-
-
         $user = $this->getUser();
-        $review = null;
+        $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $user]);
+
+        // Calcul de la note moyenne (inchangé)
+        $reviews = $restaurant->getReviews();
+        $averageRating = null;
+        if (count($reviews) > 0) {
+            $total = 0;
+            foreach ($reviews as $r) { $total += $r->getRating(); }
+            $averageRating = $total / count($reviews);
+        }
 
         // 1. On cherche si un avis existe déjà pour cet utilisateur
+        $existingReview = null;
         if ($user) {
-            $review = $entityManager->getRepository(Review::class)->findOneBy([
+            $existingReview = $entityManager->getRepository(Review::class)->findOneBy([
                 'user' => $user,
                 'restaurant' => $restaurant
             ]);
         }
 
-        // 2. Si on n'a rien trouvé (ou pas connecté), on crée un nouvel objet vide
-        if (!$review) {
-            $review = new Review();
-        }
+        // 2. Gestion du formulaire : UNIQUEMENT pour la création, et UNIQUEMENT si pas d'avis existant
+        $form = null;
+        if ($user && !$existingReview) {
+            $newReview = new Review();
+            $form = $this->createForm(ReviewType::class, $newReview);
+            $form->handleRequest($request);
 
-        // 3. On crée le formulaire avec cet objet (qu'il soit vide ou déjà rempli)
-        $form = $this->createForm(ReviewType::class, $review);
-        $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $newReview->setUser($user);
+                $newReview->setRestaurant($restaurant);
+                $newReview->setCreatedAt(new \DateTimeImmutable());
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
-            if (!$user) {
-                $this->addFlash('danger', 'Vous devez être connecté pour laisser un avis.');
-                return $this->redirectToRoute('app_login');
+                $entityManager->persist($newReview);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Merci pour votre avis !');
+                return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
             }
-
-            $review->setUser($user);
-            $review->setRestaurant($restaurant);
-
-            if (!$review->getCreatedAt()) {
-                $review->setCreatedAt(new \DateTimeImmutable());
-            }
-
-            $entityManager->persist($review);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
-        }
-
-        $reviews = $restaurant->getReviews();
-        $averageRating = null;
-
-        if (count($reviews) > 0) {
-            $total = 0;
-            foreach ($reviews as $review) {
-                $total += $review->getRating();
-            }
-            $averageRating = $total / count($reviews);
         }
 
         return $this->render('restaurant/show.html.twig', [
@@ -99,7 +86,7 @@ final class RestaurantController extends AbstractController
             'reviewForm' => $form,
             'averageRating' => $averageRating,
             'reviews' => $reviews,
-            'isEdit' => ($review->getId() !== null),
+            'userReview' => $existingReview, // On passe l'avis existant pour afficher un message à la place du form
         ]);
     }
 

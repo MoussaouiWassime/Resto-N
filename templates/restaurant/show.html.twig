@@ -125,7 +125,13 @@
         <hr>
 
         {% if app.user %}
-            <h4>Laisser un commentaire</h4>
+            <h4>
+                {% if isEdit %}
+                    Modifier votre avis
+                {% else %}
+                    Laisser un commentaire
+                {% endif %}
+            </h4>
             {{ form_start(reviewForm) }}
                 {{ form_row(reviewForm.rating) }}
                 {{ form_row(reviewForm.comment) }}

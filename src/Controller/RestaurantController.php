@@ -41,7 +41,24 @@ final class RestaurantController extends AbstractController
     {
         $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $this->getUser()]);
 
-        $review = new Review();
+
+        $user = $this->getUser();
+        $review = null;
+
+        // 1. On cherche si un avis existe déjà pour cet utilisateur
+        if ($user) {
+            $review = $entityManager->getRepository(Review::class)->findOneBy([
+                'user' => $user,
+                'restaurant' => $restaurant
+            ]);
+        }
+
+        // 2. Si on n'a rien trouvé (ou pas connecté), on crée un nouvel objet vide
+        if (!$review) {
+            $review = new Review();
+        }
+
+        // 3. On crée le formulaire avec cet objet (qu'il soit vide ou déjà rempli)
         $form = $this->createForm(ReviewType::class, $review);
         $form->handleRequest($request);
 
@@ -54,7 +71,10 @@ final class RestaurantController extends AbstractController
 
             $review->setUser($user);
             $review->setRestaurant($restaurant);
-            $review->setCreatedAt(new \DateTimeImmutable());
+
+            if (!$review->getCreatedAt()) {
+                $review->setCreatedAt(new \DateTimeImmutable());
+            }
 
             $entityManager->persist($review);
             $entityManager->flush();
@@ -76,9 +96,10 @@ final class RestaurantController extends AbstractController
         return $this->render('restaurant/show.html.twig', [
             'restaurant' => $restaurant,
             'role' => $role,
-            'reviewForm' => $form->createView(),
+            'reviewForm' => $form,
             'averageRating' => $averageRating,
             'reviews' => $reviews,
+            'isEdit' => ($review->getId() !== null),
         ]);
     }
 

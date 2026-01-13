@@ -3,9 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\ReviewRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
+#[UniqueEntity(
+    fields: ['user', 'restaurant'],
+    message: 'Vous avez déjà publié un avis pour ce restaurant.'
+)]
 class Review
 {
     #[ORM\Id]

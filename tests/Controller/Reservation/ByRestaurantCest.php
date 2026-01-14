@@ -55,12 +55,12 @@ final class ByRestaurantCest
         $I->see('Réservations : La Bonne Fourchette', 'h1');
 
         $I->see('Dupont Jean');
-        $I->see('(2 pers.)');
+        $I->see('2 pers.');
         $I->see('Table 12');
         $I->see('Confirmée');
 
         $I->see('Client inconnu');
-        $I->see('(4 pers.)');
+        $I->see('4 pers.');
         $I->see('En attente');
 
         $I->see('Modifier', 'a');

@@ -21,7 +21,6 @@ final class CreateCest
 
     public function formCreateforDishforRestaurant(ControllerTester $I): void
     {
-
         $user = UserFactory::createOne()->_real();
         $I->amLoggedInAs($user);
         $restaurant = RestaurantFactory::createOne(['name' => 'Chez Mario']);

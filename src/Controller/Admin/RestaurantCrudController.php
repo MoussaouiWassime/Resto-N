@@ -43,5 +43,4 @@ class RestaurantCrudController extends AbstractCrudController
             BooleanField::new('dark_kitchen', 'Dark Kitchen ?')->renderAsSwitch(false),
         ];
     }
-
 }

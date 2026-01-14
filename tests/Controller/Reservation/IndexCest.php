@@ -41,7 +41,7 @@ final class IndexCest
         $I->seeResponseCodeIs(200);
 
         $I->see('La Bonne Fourchette');
-        $I->see('(2 pers.)');
+        $I->see('2 pers.');
         $I->see('Table 12');
 
         $I->see('Modifier', 'a');

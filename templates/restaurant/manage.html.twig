@@ -20,12 +20,22 @@
             </div>
         </div>
             {% if role.role == 'P' %}
-                <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}">
-                    <span class="btn bg-info">Mettre à jour le Restaurant</span>
-                </a>
-                <a href="{{ path('app_restaurant_delete', {'id': restaurant.id}) }}">
-                    <span class="btn bg-danger">Supprimer le Restaurant</span>
-                </a>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="text-white">Gestion propriétaire</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}">
+                            <span class="btn bg-info">Mettre à jour le Restaurant</span>
+                        </a>
+                        <a href="{{ path('app_restaurant_delete', {'id': restaurant.id}) }}">
+                            <span class="btn bg-danger">Supprimer le Restaurant</span>
+                        </a>
+                        <a href="{{ path('app_dish_create', {'id': restaurant.id}) }}">
+                            <span class="btn bg-info">Ajouter un plat</span>
+                        </a>
+                    </div>
+                </div>
             {% endif %}
     {% endif %}
 

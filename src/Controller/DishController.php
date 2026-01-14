@@ -89,6 +89,7 @@ final class DishController extends AbstractController
             'restaurant' => $restaurant,
         ]);
     }
+
     #[Route('/dish/{id}/update/', name: 'app_dish_update', requirements: ['id' => '\d+'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function update(
@@ -97,7 +98,6 @@ final class DishController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
-
         $restaurant = $dish->getRestaurant();
 
         $user = $this->getUser();
@@ -141,5 +141,57 @@ final class DishController extends AbstractController
         ]);
     }
 
+    #[Route('/dish/{id}/delete', name: 'app_dish_delete', requirements: ['id' => '\d+'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function delete(
+        Dish $dish,
+        RoleRepository $roleRepository,
+        EntityManagerInterface $entityManager,
+        Request $request): Response
+    {
+        $restaurant = $dish->getRestaurant();
 
+        if (!$restaurant) {
+            throw $this->createNotFoundException('Restaurant introuvable.');
+        }
+
+        $user = $this->getUser();
+        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+
+        if (null === $role || 'P' != $role->getRole()) {
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        }
+
+        $form = $this->createFormBuilder($dish)
+            ->add('delete', SubmitType::class)
+            ->add('cancel', SubmitType::class)
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('delete')->isClicked()) {
+                if ($dish->getPhoto()) {
+                    $oldPhotoPath = $this->getParameter('kernel.project_dir').'/public/images/dishes/'.$dish->getPhoto();
+                    if (file_exists($oldPhotoPath)) {
+                        unlink($oldPhotoPath);
+                    }
+                }
+                $entityManager->remove($dish);
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        } else {
+            return $this->render('dish/delete.html.twig', [
+                'restaurant' => $restaurant,
+                'form' => $form,
+                'dish' => $dish,
+            ]);
+        }
+    }
 }

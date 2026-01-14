@@ -39,7 +39,7 @@ class RestaurantCrudController extends AbstractCrudController
             TimeField::new('closing_time', 'Horaire de Fermeture')
                 ->setFormat('hh:mm'),
             ImageField::new('image', 'Logo')
-                ->setUploadDir('public/uploads/logos'),
+                ->setUploadDir('public/images/logos'),
             BooleanField::new('dark_kitchen', 'Dark Kitchen ?')->renderAsSwitch(false),
         ];
     }

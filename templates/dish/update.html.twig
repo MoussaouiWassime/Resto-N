@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Édition du plat : {{ dish.name }}{% endblock %}
+
+{% block main %}
+    <div class="container mt-3">
+        {{ include('dish/_form.html.twig', {submit_label : "Éditer le plat", form, restaurant, dish}, with_context: false) }}
+    </div>
+    <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary w-100 p-3 mt-3">
+        Annuler
+    </a>
+{% endblock %}

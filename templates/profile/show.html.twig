@@ -29,12 +29,13 @@
             </div>
         </div>
     </div>
-    <h3>Actions</h3>
-    <a href="{{ path('app_profile_update') }}" class="btn btn-primary">Modifier mes informations</a>
-    <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
-    <a href="{{ path('app_profile_delete') }}" class="btn btn-primary">Supprimer mon compte</a>
-    <h3>Historique</h3>
-    <a href="{{ path('app_reservation') }}" class="btn btn-primary">Historique des réservations</a>
-    <a href="{{ path('app_order') }}" class="btn btn-primary">Historique des commandes</a>
+        <h3>Actions</h3>
+        <a href="{{ path('app_profile_update') }}" class="btn btn-primary">Modifier mes informations</a>
+        <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
+        <a href="{{ path('app_profile_delete') }}" class="btn btn-primary">Supprimer mon compte</a>
+        <a href="{{ path('app_restaurant_create') }}" class="btn btn-primary">Créer un restaurant</a>
+        <h3>Historique</h3>
+        <a href="{{ path('app_reservation') }}" class="btn btn-primary">Historique des réservations</a>
+        <a href="{{ path('app_order') }}" class="btn btn-primary">Historique des commandes</a>
     </div>
 {% endblock %}

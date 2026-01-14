@@ -40,8 +40,19 @@
     </script>
         <div class="mb-3"><img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}"></div>
         {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
-        <div class="mb-3"><div><span class="description">{{ restaurant.description }}</span></div></div>
-        <div class="mb-3"><div class="address badge bg-info"><span class="address">{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div></div>
+            <div class="ms-3 flex-grow-1 text-end">
+                <div class="mb-2 fs-5">
+                    <span class="description">
+                        {{ restaurant.description }}
+                    </span>
+                </div>
+                <div>
+                    <span class="address badge bg-info fs-6">
+                        {{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}
+                    </span>
+                </div>
+            </div>
+        </div>
     <div id="map" style="height: 300px; width: 100%; display: none"></div>
     {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
     restaurant. Pour cela, il faut que la connexion ai été géré. #}
@@ -87,7 +98,7 @@
                 plat.classList.remove('active');
             });
 
-            //On ajoute les marqueurs active pour les plats correspondant a la category voulue
+            //On ajoute les marqueurs active pour les plats correspondants à la category voulue
             const platAfficher = document.querySelectorAll(`.plat[data-category*="${category}"]`);
             platAfficher.forEach(plat => {
                 plat.classList.add('active');

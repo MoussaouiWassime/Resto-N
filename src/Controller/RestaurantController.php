@@ -176,6 +176,12 @@ final class RestaurantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('delete')->isClicked()) {
+                if ($restaurant->getImage()) {
+                    $oldImagePath = $this->getParameter('kernel.project_dir').'/public/images/dishes/'.$restaurant->getImage();
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
                 $entityManager->remove($restaurant);
                 $entityManager->flush();
                 return $this->redirectToRoute('app_restaurant', [], 307);

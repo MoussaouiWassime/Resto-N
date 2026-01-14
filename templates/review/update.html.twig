@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon avis{% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        <h1>Modifier votre avis pour {{ review.restaurant.name }}</h1>
+
+        {{ form_start(form) }}
+            {{ form_row(form.rating) }}
+            {{ form_row(form.comment) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

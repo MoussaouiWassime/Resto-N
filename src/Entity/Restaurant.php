@@ -91,6 +91,12 @@ class Restaurant
     #[ORM\OneToMany(targetEntity: RestaurantTable::class, mappedBy: 'restaurant', orphanRemoval: true)]
     private Collection $restaurantTables;
 
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'restaurant')]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -101,6 +107,7 @@ class Restaurant
         $this->orders = new ArrayCollection();
         $this->dishes = new ArrayCollection();
         $this->restaurantTables = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -444,6 +451,36 @@ class Restaurant
             // set the owning side to null (unless already changed)
             if ($restaurantTable->getRestaurant() === $this) {
                 $restaurantTable->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getRestaurant() === $this) {
+                $review->setRestaurant(null);
             }
         }
 

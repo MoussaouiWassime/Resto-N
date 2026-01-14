@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer mon avis{% endblock %}
+
+{% block main %}
+    <div class="container mt-4">
+        <div class="alert alert-warning">
+            <h1>Êtes-vous sûr ?</h1>
+            Voulez-vous vraiment supprimer votre avis pour le restaurant {{ review.restaurant.name }} ?
+        </div>
+
+        {{ form_start(form) }}
+            {{ form_widget(form.delete) }}
+            {{ form_widget(form.cancel) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

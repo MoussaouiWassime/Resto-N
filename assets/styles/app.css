@@ -39,6 +39,14 @@ li:nth-child(even) {
     background-color: #043362;
 }
 
+.card-header {
+    background-color: #064789;
+}
+
+.card-body a {
+    text-decoration: none;
+}
+
 .card {
     background-color: #DAECFB;
     color: #064789;

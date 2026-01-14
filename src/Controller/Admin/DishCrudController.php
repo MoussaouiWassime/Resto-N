@@ -50,7 +50,7 @@ class DishCrudController extends AbstractCrudController
                 ->setCurrency('EUR')
                 ->setStoredAsCents(),
             ImageField::new('photo', 'Image du plat')
-                ->setUploadDir('public/uploads/plats'),
+                ->setUploadDir('public/images/plats'),
             ChoiceField::new('category', 'Catégorie')
                 ->formatValue(static function ($value, $entity) {
                     if ('B' == $value) {

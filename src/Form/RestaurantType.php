@@ -42,6 +42,10 @@ class RestaurantType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('image', FileType::class, [
+                'label' => 'Logo du restaurant',
+                'mapped' => false,
+                'required' => false,
+                'data' => null,
                 'constraints' => [
                     new File(
                         maxSize: '1024k',

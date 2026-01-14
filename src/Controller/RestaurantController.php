@@ -184,6 +184,7 @@ final class RestaurantController extends AbstractController
                 }
                 $entityManager->remove($restaurant);
                 $entityManager->flush();
+
                 return $this->redirectToRoute('app_restaurant', [], 307);
             } elseif ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('app_restaurant_manage', [
@@ -212,6 +213,7 @@ final class RestaurantController extends AbstractController
 
         $user = $this->getUser();
         $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+
         if (null === $role || 'P' != $role->getRole()) {
             return $this->redirectToRoute('app_restaurant_show', [
                 'id' => $restaurant->getId(),

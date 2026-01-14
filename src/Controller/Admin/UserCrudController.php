@@ -101,5 +101,4 @@ class UserCrudController extends AbstractCrudController
         $this->setUserPassword($password, $entityInstance);
         parent::updateEntity($entityManager, $entityInstance);
     }
-
 }

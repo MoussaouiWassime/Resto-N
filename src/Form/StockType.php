@@ -2,10 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Product;
-use App\Entity\Restaurant;
 use App\Entity\Stock;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;

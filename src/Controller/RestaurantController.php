@@ -137,6 +137,7 @@ final class RestaurantController extends AbstractController
                 }
                 $entityManager->remove($restaurant);
                 $entityManager->flush();
+
                 return $this->redirectToRoute('app_restaurant', [], 307);
             } elseif ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('app_restaurant_manage', [
@@ -144,8 +145,6 @@ final class RestaurantController extends AbstractController
                     'restaurant' => $restaurant,
                     'role' => $role], 307);
             }
-
-
         } else {
             return $this->render('restaurant/delete.html.twig', [
                 'restaurant' => $restaurant,

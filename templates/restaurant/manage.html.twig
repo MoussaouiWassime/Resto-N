@@ -11,10 +11,10 @@
                 <h5 class="text-white">Gestion quotidienne</h5>
             </div>
             <div class="card-body gap-2">
-                <a href="{{ path('app_reservation_restaurant', {'id' : restaurant.id}) }}">
+                <a href="{{ path('app_reservation_restaurant', {id: restaurant.id}) }}">
                     <span class="btn btn-primary bg-primary">Gérer les réservations</span>
                 </a>
-                <a href="{{ path('app_order_restaurant', {'id': restaurant.id}) }}">
+                <a href="{{ path('app_order_restaurant', {id: restaurant.id}) }}">
                     <span class="btn btn-primary bg-primary">Gérer les commandes</span>
                 </a>
             </div>
@@ -25,13 +25,13 @@
                         <h5 class="text-white">Gestion propriétaire</h5>
                     </div>
                     <div class="card-body">
-                        <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}">
+                        <a href="{{ path('app_restaurant_update', {id: restaurant.id}) }}">
                             <span class="btn bg-info">Mettre à jour le Restaurant</span>
                         </a>
-                        <a href="{{ path('app_restaurant_delete', {'id': restaurant.id}) }}">
+                        <a href="{{ path('app_restaurant_delete', {id: restaurant.id}) }}">
                             <span class="btn bg-danger">Supprimer le Restaurant</span>
                         </a>
-                        <a href="{{ path('app_dish_create', {'id': restaurant.id}) }}">
+                        <a href="{{ path('app_dish_create', {id: restaurant.id}) }}">
                             <span class="btn bg-info">Ajouter un plat</span>
                         </a>
                     </div>
@@ -40,4 +40,3 @@
     {% endif %}
 
 {% endblock %}
-

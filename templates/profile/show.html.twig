@@ -16,11 +16,11 @@
                 {% if roles %}
                     {% for role in roles %}
                         {% if role.role == 'P' %}
-                            <a href="{{ path('app_restaurant_show', {'id': role.restaurant.id }) }}">
+                            <a href="{{ path('app_restaurant_show', {id: role.restaurant.id}) }}">
                                 <span class="badge bg-primary"> {{ role.restaurant.name }}</span>
                             </a>
                         {% else %}
-                            <a href="{{ path('app_restaurant_show', {'id': role.restaurant.id }) }}">
+                            <a href="{{ path('app_restaurant_show', {id: role.restaurant.id}) }}">
                                 <span class="badge bg-secondary"> {{ role.restaurant.name }}</span>
                             </a>
                         {% endif %}

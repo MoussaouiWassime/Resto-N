@@ -81,10 +81,10 @@
                         <p class="card-text">{{ dish.description }}</p>
                         <a href="{{ path('app_dish_show', {id: dish.id}) }}" class="btn btn-primary">Détails</a>
                         {% if role and role.role == 'P' %}
-                        <a href="{{ path('app_dish_update', {'id': dish.id}) }}">
+                        <a href="{{ path('app_dish_update', {id: dish.id}) }}">
                             <span class="btn bg-success">Modifier un plat</span>
                         </a>
-                        <a href="{{ path('app_dish_delete', {'id': dish.id}) }}">
+                        <a href="{{ path('app_dish_delete', {id: dish.id}) }}">
                             <span class="btn bg-danger">Supprimer un plat</span>
                         </a>
                         {% endif %}
@@ -96,7 +96,7 @@
     </div>
     <nav class="action-restaurant">
         {% if role %}
-            <a href="{{ path('app_restaurant_manage', {'id': restaurant.id}) }}" class="btn btn-primary manage">Gérer le restaurant</a>
+            <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-primary manage">Gérer le restaurant</a>
         {% endif %}
         <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Réserver une table</a>
         <a href="{{ path('app_order_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Commander</a>

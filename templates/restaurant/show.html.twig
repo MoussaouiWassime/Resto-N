@@ -38,7 +38,12 @@
                 document.getElementById("map").style.display = "none";
             });
     </script>
-        <div class="mb-3"><img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}"></div>
+        <div class="mb-3 d-flex">
+            <div>
+                <img src="{{ asset('images/restaurants/' ~ restaurant.image) }}"
+                     class="rounded float-right logo"
+                     alt="Photo de {{ restaurant.name }}">
+            </div>
         {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
             <div class="ms-3 flex-grow-1 text-end">
                 <div class="mb-2 fs-5">
@@ -69,7 +74,7 @@
             <div class="mb-3">
             <div class="plat" data-category="{{ dish.category }}">
                 <div class="card" style="width: 18rem;">
-                    <img src="{{ dish.photo }}" class="card-img-top" alt="Photo de : {{ dish.name }}">
+                    <img src="{{ asset('images/dishes/' ~ dish.photo) }}" class="rounded float-right logo" alt="Photo de {{ dish.name }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ dish.name }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ dish.price }} €</h6>

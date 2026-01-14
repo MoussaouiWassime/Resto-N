@@ -89,6 +89,57 @@ final class DishController extends AbstractController
             'restaurant' => $restaurant,
         ]);
     }
+    #[Route('/dish/{id}/update/', name: 'app_dish_update', requirements: ['id' => '\d+'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function update(
+        Dish $dish,
+        RoleRepository $roleRepository,
+        EntityManagerInterface $entityManager,
+        Request $request): Response
+    {
+
+        $restaurant = $dish->getRestaurant();
+
+        $user = $this->getUser();
+        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+        if (null === $role || 'P' != $role->getRole()) {
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        }
+
+        $form = $this->createForm(DishType::class, $dish);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $photo = $form->get('photo')->getData();
+            if ($photo) {
+                if ($dish->getPhoto()) {
+                    $oldPhotoPath = $this->getParameter('kernel.project_dir').'/public/images/dishes/'.$dish->getPhoto();
+                    if (file_exists($oldPhotoPath)) {
+                        unlink($oldPhotoPath);
+                    }
+                }
+                $newFileName = md5(uniqid(null, true)).'.'.$photo->guessExtension();
+                $photo->move(
+                    $this->getParameter('kernel.project_dir').'/public/images/dishes',
+                    $newFileName,
+                );
+                $dish->setPhoto($newFileName);
+            }
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        }
+
+        return $this->render('dish/update.html.twig', [
+            'form' => $form,
+            'restaurant' => $restaurant,
+            'dish' => $dish,
+        ]);
+    }
 
 
 }

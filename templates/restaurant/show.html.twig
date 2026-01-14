@@ -80,6 +80,14 @@
                         <h6 class="card-subtitle mb-2 text-muted">{{ dish.price }} €</h6>
                         <p class="card-text">{{ dish.description }}</p>
                         <a href="{{ path('app_dish_show', {id: dish.id}) }}" class="btn btn-primary">Détails</a>
+                        {% if role and role.role == 'P' %}
+                        <a href="{{ path('app_dish_update', {'id': dish.id}) }}">
+                            <span class="btn bg-success">Modifier un plat</span>
+                        </a>
+                        <a href="{{ path('app_dish_delete', {'id': dish.id}) }}">
+                            <span class="btn bg-danger">Supprimer un plat</span>
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

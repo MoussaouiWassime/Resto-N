@@ -41,7 +41,7 @@ final class DeleteCest
         $I->amOnPage('/reservation/delete/'.$reservation->getId());
         $I->see('Êtes-vous sûr de vouloir supprimer cette réservation ?', 'h3');
         $I->see('aaa bb');
-        $I->see('Couverts :4 personnes');
+        $I->see('Couverts : 4 personnes');
         $I->see('N°99');
         $I->see('Supprimer', 'button');
         $I->see('Annuler', 'button');

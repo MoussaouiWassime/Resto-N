@@ -6,13 +6,19 @@
 
 {% block main %}
     {% if role %}
-        <div class="d-flex flex-column align-items-center justify-content-center">
-            <a href="{{ path('app_reservation_restaurant', {'id' : restaurant.id}) }}">
-                <span class="btn btn-primary bg-primary">Gérer les réservations</span>
-            </a>
-            <a href="{{ path('app_order_restaurant', {'id': restaurant.id}) }}">
-                <span class="btn btn-primary bg-primary">Gérer les commandes</span>
-            </a>
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="text-white">Gestion quotidienne</h5>
+            </div>
+            <div class="card-body gap-2">
+                <a href="{{ path('app_reservation_restaurant', {'id' : restaurant.id}) }}">
+                    <span class="btn btn-primary bg-primary">Gérer les réservations</span>
+                </a>
+                <a href="{{ path('app_order_restaurant', {'id': restaurant.id}) }}">
+                    <span class="btn btn-primary bg-primary">Gérer les commandes</span>
+                </a>
+            </div>
+        </div>
             {% if role.role == 'P' %}
                 <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}">
                     <span class="btn bg-info">Mettre à jour le Restaurant</span>
@@ -21,7 +27,6 @@
                     <span class="btn bg-danger">Supprimer le Restaurant</span>
                 </a>
             {% endif %}
-        </div>
     {% endif %}
 
 {% endblock %}

@@ -1,0 +1,18 @@
+{% block body %}
+<h1>Invitation {{ restaurant.name }}</h1>
+
+<p>Bonjour,</p>
+
+<p>
+    <strong>{{ manager.firstName }}</strong> vous invite à rejoindre l'équipe du restaurant
+    <strong>{{ restaurant.name }}</strong> sur l'application Resto'N.
+</p>
+
+<p>Cliquez ci-dessous pour accepter :</p>
+
+<p>
+    <a href="{{ url('app_invitation_accept', {token: token}) }}">
+        Accepter l'invitation
+    </a>
+</p>
+{% endblock %}

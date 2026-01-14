@@ -1,0 +1,20 @@
+{% block body %}
+<h1>Rejoignez Resto'N !</h1>
+
+<p>Bonjour,</p>
+
+<p>
+    Le restaurant <strong>{{ restaurant.name }}</strong> souhaite vous ajouter à son équipe,
+    mais vous n'avez pas encore de compte sur notre application.
+</p>
+
+<p>Pour accepter l'invitation, veuillez d'abord créer votre compte gratuitement :</p>
+
+<p>
+    <a href="{{ url('app_register') }}">
+        Créer mon compte
+    </a>
+</p>
+
+<p><small>Une fois inscrit, demandez à votre gérant de vous renvoyer l'invitation.</small></p>
+{% endblock %}

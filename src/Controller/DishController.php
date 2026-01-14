@@ -38,4 +38,57 @@ final class DishController extends AbstractController
             'dish' => $dish,
         ]);
     }
+
+    #[Route('/restaurant/{id}/dish/create', name: 'app_dish_create', requirements: ['id' => '\d+'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function create(
+        ?Restaurant $restaurant,
+        RoleRepository $roleRepository,
+        EntityManagerInterface $entityManager,
+        Request $request): Response
+    {
+        if (null == $restaurant) {
+            throw $this->createNotFoundException('Vous ne pouvez pas créer un plat sans restaurant');
+        }
+
+        $user = $this->getUser();
+        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+        if (null === $role || 'P' != $role->getRole()) {
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        }
+
+        $dish = new Dish();
+        $dish->setRestaurant($restaurant);
+
+        $form = $this->createForm(DishType::class, $dish);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $photo = $form->get('photo')->getData();
+            if ($photo) {
+                $newFileName = md5(uniqid(null, true)).'.'.$photo->guessExtension();
+                $photo->move(
+                    $this->getParameter('kernel.project_dir').'/public/images/dishes',
+                    $newFileName,
+                );
+                $dish->setPhoto($newFileName);
+            }
+
+            $entityManager->persist($dish);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_restaurant_show', [
+                'id' => $restaurant->getId(),
+            ], 307);
+        }
+
+        return $this->render('dish/create.html.twig', [
+            'form' => $form,
+            'restaurant' => $restaurant,
+        ]);
+    }
+
+
 }

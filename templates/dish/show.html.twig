@@ -6,11 +6,23 @@
 
 {% block main %}
     <div class="container mt-3">
-        <div class="mb-3">
-            <div class="card-body">
-                <div class="mb-3"><img src="{{ dish.photo }}" class="rounded float-right" alt="Photo de {{ dish.name }}"></div>
-                <p><strong>Description : </strong>{{ dish.description }}</p>
-                <p><strong>Prix : </strong><span class="badge bg-info">{{ dish.price }} €</span></p>
+        <div class="mb-3 d-flex">
+            <div class="mb-3">
+                <img src="{{ asset('images/dishes/' ~ dish.photo) }}"
+                     class="rounded float-right logo"
+                     alt="Photo de {{ dish.name }}">
+            </div>
+            <div class="ms-3 flex-grow-1 text-end">
+                <div class="mb-2 fs-5">
+                    <span>
+                        <strong>Description : </strong>{{ dish.description }}
+                    </span>
+                </div>
+                <div>
+                    <span class="badge bg-info fs-6">
+                        <strong>Prix : </strong>{{ dish.price }} €
+                    </span>
+                </div>
             </div>
         </div>
     </div>

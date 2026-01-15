@@ -38,10 +38,26 @@
                 document.getElementById("map").style.display = "none";
             });
     </script>
-        <div class="mb-3"><img src="{{ restaurant.image }}" class="rounded float-right" alt="Logo de {{ restaurant.name }}"></div>
+        <div class="mb-3 d-flex">
+            <div>
+                <img src="{{ asset('images/restaurants/' ~ restaurant.image) }}"
+                     class="rounded float-right logo"
+                     alt="Photo de {{ restaurant.name }}">
+            </div>
         {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
-        <div class="mb-3"><div><span class="description">{{ restaurant.description }}</span></div></div>
-        <div class="mb-3"><div class="address badge bg-info"><span class="address">{{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}</span></div></div>
+            <div class="ms-3 flex-grow-1 text-end">
+                <div class="mb-2 fs-5">
+                    <span class="description">
+                        {{ restaurant.description }}
+                    </span>
+                </div>
+                <div>
+                    <span class="address badge bg-info fs-6">
+                        {{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}
+                    </span>
+                </div>
+            </div>
+        </div>
     <div id="map" style="height: 300px; width: 100%; display: none"></div>
     {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
     restaurant. Pour cela, il faut que la connexion ai été géré. #}
@@ -58,12 +74,20 @@
             <div class="mb-3">
             <div class="plat" data-category="{{ dish.category }}">
                 <div class="card" style="width: 18rem;">
-                    <img src="{{ dish.photo }}" class="card-img-top" alt="Photo de : {{ dish.name }}">
+                    <img src="{{ asset('images/dishes/' ~ dish.photo) }}" class="rounded float-right logo" alt="Photo de {{ dish.name }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ dish.name }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ dish.price }} €</h6>
                         <p class="card-text">{{ dish.description }}</p>
                         <a href="{{ path('app_dish_show', {id: dish.id}) }}" class="btn btn-primary">Détails</a>
+                        {% if role and role.role == 'P' %}
+                        <a href="{{ path('app_dish_update', {id: dish.id}) }}">
+                            <span class="btn bg-success">Modifier un plat</span>
+                        </a>
+                        <a href="{{ path('app_dish_delete', {id: dish.id}) }}">
+                            <span class="btn bg-danger">Supprimer un plat</span>
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -72,7 +96,7 @@
     </div>
     <nav class="action-restaurant">
         {% if role %}
-            <a href="{{ path('app_restaurant_manage', {'id': restaurant.id}) }}" class="btn btn-primary manage">Gérer le restaurant</a>
+            <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-primary manage">Gérer le restaurant</a>
         {% endif %}
         <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Réserver une table</a>
         <a href="{{ path('app_order_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Commander</a>
@@ -87,7 +111,7 @@
                 plat.classList.remove('active');
             });
 
-            //On ajoute les marqueurs active pour les plats correspondant a la category voulue
+            //On ajoute les marqueurs active pour les plats correspondants à la category voulue
             const platAfficher = document.querySelectorAll(`.plat[data-category*="${category}"]`);
             platAfficher.forEach(plat => {
                 plat.classList.add('active');

@@ -100,5 +100,4 @@ class OrderCrudController extends AbstractCrudController
                 }),
         ];
     }
-
 }

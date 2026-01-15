@@ -4,7 +4,7 @@
 
 {% block main %}
     <div class="container mt-3">
-        <a href="{{ path('app_restaurant_manage', {'id' : restaurant.id}) }}" class="btn btn-primary action-btn mb-3">Retour</a>
+        <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-primary action-btn mb-3">Retour</a>
         {% for order in orders %}
         <div class="container m-3">
             <div class="card mb-4 shadow-sm">
@@ -42,7 +42,6 @@
                             En cours
                         </span>
                         {% endif %}
-
 
                     </h5>
                 </div>
@@ -86,7 +85,7 @@
                         {% endfor %}
                     <div class="d-flex justify-content-center mt-2">
                         <span class="badge bg-primary">
-                            Total : {{ total/100 }} €
+                            Total : {{ total / 100 }} €
                         </span>
                     </div>
 
@@ -107,5 +106,3 @@
         {% endfor %}
     </div>
 {% endblock %}
-
-

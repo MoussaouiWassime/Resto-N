@@ -42,5 +42,4 @@ class ProductCrudController extends AbstractCrudController
                 }),
         ];
     }
-
 }

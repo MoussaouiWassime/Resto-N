@@ -58,5 +58,4 @@ class StockCrudController extends AbstractCrudController
                 ]),
         ];
     }
-
 }

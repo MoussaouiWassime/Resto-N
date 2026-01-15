@@ -4,11 +4,10 @@
 
 {% block main %}
 
-    {{ include('restaurant/_form.html.twig', {submit_label : "Modifier", form}, with_context: false) }}
+    {{ include('restaurant/_form.html.twig', {submit_label: 'Modifier', form: form}, with_context: false) }}
 
-    <a href="{{ path('app_restaurant_manage', {'id': restaurant.id}) }}" class="btn btn-primary w-100 p-3 mt-3">
+    <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-primary w-100 p-3 mt-3">
         Annuler
     </a>
 
 {% endblock %}
-

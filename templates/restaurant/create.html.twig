@@ -4,11 +4,10 @@
 
 {% block main %}
 
-    {{ include('restaurant/_form.html.twig', {submit_label : "Créer", form}, with_context: false) }}
+    {{ include('restaurant/_form.html.twig', {submit_label: 'Créer', form: form}, with_context: false) }}
 
     <div class="mt-3">
-        <a href="{{ path('app_restaurant')}}">Annuler</a>
+        <a href="{{ path('app_restaurant') }}">Annuler</a>
     </div>
 
 {% endblock %}
-

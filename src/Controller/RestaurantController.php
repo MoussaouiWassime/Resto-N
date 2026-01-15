@@ -117,6 +117,15 @@ final class RestaurantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photo = $form->get('image')->getData();
+            if ($photo) {
+                $newFileName = md5(uniqid(null, true)).'.'.$photo->guessExtension();
+                $photo->move(
+                    $this->getParameter('kernel.project_dir').'/public/images/restaurants',
+                    $newFileName,
+                );
+                $restaurant->setImage($newFileName);
+            }
             $entityManager->persist($restaurant);
 
             $newRole = new Role();
@@ -167,8 +176,15 @@ final class RestaurantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('delete')->isClicked()) {
+                if ($restaurant->getImage()) {
+                    $oldImagePath = $this->getParameter('kernel.project_dir').'/public/images/dishes/'.$restaurant->getImage();
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
                 $entityManager->remove($restaurant);
                 $entityManager->flush();
+
                 return $this->redirectToRoute('app_restaurant', [], 307);
             } elseif ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('app_restaurant_manage', [
@@ -204,10 +220,19 @@ final class RestaurantController extends AbstractController
             ], 307);
         }
 
-        $form = $this->createForm(RestaurantType::class);
+        $form = $this->createForm(RestaurantType::class, $restaurant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photo = $form->get('image')->getData();
+            if ($photo) {
+                $newFileName = md5(uniqid(null, true)).'.'.$photo->guessExtension();
+                $photo->move(
+                    $this->getParameter('kernel.project_dir').'/public/images/restaurants',
+                    $newFileName,
+                );
+                $restaurant->setImage($newFileName);
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_restaurant_show', [

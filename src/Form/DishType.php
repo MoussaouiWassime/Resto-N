@@ -2,47 +2,36 @@
 
 namespace App\Form;
 
+use App\Entity\Dish;
 use App\Entity\Restaurant;
-use App\Entity\RestaurantCategory;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class RestaurantType extends AbstractType
+class DishType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, [
                 'empty_data' => '',
+                'attr' => ['maxlength' => 50],
             ])
             ->add('description', TextType::class, [
                 'empty_data' => '',
+                'attr' => ['maxlength' => 100],
             ])
-            ->add('address', TextType::class, [
-                'empty_data' => '',
+            ->add('price', IntegerType::class, [
+                'attr' => ['min' => 0],
             ])
-            ->add('postalCode', TextType::class, [
-                'empty_data' => '',
-            ])
-            ->add('city', TextType::class, [
-                'empty_data' => '',
-            ])
-            ->add('openingTime', TimeType::class, [
-                'widget' => 'single_text',
-            ])
-            ->add('closingTime', TimeType::class, [
-                'widget' => 'single_text',
-            ])
-            ->add('image', FileType::class, [
-                'label' => 'Logo du restaurant',
+            ->add('photo', FileType::class, [
+                'label' => 'Photo du plat',
                 'mapped' => false,
                 'required' => false,
                 'data' => null,
@@ -58,18 +47,20 @@ class RestaurantType extends AbstractType
                     ),
                 ],
             ])
-            ->add('darkKitchen', CheckboxType::class, [
-                'required' => false,
+            ->add('category', ChoiceType::class, [
+                'choices' => [
+                    'Entree' => 'E',
+                    'Plat' => 'P',
+                    'Boisson' => 'B',
+                    'Dessert' => 'D',
+                ],
             ])
-            ->add('categories', EntityType::class, [
-                'placeholder' => 'Catégorie ?',
-                'class' => RestaurantCategory::class,
+            ->add('restaurant', EntityType::class, [
+                'class' => Restaurant::class,
                 'choice_label' => 'name',
-                'multiple' => true,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->orderBy('c.name', 'ASC');
-                },
+                'disabled' => true,
+                'attr' => ['style' => 'display:none'],
+                'label' => false,
             ])
         ;
     }
@@ -77,7 +68,7 @@ class RestaurantType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Restaurant::class,
+            'data_class' => Dish::class,
         ]);
     }
 }

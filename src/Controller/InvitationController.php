@@ -40,8 +40,9 @@ final class InvitationController extends AbstractController
         $emailTarget = $request->request->get('server_email');
 
         $serverUser = $userRepository->findOneBy(['email' => $emailTarget]);
-
-        if ($serverUser) {
+        if ($serverUser == $user) {
+            $this->addFlash('warning', "Vous ne pouvez pas vous ajouter vous même !");
+        } elseif ($serverUser) {
             $existingRole = $roleRepository->findOneBy(['user' => $serverUser, 'restaurant' => $restaurant]);
 
             if ($existingRole) {

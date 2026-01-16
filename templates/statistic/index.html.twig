@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% set countOrder = 0 %}
+    {% set countVisit = 0 %}
+    {% set countIncome = 0 %}
+
+    {% for element in statistics %}
+        {% if element.statisticType == 'NB_COMMANDES' %}
+            {% set countOrder = countOrder + 1 %}
+        {% elseif element.statisticType == 'NB_VISITES' %}
+            {% set countVisit = countOrder + 1 %}
+        {% elseif element.statisticType == 'CA_JOURNALIER' %}
+            {% set countIncome = countOrder + 1 %}
+        {% endif %}
+    {% endfor %}
+
+{% block title %}Accéder aux statistiques de {{ restaurant.name }}{% endblock %}
+
+{% block main %}
+
+    <div class="d-flex flex-column align-items-center mt-5">
+        {% if countOrder > 0 %}
+            <a href="{{ path('app_statistic_order', { id : restaurant.id }) }}">
+                <span class="btn btn-primary">Commandes</span>
+            </a>
+        {% endif %}
+        {% if countVisit > 0 %}
+            <a href="{{ path('app_statistic_visit', { id : restaurant.id }) }}">
+                <span class="btn btn-primary">Visites</span>
+            </a>
+        {% endif %}
+        {% if countIncome > 0 %}
+            <a href="{{ path('app_statistic_income', { id : restaurant.id }) }}">
+                <span class="btn btn-primary">Chiffre d'affaire</span>
+            </a>
+        {% endif %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% set statTitle = 'Nombre de Visites par jour' %}
+{% set caption = 'Nombre de Visites' %}
+{% set toEuros = 1 %}
+{% set euroSign = '' %}
+
+
+{% if statistics[0].statisticType == 'NB_COMMANDES' %}
+    {% set statTitle = 'Nombre de Commandes par jour' %}
+    {% set caption = "Nombre de Commandes" %}
+{% elseif statistics[0].statisticType == 'CA_JOURNALIER' %}
+    {% set statTitle = "Chiffre d'Affaire par jour" %}
+    {% set caption = "Chiffre d'Affaire (en €)" %}
+    {% set toEuros = 100 %}
+    {% set euroSign = ' €' %}
+{% endif %}
+
+{% block title %} {{ statTitle }} à {{ restaurant.name }}{% endblock %}
+
+{% block head %}
+
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Date');
+            data.addColumn('number', "{{ caption|escape('js') }}");
+            data.addColumn({role: 'annotation'})
+
+            {% for element in statistics %}
+            {% set value = element.value/toEuros %}
+
+            data.addRow([
+                "{{ element.date|date('d/m/Y')|escape('js') }}",
+                {{ value }},
+                "{{ value }}{{ euroSign }}",
+            ]);
+            {% endfor %}
+
+
+            var options = {
+                'width':1000,
+                'height':500,
+                'hAxis': {
+                    'textStyle': {
+                        'bold' : true,
+                        'italic': true,
+                        'fontSize': 15,
+                    }
+                },
+                'annotations': {
+                    'textStyle' : {
+                        'color' : 'black',
+                        'bold' : true,
+                        'fontSize' : 15,
+                    },
+                },
+                'colors' : ['silver'],
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
+
+{% endblock %}
+
+{% block main %}
+
+    <div class="d-flex flex-column align-items-center mt-4">
+        <span class="mb-3" id="chart_div"></span>
+        <div class="mb-0">
+            <a href="{{ path('app_statistic', {id : restaurant.id}) }}" class="btn btn-secondary">Retour au menu des Statistiques</a>
+        </div>
+    </div>
+
+{% endblock %}

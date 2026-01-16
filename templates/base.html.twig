@@ -24,12 +24,12 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link" href="#">Lien</a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search" action="">
-                    <input class="form-control me-2" name="search" type="search" placeholder="Search" aria-label="Search"/>
-                    <button class="btn btn-outline-success" type="submit" >Search</button>
+                    <input class="form-control me-2" name="search" type="search" placeholder="Recherche..." aria-label="Recherche"/>
+                    <button class="btn btn-outline-success" type="submit" >Rechercher</button>
                 </form>
                 <div class="d-flex ms-2">
                     {% if app.user %}
@@ -57,7 +57,7 @@
         {% block main %}{% endblock %}
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <footer class="text-center p-3 bg-light bg-opacity-35">
+    <footer class="fixed-bottom text-center p-3 bg-light bg-opacity-35">
         <div>Resto'N - © 2025</div>
     </footer>
     <div id="chatbot-container" data-url="{{ path('app_chatbot') }}">

@@ -34,7 +34,7 @@ final class StatisticFactory extends PersistentProxyObjectFactory
         return [
             'restaurant' => RestaurantFactory::random(),
             'statisticType' => self::faker()->randomElement(['CA_JOURNALIER', 'NB_COMMANDES', 'NB_VISITES']),
-            'value' => self::faker()->randomFloat(2, 1, 1000),
+            'value' => self::faker()->randomNumber(5, false),
             'date' => self::faker()->dateTimeBetween('2025-12-01', '2025-12-31'),
         ];
     }

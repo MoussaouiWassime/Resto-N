@@ -10,6 +10,7 @@ use App\Entity\ProductCategory;
 use App\Entity\Reservation;
 use App\Entity\Restaurant;
 use App\Entity\RestaurantCategory;
+use App\Entity\Review;
 use App\Entity\Role;
 use App\Entity\Statistic;
 use App\Entity\Stock;
@@ -41,6 +42,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Catégories de Restaurant', 'fas fa-list', RestaurantCategory::class);
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-list', User::class);
         yield MenuItem::linkToCrud('Rôles', 'fas fa-list', Role::class);
+        yield MenuItem::linkToCrud('Avis', 'fas fa-list', Review::class);
         yield MenuItem::linkToCrud('Plats', 'fas fa-list', Dish::class);
         yield MenuItem::linkToCrud('Produits', 'fas fa-list', Product::class);
         yield MenuItem::linkToCrud('Catégories du Produit', 'fas fa-list', ProductCategory::class);

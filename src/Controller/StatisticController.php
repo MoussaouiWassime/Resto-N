@@ -62,7 +62,7 @@ final class StatisticController extends AbstractController
         }
 
         if (empty($statistics)) {
-            $this->addFlash('danger', "Aucune donnée de visites n'a été trouvée.");
+            $this->addFlash('danger', "Aucune donnée de Commandes n'a été trouvée.");
 
             return $this->redirectToRoute('app_statistic', [
                 'id' => $restaurant->getId(),
@@ -99,7 +99,7 @@ final class StatisticController extends AbstractController
         }
 
         if (empty($statistics)) {
-            $this->addFlash('danger', "Aucune donnée de visites n'a été trouvée.");
+            $this->addFlash('danger', "Aucune donnée de Visites n'a été trouvée.");
 
             return $this->redirectToRoute('app_statistic', [
                 'id' => $restaurant->getId(),
@@ -136,7 +136,7 @@ final class StatisticController extends AbstractController
         }
 
         if (empty($statistics)) {
-            $this->addFlash('danger', "Aucune donnée de visites n'a été trouvée.");
+            $this->addFlash('danger', "Aucune donnée du Chiffre d'Affaire n'a été trouvée.");
 
             return $this->redirectToRoute('app_statistic', [
                 'id' => $restaurant->getId(),

@@ -42,13 +42,11 @@ class UserCrudController extends AbstractCrudController
             TextField::new('lastName', 'Nom de famille'),
             ArrayField::new('roles', 'Rôle')
                 ->formatValue(function ($roles, $entity) {
-                    if (in_array('ROLE_ADMIN', $roles)) {
-                        return '<i class="fa-solid fa-user-gear"></i>';
-                    } elseif (in_array('ROLE_USER', $roles)) {
-                        return '<i class="fa-solid fa-user"></i>';
-                    } else {
-                        return '';
-                    }
+                    return in_array('ROLE_ADMIN', $roles)
+                        ? '<i class="fa-solid fa-user-gear"></i>'
+                        : (in_array('ROLE_USER', $roles)
+                            ? '<i class="fa-solid fa-user"></i>'
+                            : '');
                 }),
             EmailField::new('email', 'Email'),
             TextField::new('phone', 'Téléphone'),

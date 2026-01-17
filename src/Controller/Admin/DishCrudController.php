@@ -3,15 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Dish;
-use Doctrine\ORM\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class DishCrudController extends AbstractCrudController
@@ -23,6 +22,13 @@ class DishCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Plats');
     }
 
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->disable(Action::NEW)
+            ->disable(Action::EDIT);
+    }
+
     public static function getEntityFqcn(): string
     {
         return Dish::class;
@@ -31,18 +37,10 @@ class DishCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->hideOnForm(),
+            IdField::new('id'),
             TextField::new('name', 'Nom du Plat'),
-            TextareaField::new('description', 'Description du Plat')
-                ->setNumOfRows(15),
+            TextField::new('description', 'Description du Plat'),
             AssociationField::new('restaurant', 'Restaurant associé')
-                ->setFormTypeOptions([
-                    'choice_label' => 'name',
-                    'query_builder' => static function (EntityRepository $er) {
-                        return $er->createQueryBuilder('r')
-                            ->orderBy('r.name', 'ASC');
-                    },
-                ])
                 ->formatValue(static function ($value, $entity) {
                     return $value ? $value->getName() : 'Aucun';
                 }),
@@ -51,24 +49,13 @@ class DishCrudController extends AbstractCrudController
                 ->setStoredAsCents(),
             ImageField::new('photo', 'Image du plat')
                 ->setUploadDir('public/images/plats'),
-            ChoiceField::new('category', 'Catégorie')
+            TextField::new('category', 'Catégorie')
                 ->formatValue(static function ($value, $entity) {
-                    if ('B' == $value) {
-                        return 'Boisson';
-                    } elseif ('E' === $value) {
-                        return 'Entrée';
-                    } elseif ('P' === $value) {
-                        return 'Plat Principal';
-                    } else {
-                        return 'Dessert';
-                    }
-                })
-                ->setChoices([
-                    'Entrée' => 'E',
-                    'Plat' => 'P',
-                    'Dessert' => 'D',
-                    'Boisson' => 'B',
-                ]),
+                    return 'B' === $value ? 'Boisson' :
+                        ('E' === $value ? 'Entrée' :
+                            ('P' === $value ? 'Plat Principal' :
+                                'Dessert'));
+                }),
         ];
     }
 }

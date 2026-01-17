@@ -3,7 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\OrderItem;
-use Doctrine\ORM\EntityRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -15,8 +16,15 @@ class OrderItemCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Liste des Plats de la Commande')
-            ->setEntityLabelInPlural('Listes des Plats de la Commande');
+            ->setEntityLabelInSingular('Contenu de la Commande')
+            ->setEntityLabelInPlural('Contenu des Commande');
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->disable(Action::NEW)
+            ->disable(Action::EDIT);
     }
 
     public static function getEntityFqcn(): string
@@ -27,36 +35,16 @@ class OrderItemCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')
-                ->hideOnForm(),
+            IdField::new('id'),
             AssociationField::new('order', 'Commande')
-                ->setFormTypeOptions([
-                    'choice_label' => 'id',
-                    'query_builder' => static function (EntityRepository $er) {
-                        return $er->createQueryBuilder('o')
-                            ->orderBy('o.id');
-                    },
-                ])
                 ->formatValue(static function ($value, $entity) {
                     return 'N°'.$value->getId();
                 }),
             AssociationField::new('dish', 'Plat')
                 ->formatValue(static function ($value, $entity) {
                     return $value->getName();
-                })
-                ->setFormTypeOptions([
-                    'choice_label' => 'name',
-                    'query_builder' => static function (EntityRepository $er) {
-                        return $er->createQueryBuilder('d')
-                            ->orderBy('d.name');
-                    },
-                ]),
-            IntegerField::new('quantity', 'Quantité')
-                ->setFormTypeOptions([
-                    'attr' => [
-                        'min' => 0,
-                    ],
-                ]),
+                }),
+            IntegerField::new('quantity', 'Quantité'),
         ];
     }
 }

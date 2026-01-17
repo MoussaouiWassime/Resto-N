@@ -21,19 +21,24 @@
     <div class="d-flex flex-column align-items-center mt-5">
         {% if countOrder > 0 %}
             <a href="{{ path('app_statistic_order', { id : restaurant.id }) }}">
-                <span class="btn btn-primary">Commandes</span>
+                <span class="btn btn-secondary">Commandes</span>
             </a>
         {% endif %}
         {% if countVisit > 0 %}
             <a href="{{ path('app_statistic_visit', { id : restaurant.id }) }}">
-                <span class="btn btn-primary">Visites</span>
+                <span class="btn btn-secondary">Visites</span>
             </a>
         {% endif %}
         {% if countIncome > 0 %}
             <a href="{{ path('app_statistic_income', { id : restaurant.id }) }}">
-                <span class="btn btn-primary">Chiffre d'affaire</span>
+                <span class="btn btn-secondary">Chiffre d'affaire</span>
             </a>
         {% endif %}
+        <div class="mb-0">
+            <a href="{{ path('app_restaurant_manage', {id : restaurant.id}) }}" class="btn btn-primary">Retour au menu de Gestion</a>
+        </div>
     </div>
+
+
 
 {% endblock %}

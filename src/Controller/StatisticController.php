@@ -22,7 +22,9 @@ final class StatisticController extends AbstractController
         $user = $this->getUser();
         $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
 
-        if (null === $role || 'P' !== $role->getRole()) {
+        if (!$role || 'P' !== $role->getRole()) {
+            $this->addFlash('danger', "Vous n'avez pas accès à ce contenu.");
+
             return $this->redirectToRoute('app_restaurant', [], 307);
         }
 
@@ -53,8 +55,19 @@ final class StatisticController extends AbstractController
             ['date' => 'ASC']
         );
 
-        if (null === $role || 'P' !== $role->getRole() || empty($statistics)) {
+        if (!$role || 'P' !== $role->getRole()) {
+            $this->addFlash('danger', "Vous n'avez pas accès à ce contenu.");
+
             return $this->redirectToRoute('app_restaurant', [], 307);
+        }
+
+        if (empty($statistics)) {
+            $this->addFlash('danger', "Aucune donnée de visites n'a été trouvée.");
+
+            return $this->redirectToRoute('app_statistic', [
+                'id' => $restaurant->getId(),
+                'restaurant' => $restaurant,
+            ], 307);
         }
 
         return $this->render('statistic/orderStats.html.twig', [
@@ -79,8 +92,19 @@ final class StatisticController extends AbstractController
             ['date' => 'ASC']
         );
 
-        if (null === $role || 'P' !== $role->getRole() || empty($statistics)) {
+        if (null === $role || 'P' !== $role->getRole()) {
+            $this->addFlash('danger', "Vous n'avez pas accès à ce contenu.");
+
             return $this->redirectToRoute('app_restaurant', [], 307);
+        }
+
+        if (empty($statistics)) {
+            $this->addFlash('danger', "Aucune donnée de visites n'a été trouvée.");
+
+            return $this->redirectToRoute('app_statistic', [
+                'id' => $restaurant->getId(),
+                'restaurant' => $restaurant,
+            ], 307);
         }
 
         return $this->render('statistic/visitStats.html.twig', [
@@ -105,8 +129,19 @@ final class StatisticController extends AbstractController
             ['date' => 'ASC']
         );
 
-        if (null === $role || 'P' !== $role->getRole() || empty($statistics)) {
+        if (null === $role || 'P' !== $role->getRole()) {
+            $this->addFlash('danger', "Vous n'avez pas accès à ce contenu.");
+
             return $this->redirectToRoute('app_restaurant', [], 307);
+        }
+
+        if (empty($statistics)) {
+            $this->addFlash('danger', "Aucune donnée de visites n'a été trouvée.");
+
+            return $this->redirectToRoute('app_statistic', [
+                'id' => $restaurant->getId(),
+                'restaurant' => $restaurant,
+            ], 307);
         }
 
         return $this->render('statistic/incomeStats.html.twig', [

@@ -223,7 +223,7 @@ final class ReservationController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Réservation modifié avec succès.');
 
-            return $this->redirectToRoute('app_reservation', [], 307);
+            return $this->redirectToRoute('app_reservation');
         }
 
         return $this->render('reservation/update.html.twig', [
@@ -233,7 +233,7 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/reservation/delete/{id}', name: 'app_reservation_delete')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(
         RoleRepository $roleRepository,
         StatisticRepository $statisticRepository,
@@ -241,17 +241,6 @@ final class ReservationController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager): Response
     {
-        $restaurant = $reservation->getRestaurant();
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $user]);
-
-        if (null === $role) {
-            if ($reservation->getUser() !== $user) {
-                return $this->redirectToRoute('app_restaurant', [],
-                    307);
-            }
-        }
-
         $form = $this->createFormBuilder()
             ->add('delete', SubmitType::class, ['label' => 'Supprimer'])
             ->add('cancel', SubmitType::class, ['label' => 'Annuler'])

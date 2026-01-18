@@ -1,0 +1,26 @@
+{% block body %}
+    <h1>Réservation confirmée</h1>
+
+    <p>Bonjour,</p>
+
+    <p>
+        Votre réservation au restaurant <strong>{{ restaurant.name }}</strong> a bien été enregistrée.
+    </p>
+
+    <p>Voici les détails de votre rendez-vous :</p>
+
+    <p>
+        <strong>Date :</strong> {{ reservation.reservationDate|date('d/m/Y') }}<br>
+        <strong>Heure :</strong> {{ reservation.reservationDate|date('H:i') }}<br>
+        <strong>Nombre de personnes :</strong> {{ reservation.numberOfPeople }}
+        {% if reservation.restaurantTable %}
+            <br><strong>Table n° :</strong> {{ reservation.restaurantTable.number }}
+        {% endif %}
+    </p>
+
+    <p>
+        <a href="{{ url('app_reservation') }}">
+            Voir mes réservations
+        </a>
+    </p>
+{% endblock %}

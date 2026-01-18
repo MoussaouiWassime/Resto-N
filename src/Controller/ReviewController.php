@@ -72,6 +72,7 @@ final class ReviewController extends AbstractController
             if ($form->get('delete')->isClicked()) {
                 $entityManager->remove($review);
                 $entityManager->flush();
+                $this->addFlash('success', 'Votre avis a été supprimé.');
             }
 
             // Dans tous les cas (suppression ou annulation), on retourne au restaurant

@@ -127,6 +127,7 @@ final class StockController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($stock);
             $entityManager->flush();
+            $this->addFlash('success', 'Produit ajouté au stock avec succès.');
 
             return $this->redirectToRoute('app_stock_index', ['id' => $restaurant->getId()]);
         }
@@ -227,6 +228,7 @@ final class StockController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $stock->setQuantity($form->get('quantity')->getData());
             $entityManager->flush();
+            $this->addFlash('success', 'Quantité mise à jour.');
 
             return $this->redirectToRoute('app_stock_index', ['id' => $restaurant->getId()]);
         }
@@ -269,6 +271,7 @@ final class StockController extends AbstractController
             if ($form->get('delete')->isClicked()) {
                 $em->remove($stock);
                 $em->flush();
+                $this->addFlash('success', 'Produit retiré du stock.');
             }
 
             return $this->redirectToRoute('app_stock_index', ['id' => $restaurant->getId()]);

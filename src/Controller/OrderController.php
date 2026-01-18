@@ -11,10 +11,13 @@ use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -62,6 +65,7 @@ final class OrderController extends AbstractController
         DishRepository $dishRepository,
         Request $request,
         EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
     ): Response {
         $restaurant = $restaurantRepository->find($id);
 
@@ -93,7 +97,23 @@ final class OrderController extends AbstractController
                 $entityManager->persist($order);
                 $entityManager->flush();
 
+                $this->addFlash('success', 'Votre commande a été passé avec succès !');
+
+                $email = (new TemplatedEmail())
+                    ->from(new Address('resto.n@reston.com', "Resto'N"))
+                    ->to($this->getUser()->getEmail())
+                    ->subject('Confirmation de votre commande')
+                    ->htmlTemplate('emails/order_confirmation.html.twig')
+                    ->context([
+                        'order' => $order,
+                        'user' => $this->getUser(),
+                    ]);
+
+                $mailer->send($email);
+
                 return $this->redirectToRoute('app_order', [], 307);
+            } else {
+                $this->addFlash('danger', 'Votre commande est vide.');
             }
         }
 
@@ -134,6 +154,8 @@ final class OrderController extends AbstractController
             if ($form->get('delete')->isClicked()) {
                 $entityManager->remove($order);
                 $entityManager->flush();
+
+                $this->addFlash('success', 'La commande a été supprimé de votre historique.');
             }
 
             return $this->redirectToRoute('app_order', [], 307);

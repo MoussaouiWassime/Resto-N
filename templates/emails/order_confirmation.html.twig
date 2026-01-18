@@ -1,0 +1,28 @@
+{% block body %}
+    <h1>Confirmation de commande</h1>
+
+    <p>Bonjour {{ user.firstname }},</p>
+
+    <p>
+        Nous avons bien reçu votre commande chez <strong>{{ order.restaurant.name }}</strong>.
+    </p>
+
+    <h3>Récapitulatif :</h3>
+
+    <ul>
+        {% set total = 0 %}
+        {% for item in order.orderItems %}
+            {% set sousTotal = item.dish.price * item.quantity %}
+            {% set total = total + sousTotal %}
+            <li>
+                <strong>{{ item.dish.name }}</strong> x {{ item.quantity }} : {{ sousTotal }} €
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p>
+        <strong>Total de la commande : {{ total }} €</strong>
+    </p>
+
+    <p>Merci et bon appétit !</p>
+{% endblock %}

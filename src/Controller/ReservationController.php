@@ -10,10 +10,13 @@ use App\Repository\RestaurantRepository;
 use App\Repository\RestaurantTableRepository;
 use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -51,6 +54,7 @@ final class ReservationController extends AbstractController
         RestaurantTableRepository $tableRepository,
         Request $request,
         EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
     ): Response {
         $restaurant = $restaurantRepository->find($id);
 
@@ -97,18 +101,33 @@ final class ReservationController extends AbstractController
                     $reservation->setRestaurantTable($assignedTable);
                     $entityManager->persist($reservation);
                     $entityManager->flush();
+                    $this->addFlash('success', 'Votre réservation est confirmée !');
+
+                    $email = (new TemplatedEmail())
+                        ->from(new Address('resto.n@reston.com', "Resto'N"))
+                        ->to($this->getUser()->getEmail())
+                        ->subject('Confirmation de réservation - '.$restaurant->getName())
+                        ->htmlTemplate('emails/reservation_confirmation.html.twig')
+                        ->context([
+                            'reservation' => $reservation,
+                            'restaurant' => $restaurant,
+                        ]);
+
+                    $mailer->send($email);
 
                     return $this->redirectToRoute('app_reservation');
                 } else {
                     $errorMessage = 'Aucune table disponible pour ce créneau.';
+                    $this->addFlash('danger', $errorMessage);
                 }
+            } else {
+                $this->addFlash('danger', $errorMessage);
             }
         }
 
         return $this->render('reservation/create.html.twig', [
             'form' => $form,
             'restaurant' => $restaurant,
-            'error' => $errorMessage,
         ], new Response(null, $form->isSubmitted() ? 422 : 200));
     }
 
@@ -140,6 +159,7 @@ final class ReservationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $this->addFlash('success', 'Réservation modifié avec succès.');
 
             return $this->redirectToRoute('app_reservation');
         }
@@ -180,6 +200,7 @@ final class ReservationController extends AbstractController
             if ($form->get('delete')->isClicked()) {
                 $entityManager->remove($reservation);
                 $entityManager->flush();
+                $this->addFlash('success', "Réservation supprimé de l'historique avec succès.");
             }
 
             return $this->redirectToRoute('app_reservation');

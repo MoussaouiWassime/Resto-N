@@ -61,7 +61,7 @@ final class InvitationController extends AbstractController
                 $entityManager->flush();
 
                 $email = (new TemplatedEmail())
-                    ->from(new Address('ton.email@gmail.com', "Resto'N"))
+                    ->from(new Address('resto.n@reston.com', "Resto'N"))
                     ->to($serverUser->getEmail())
                     ->subject("Rejoignez l'équipe de ".$restaurant->getName())
                     ->htmlTemplate('emails/invitation.html.twig')

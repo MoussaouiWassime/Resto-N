@@ -64,6 +64,6 @@ final class ByRestaurantCest
         $I->see('En attente');
 
         $I->see('Modifier', 'a');
-        $I->see('Supprimer', 'a');
+        $I->see('Annuler', 'a');
     }
 }

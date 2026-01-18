@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Factory\RestaurantCategoryFactory;
 use App\Factory\RestaurantFactory;
 use App\Factory\ReviewFactory;
 use App\Factory\RoleFactory;
@@ -21,6 +22,7 @@ class ReviewFixtures extends Fixture
             'postal_code' => '51100',
             'city' => 'Reims',
             'image' => 'https://iut-info.univ-reims.fr/users/cutrona/intranet/css/images/jerome-cutrona.jpg',
+            'categories' => RestaurantCategoryFactory::randomRange(1, 2),
         ]);
 
         $cutrona = UserFactory::findBy(['lastName' => 'Cutrona']);

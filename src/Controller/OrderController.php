@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Restaurant;
+use App\Entity\Statistic;
 use App\Form\OrderType;
 use App\Repository\DishRepository;
 use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\RoleRepository;
+use App\Repository\StatisticRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,6 +65,7 @@ final class OrderController extends AbstractController
         int $id,
         RestaurantRepository $restaurantRepository,
         DishRepository $dishRepository,
+        StatisticRepository $statisticRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
@@ -86,15 +89,73 @@ final class OrderController extends AbstractController
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
 
+        $price = 0;
+
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($order->getOrderItems() as $item) {
                 if ($item->getQuantity() <= 0) {
                     $order->removeOrderItem($item);
+                } else {
+                    $price += $item->getDish()->getPrice() * $item->getQuantity();
                 }
             }
 
             if ($order->getOrderItems()->count() > 0) {
                 $entityManager->persist($order);
+
+                $date = clone $order->getOrderDate();
+                $date->setTime(0, 0);
+
+                if ('L' !== $order->getOrderType()) {
+                    $statisticVisites = $statisticRepository->findOneBy([
+                        'restaurant' => $restaurant,
+                        'statisticType' => 'NB_VISITES',
+                        'date' => $date,
+                    ]);
+                    if (!$statisticVisites) {
+                        $statisticVisites = (new Statistic())
+                            ->setRestaurant($restaurant)
+                            ->setStatisticType('NB_VISITES')
+                            ->setDate($date)
+                            ->setValue(1);
+                        $entityManager->persist($statisticVisites);
+                    } else {
+                        $statisticVisites->setValue($statisticVisites->getValue() + 1);
+                    }
+                }
+
+                $statisticCA = $statisticRepository->findOneBy([
+                    'restaurant' => $restaurant,
+                    'statisticType' => 'CA_JOURNALIER',
+                    'date' => $date,
+                ]);
+                if (!$statisticCA) {
+                    $statisticCA = (new Statistic())
+                        ->setRestaurant($restaurant)
+                        ->setStatisticType('CA_JOURNALIER')
+                        ->setDate($date)
+                        ->setValue($price);
+                    $entityManager->persist($statisticCA);
+                } else {
+                    $statisticCA->setValue($statisticCA->getValue() + $price);
+                }
+
+                $statisticCommandes = $statisticRepository->findOneBy([
+                    'restaurant' => $restaurant,
+                    'statisticType' => 'NB_COMMANDES',
+                    'date' => $date,
+                ]);
+                if (!$statisticCommandes) {
+                    $statisticCommandes = (new Statistic())
+                        ->setRestaurant($restaurant)
+                        ->setStatisticType('NB_COMMANDES')
+                        ->setDate($date)
+                        ->setValue(1);
+                    $entityManager->persist($statisticCommandes);
+                } else {
+                    $statisticCommandes->setValue($statisticCommandes->getValue() + 1);
+                }
+
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Votre commande a été passé avec succès !');
@@ -128,11 +189,12 @@ final class OrderController extends AbstractController
     public function delete(
         ?Order $order,
         RoleRepository $roleRepository,
+        StatisticRepository $statisticRepository,
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
         if (!$order) {
-            throw $this->createNotFoundException('Restaurant introuvable.');
+            throw $this->createNotFoundException('Commande introuvable.');
         }
 
         $user = $this->getUser();
@@ -152,7 +214,54 @@ final class OrderController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('delete')->isClicked()) {
+                $price = 0;
+                foreach ($order->getOrderItems() as $item) {
+                    $price += $item->getDish()->getPrice() * $item->getQuantity();
+                }
+
                 $entityManager->remove($order);
+
+                $date = clone $order->getOrderDate();
+                $date->setTime(0, 0);
+
+                if ('L' !== $order->getOrderType()) {
+                    $statisticVisits = $statisticRepository->findOneBy([
+                        'restaurant' => $restaurant,
+                        'statisticType' => 'NB_VISITES',
+                        'date' => $date,
+                    ]);
+                    if ($statisticVisits) {
+                        $statisticVisits->setValue($statisticVisits->getValue() - 1);
+                        if ($statisticVisits->getValue() <= 0) {
+                            $entityManager->remove($statisticVisits);
+                        }
+                    }
+                }
+
+                $statisticCommandes = $statisticRepository->findOneBy([
+                    'restaurant' => $restaurant,
+                    'statisticType' => 'NB_COMMANDES',
+                    'date' => $date,
+                ]);
+                if ($statisticCommandes) {
+                    $statisticCommandes->setValue($statisticCommandes->getValue() - 1);
+                    if ($statisticCommandes->getValue() <= 0) {
+                        $entityManager->remove($statisticCommandes);
+                    }
+                }
+
+                $statisticIncome = $statisticRepository->findOneBy([
+                    'restaurant' => $restaurant,
+                    'statisticType' => 'CA_JOURNALIER',
+                    'date' => $date,
+                ]);
+                if ($statisticIncome) {
+                    $statisticIncome->setValue($statisticIncome->getValue() - $price);
+                    if ($statisticIncome->getValue() <= 0) {
+                        $entityManager->remove($statisticIncome);
+                    }
+                }
+
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La commande a été supprimé de votre historique.');

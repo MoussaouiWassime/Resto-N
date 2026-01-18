@@ -1,184 +1,143 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ restaurant.name }}{% endblock %}
-{% block head %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-{% endblock %}
 
 {% block main %}
-    <div class="container mt-3">
-    <script>
-        fetch("https://nominatim.openstreetmap.org/search?format=json&q={{ restaurant.address }} {{ restaurant.postalCode }} {{ restaurant.city }}")
-            .then(res => res.json())
-            .then(data => {
-                // On n'affiche la map que si l'adresse est valide (elle a été trouvé sur OpenStreetMap
-                if (!data.length) {
-                    return;
-                }
-                //On récupère les coordonnées du restaurant
-                const lat = data[0].lat;
-                const lon = data[0].lon;
-                //On modifie la div de la map, pour permettre son affichage
-                const mapDiv = document.getElementById("map");
-                mapDiv.style.display = "block";
-
-                //On créer la map (Voir doc de Leaflet)
-                const map = L.map('map').setView([lat, lon], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
-
-                //On ajoute le marqueur sur la carte (Voir doc de Leaflet)
-                L.marker([lat, lon]).addTo(map)
-                    .bindPopup("{{ restaurant.address }}, {{ restaurant.city }}");
-            })
-            .catch(() => {
-                // Si l'on n'obtient pas de réponse, l'on n'affiche pas la map.
-                document.getElementById("map").style.display = "none";
-            });
-    </script>
-        <div class="mb-3 d-flex">
-            <div>
-                <img src="{{ asset('images/restaurants/' ~ restaurant.image) }}"
-                     class="rounded float-right logo"
-                     alt="Photo de {{ restaurant.name }}">
-            </div>
-        {# En raison de la BD généré avec faker actuel, cette image ne fonctionnera pas et renverra le contenu alternatif #}
-            <div class="ms-3 flex-grow-1 text-end">
-                <div class="mb-2 fs-5">
-                    <span class="description">
-                        {{ restaurant.description }}
-                    </span>
+    <div class="container py-5">
+        <section class="mb-5">
+            <h2 class="h4 border-bottom pb-2 mb-4">Notre Carte</h2>
+            {% if restaurant.dishes is empty %}
+                <div class="alert alert-secondary">Aucun plat disponible pour le moment.</div>
+            {% else %}
+                <div class="d-flex flex-nowrap overflow-auto pb-4 gap-3">
+                    {% for dish in restaurant.dishes %}
+                        <div class="card border-0 flex-shrink-0 rounded-3" style="width: 260px;">
+                            <div class="ratio ratio-1x1">
+                                <img src="{{ asset('images/dishes/' ~ dish.photo) }}" class="card-img-top object-fit-cover rounded-top-3" alt="{{ dish.name }}">
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title h6 fw-bold text-truncate mb-0" title="{{ dish.name }}">
+                                        {{ dish.name }}
+                                    </h5>
+                                    <span class="badge bg-primary rounded-pill ms-2">{{ dish.price }} €</span>
+                                </div>
+                                <p class="card-text small text-muted text-truncate mb-3">
+                                    {{ dish.description }}
+                                </p>
+                                <div class="mt-auto d-grid gap-2">
+                                    <a href="{{ path('app_dish_show', {id: dish.id}) }}" class="btn btn-outline-primary btn-sm">
+                                        Voir
+                                    </a>
+                                </div>
+                                {% if role and role.role == 'P' %}
+                                    <div class="mt-2 d-flex justify-content-between border-top pt-2">
+                                        <a href="{{ path('app_dish_update', {id: dish.id}) }}" class="text-decoration-none small text-secondary">Modifier</a>
+                                        <a href="{{ path('app_dish_delete', {id: dish.id}) }}" class="text-decoration-none small text-danger">Supprimer</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-                <div>
-                    <span class="address badge bg-info fs-6">
-                        {{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}
-                    </span>
+            {% endif %}
+        </section>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-8">
+                <div class="card border-0 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h1 class="h3 fw-bold mb-0">{{ restaurant.name }}</h1>
+                            {% if averageRating %}
+                                <span class="badge bg-warning text-dark">★ {{ averageRating|number_format(1) }}</span>
+                            {% endif %}
+                        </div>
+                        <p class="card-text text-secondary lead">{{ restaurant.description }}</p>
+
+                        <div class="border-top pt-3 mt-4 text-muted small">
+                            <i class="bi bi-geo-alt-fill me-1"></i>
+                            {{ restaurant.address }}, {{ restaurant.postalCode }} {{ restaurant.city }}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    <div id="map" style="height: 300px; width: 100%; display: none"></div>
-    {# Ici, il faudrait un bouton pour accéder au pannel de gestion si l'utilisateur est connecté et propriétaire du
-    restaurant. Pour cela, il faut que la connexion ai été géré. #}
-        <div class="mb-3">
-            <nav class="filtres-dish">
-                <a href="#" data-category="B" class="active btn btn-secondary">Les boissons</a>
-                <a href="#" data-category="E" class="btn btn-secondary">Les entrées</a>
-                <a href="#" data-category="P" class="btn btn-secondary">Les plats</a>
-                <a href="#" data-category="D" class="btn btn-secondary">Les desserts</a>
-            </nav>
-        </div>
-    <div id="liste-plats" class="listPlat">
-        {% for dish in restaurant.dishes %}
-            <div class="mb-3">
-            <div class="plat" data-category="{{ dish.category }}">
-                <div class="card" style="width: 18rem;">
-                    <img src="{{ asset('images/dishes/' ~ dish.photo) }}" class="rounded float-right logo" alt="Photo de {{ dish.name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ dish.name }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ dish.price }} €</h6>
-                        <p class="card-text">{{ dish.description }}</p>
-                        <a href="{{ path('app_dish_show', {id: dish.id}) }}" class="btn btn-primary">Détails</a>
-                        {% if role and role.role == 'P' %}
-                        <a href="{{ path('app_dish_update', {id: dish.id}) }}">
-                            <span class="btn bg-success">Modifier un plat</span>
+
+            <div class="col-lg-4">
+                <div class="card border-0 bg-light">
+                    <div class="card-body p-4 d-grid gap-3">
+                        <a href="{{ path('app_order_create', {id: restaurant.id}) }}" class="btn btn-primary btn-lg fw-bold">
+                            Commander
                         </a>
-                        <a href="{{ path('app_dish_delete', {id: dish.id}) }}">
-                            <span class="btn bg-danger">Supprimer un plat</span>
+                        <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}" class="btn btn-outline-primary btn-lg">
+                            Réserver une table
                         </a>
+
+                        {% if role %}
+                            <hr class="text-secondary">
+                            <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-dark">
+                                Espace Gestion
+                            </a>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            </div>
-        {% endfor %}
-    </div>
-    <nav class="action-restaurant">
-        {% if role %}
-            <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-primary manage">Gérer le restaurant</a>
-        {% endif %}
-        <a href="{{ path('app_reservation_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Réserver une table</a>
-        <a href="{{ path('app_order_create', {id: restaurant.id}) }}" class="btn btn-primary reservCommand">Commander</a>
-    </nav>
-    <script>
-        const filtres = document.querySelectorAll('.filtres-dish a');
-        const plats = document.querySelectorAll('.plat');
-
-        function filtrerPlats(category) {
-            //On retire les marqueurs active pour retirer les plats que l'on ne veut plus afficher
-            plats.forEach(plat => {
-                plat.classList.remove('active');
-            });
-
-            //On ajoute les marqueurs active pour les plats correspondants à la category voulue
-            const platAfficher = document.querySelectorAll(`.plat[data-category*="${category}"]`);
-            platAfficher.forEach(plat => {
-                plat.classList.add('active');
-            })
-        }
-
-        //On ajoute un event en cas de clic sur les boutons des catégories
-        filtres.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                document.querySelector('.filtres-dish a.active').classList.remove('active');
-                this.classList.add('active');
-                //On récupère la category voulue
-                const category = this.getAttribute('data-category');
-                //On filtre les plats pour afficher ceux correspondant à la category voulue
-                filtrerPlats(category);
-            });
-        });
-        //On a défini la catégorie par défaut à afficher
-        const DefaultCategory = document.querySelector('.filtres-dish a.active').getAttribute('data-category');
-        //On filtre pour afficher les plats de la category par défaut
-        filtrerPlats(DefaultCategory);
-    </script>
-    </div>
-    <div class="container">
-        <h3>Avis clients</h3>
-        <div>
-            {% if averageRating %}
-                Note moyenne : {{ averageRating|number_format(1) }} / 5 ({{ reviews|length }} avis)
-            {% else %}
-                Aucun avis pour le moment.
-            {% endif %}
         </div>
 
-        <hr>
+        <section class="row justify-content-center mb-5">
+            <div class="col-lg-8">
+                <div class="border-top pt-5">
+                    <h3 class="h5 mb-4">Avis clients</h3>
 
-        {% if app.user %}
-            {% if userReview %}
-                <div class="alert alert-info d-flex justify-content-between align-items-center">
-                    Vous avez déjà donné votre avis sur ce restaurant.
-                    <div>
-                        <a href="{{ path('app_review_update', {id: userReview.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
-                        <a href="{{ path('app_review_delete', {id: userReview.id}) }}" class="btn btn-sm btn-danger">Supprimer</a>
+                    {% if app.user and reviewForm and not userReview %}
+                        <div class="card bg-light border-0 mb-4">
+                            <div class="card-body">
+                                {{ form_start(reviewForm) }}
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-3">
+                                        {{ form_label(reviewForm.rating, 'Note', {'label_attr': {'class': 'form-label small text-muted'}}) }}
+                                        {{ form_widget(reviewForm.rating, {'attr': {'class': 'form-select form-select-sm'}}) }}
+                                    </div>
+                                    <div class="col-md-7">
+                                        {{ form_label(reviewForm.comment, 'Commentaire', {'label_attr': {'class': 'form-label small text-muted'}}) }}
+                                        {{ form_widget(reviewForm.comment, {'attr': {'class': 'form-control form-control-sm', 'rows': 1, 'placeholder': 'Votre expérience...'}}) }}
+                                    </div>
+                                </div>
+                                <div class="text-danger small mt-2">
+                                    {{ form_errors(reviewForm.rating) }}
+                                    {{ form_errors(reviewForm.comment) }}
+                                </div>
+                                {{ form_end(reviewForm) }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="bg-white rounded p-4">
+                        <div class="list-group list-group-flush">
+                            {% for review in reviews %}
+                                <div class="list-group-item border-bottom px-0 py-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                            {{ review.user.firstName}}
+                                        <span class="text-warning small">
+                                            {% for i in 1..5 %}
+                                                {{ i <= review.rating ? '★' : '☆' }}
+                                            {% endfor %}
+                                        </span>
+                                    </div>
+                                    <p class="text-secondary small mb-0 ms-1 ps-5">
+                                        {{ review.comment|nl2br }}
+                                    </p>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-3 text-muted small fst-italic">
+                                    Aucun avis pour le moment.
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
-            {% elseif reviewForm %}
-                <h4>Laisser un commentaire</h4>
-                {{ form_start(reviewForm) }}
-                    {{ form_row(reviewForm.rating) }}
-                    {{ form_row(reviewForm.comment) }}
-                {{ form_end(reviewForm) }}
-            {% endif %}
-            <hr>
-        {% else %}
-            <p><a href="{{ path('app_login') }}">Connectez-vous</a> pour noter ce restaurant.</p>
-        {% endif %}
 
-        <div>
-            {% for review in reviews %}
-                <div class="border p-3 mb-2 rounded bg-white">
-                    {{ review.user.firstName }}
-                    <span class="text-muted">- {{ review.createdAt|date('d/m/Y') }}</span>
-
-                    <p class="mb-1 mt-2">Note : {{ review.rating }}/5
-                    <p>{{ review.comment }}</p>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        </section>
     </div>
 {% endblock %}

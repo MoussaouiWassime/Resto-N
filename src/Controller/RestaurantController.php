@@ -7,6 +7,7 @@ use App\Entity\Review;
 use App\Entity\Role;
 use App\Form\RestaurantType;
 use App\Form\ReviewType;
+use App\Repository\RestaurantCategoryRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,12 +23,22 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class RestaurantController extends AbstractController
 {
     #[Route('/restaurant', name: 'app_restaurant')]
-    public function index(RestaurantRepository $restaurant, #[MapQueryParameter] string $search = ''): Response
-    {
-        $restaurants = $restaurant->search($search);
+    public function index(
+        RestaurantRepository $restaurantRepository,
+        RestaurantCategoryRepository $categoryRepository,
+        #[MapQueryParameter] string $search = '',
+    ): Response {
+        if ($search) {
+            $restaurants = $restaurantRepository->search($search);
+            $categories = [];
+        } else {
+            $restaurants = [];
+            $categories = $categoryRepository->findAll();
+        }
 
         return $this->render('restaurant/index.html.twig', [
             'restaurants' => $restaurants,
+            'categories' => $categories,
             'search' => $search,
         ]);
     }
@@ -42,7 +53,6 @@ final class RestaurantController extends AbstractController
         $user = $this->getUser();
         $role = $roleRepository->findOneBy(['restaurant' => $restaurant, 'user' => $user]);
 
-        // Calcul de la note moyenne (inchangé)
         $reviews = $restaurant->getReviews();
         $averageRating = null;
         if (count($reviews) > 0) {
@@ -53,7 +63,6 @@ final class RestaurantController extends AbstractController
             $averageRating = $total / count($reviews);
         }
 
-        // 1. On cherche si un avis existe déjà pour cet utilisateur
         $existingReview = null;
         if ($user) {
             $existingReview = $entityManager->getRepository(Review::class)->findOneBy([
@@ -62,7 +71,6 @@ final class RestaurantController extends AbstractController
             ]);
         }
 
-        // 2. Gestion du formulaire : UNIQUEMENT pour la création, et UNIQUEMENT si pas d'avis existant
         $form = null;
         if ($user && !$existingReview) {
             $newReview = new Review();
@@ -89,7 +97,7 @@ final class RestaurantController extends AbstractController
             'reviewForm' => $form,
             'averageRating' => $averageRating,
             'reviews' => $reviews,
-            'userReview' => $existingReview, // On passe l'avis existant pour afficher un message à la place du form
+            'userReview' => $existingReview,
         ]);
     }
 
@@ -189,7 +197,6 @@ final class RestaurantController extends AbstractController
                 $entityManager->remove($restaurant);
                 $entityManager->flush();
                 $this->addFlash('success', 'Votre restaurant a été supprimé.');
-
 
                 return $this->redirectToRoute('app_restaurant', [], 307);
             } elseif ($form->get('cancel')->isClicked()) {

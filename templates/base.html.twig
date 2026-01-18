@@ -34,7 +34,7 @@
                 <div class="d-flex ms-2">
                     {% if app.user %}
                         <a class="btn btn-secondary" href="{{ path('app_profile_show') }}">Mon profil</a>
-                        {% if app.user.roles[0] == 'ROLE_ADMIN' %}
+                        {% if 'ROLE_ADMIN' in app.user.roles %}
                             <a class="btn bg-info" href="{{ path('admin') }}">Admin</a>
                         {% endif %}
                     {% else %}

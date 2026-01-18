@@ -11,6 +11,24 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class StatisticController extends AbstractController
 {
+    private const STAT_TYPES = [
+        'order' => [
+            'constant' => 'NB_COMMANDES',
+            'label' => 'Commandes',
+            'template' => 'statistic/orderStats.html.twig',
+        ],
+        'visit' => [
+            'constant' => 'NB_VISITES',
+            'label' => 'Visites',
+            'template' => 'statistic/visitStats.html.twig',
+        ],
+        'income' => [
+            'constant' => 'CA_JOURNALIER',
+            'label' => "Chiffre d'Affaire",
+            'template' => 'statistic/incomeStats.html.twig',
+        ],
+    ];
+
     #[Route('restaurant/{id}/statistic', name: 'app_statistic', requirements: ['id' => '\d+'])]
     public function index(
         int $id,
@@ -39,9 +57,10 @@ final class StatisticController extends AbstractController
         ]);
     }
 
-    #[Route('restaurant/{id}/statistic/order', name: 'app_statistic_order', requirements: ['id' => '\d+'])]
-    public function orderStats(
+    #[Route('restaurant/{id}/statistic/{type}', name: 'app_statistic_show', requirements: ['id' => '\d+'])]
+    public function showStats(
         int $id,
+        string $type,
         StatisticRepository $statisticRepository,
         RestaurantRepository $restaurantRepository,
         RoleRepository $roleRepository): Response
@@ -50,8 +69,10 @@ final class StatisticController extends AbstractController
         $user = $this->getUser();
         $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
 
+        $statType = self::STAT_TYPES[$type];
+
         $statistics = $statisticRepository->findBy(
-            ['restaurant' => $restaurant, 'statisticType' => 'NB_COMMANDES'],
+            ['restaurant' => $restaurant, 'statisticType' => $statType['constant']],
             ['date' => 'ASC']
         );
 
@@ -70,81 +91,7 @@ final class StatisticController extends AbstractController
             ], 307);
         }
 
-        return $this->render('statistic/orderStats.html.twig', [
-            'statistics' => $statistics,
-            'restaurant' => $restaurant,
-        ]);
-    }
-
-    #[Route('restaurant/{id}/statistic/visit', name: 'app_statistic_visit', requirements: ['id' => '\d+'])]
-    public function visitStats(
-        int $id,
-        StatisticRepository $statisticRepository,
-        RestaurantRepository $restaurantRepository,
-        RoleRepository $roleRepository): Response
-    {
-        $restaurant = $restaurantRepository->findWithId($id);
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        $statistics = $statisticRepository->findBy(
-            ['restaurant' => $restaurant, 'statisticType' => 'NB_VISITES'],
-            ['date' => 'ASC']
-        );
-
-        if (null === $role || 'P' !== $role->getRole()) {
-            $this->addFlash('danger', "Vous n'avez pas accès à ce contenu.");
-
-            return $this->redirectToRoute('app_restaurant', [], 307);
-        }
-
-        if (empty($statistics)) {
-            $this->addFlash('danger', "Aucune donnée de Visites n'a été trouvée.");
-
-            return $this->redirectToRoute('app_statistic', [
-                'id' => $restaurant->getId(),
-                'restaurant' => $restaurant,
-            ], 307);
-        }
-
-        return $this->render('statistic/visitStats.html.twig', [
-            'statistics' => $statistics,
-            'restaurant' => $restaurant,
-        ]);
-    }
-
-    #[Route('restaurant/{id}/statistic/income', name: 'app_statistic_income', requirements: ['id' => '\d+'])]
-    public function incomeStats(
-        int $id,
-        StatisticRepository $statisticRepository,
-        RestaurantRepository $restaurantRepository,
-        RoleRepository $roleRepository): Response
-    {
-        $restaurant = $restaurantRepository->findWithId($id);
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        $statistics = $statisticRepository->findBy(
-            ['restaurant' => $restaurant, 'statisticType' => 'CA_JOURNALIER'],
-            ['date' => 'ASC']
-        );
-
-        if (null === $role || 'P' !== $role->getRole()) {
-            $this->addFlash('danger', "Vous n'avez pas accès à ce contenu.");
-
-            return $this->redirectToRoute('app_restaurant', [], 307);
-        }
-
-        if (empty($statistics)) {
-            $this->addFlash('danger', "Aucune donnée du Chiffre d'Affaire n'a été trouvée.");
-
-            return $this->redirectToRoute('app_statistic', [
-                'id' => $restaurant->getId(),
-                'restaurant' => $restaurant,
-            ], 307);
-        }
-
-        return $this->render('statistic/incomeStats.html.twig', [
+        return $this->render($statType['template'], [
             'statistics' => $statistics,
             'restaurant' => $restaurant,
         ]);

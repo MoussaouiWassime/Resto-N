@@ -102,7 +102,10 @@ final class ReservationController extends AbstractController
                     return $this->redirectToRoute('app_reservation');
                 } else {
                     $errorMessage = 'Aucune table disponible pour ce créneau.';
+                    $this->addFlash('danger', $errorMessage);
                 }
+            } else {
+                $this->addFlash('danger', $errorMessage);
             }
         }
 

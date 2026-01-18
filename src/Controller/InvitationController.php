@@ -41,7 +41,7 @@ final class InvitationController extends AbstractController
 
         $serverUser = $userRepository->findOneBy(['email' => $emailTarget]);
         if ($serverUser == $user) {
-            $this->addFlash('warning', "Vous ne pouvez pas vous ajouter vous même !");
+            $this->addFlash('warning', 'Vous ne pouvez pas vous ajouter vous même !');
         } elseif ($serverUser) {
             $existingRole = $roleRepository->findOneBy(['user' => $serverUser, 'restaurant' => $restaurant]);
 
@@ -74,8 +74,7 @@ final class InvitationController extends AbstractController
                 $mailer->send($email);
                 $this->addFlash('success', 'Invitation envoyée au membre existant !');
             }
-        }
-        else {
+        } else {
             $email = (new TemplatedEmail())
                 ->from(new Address('resto.n@reston.com', "Resto'N"))
                 ->to($emailTarget)

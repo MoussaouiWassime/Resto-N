@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ReviewRepository;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[UniqueEntity(

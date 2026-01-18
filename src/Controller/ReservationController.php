@@ -144,6 +144,7 @@ final class ReservationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $this->addFlash('success', 'Réservation modifié avec succès.');
 
             return $this->redirectToRoute('app_reservation');
         }
@@ -184,6 +185,7 @@ final class ReservationController extends AbstractController
             if ($form->get('delete')->isClicked()) {
                 $entityManager->remove($reservation);
                 $entityManager->flush();
+                $this->addFlash('success', "Réservation supprimé de l'historique avec succès.");
             }
 
             return $this->redirectToRoute('app_reservation');

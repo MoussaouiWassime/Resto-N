@@ -19,6 +19,14 @@
                 <h5 class="mb-0">
                 <span class="name-index">{{ reservation.restaurant.name }}</span>
                 </h5>
+
+                {% if reservation.status == 'A' %}
+                    <span class="badge bg-danger">Annulée</span>
+                {% elseif reservation.status == 'T' %}
+                    <span class="badge bg-success">Terminée</span>
+                {% else %}
+                    <span class="badge bg-success">Confirmée</span>
+                {% endif %}
             </div>
             <div class="card-body">
                 <div><span class="title-card-reservation">Date : </span><span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span></div>
@@ -26,12 +34,29 @@
                 {% if reservation.restaurantTable %}
                     <div><span class="title-card-reservation">Table : </span><span class="badge bg-success">Table {{ reservation.restaurantTable.number }}</span></div>
                 {% endif %}
+
+                <nav class="action-reservation mt-3">
+                    {% if reservation.status != 'A' and reservation.status != 'T' %}
+                        <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-warning">
+                            Modifier
+                        </a>
+                        <a href="{{ path('app_reservation_cancel', {id: reservation.id}) }}" class="btn btn-sm btn-danger ms-2">
+                            Annuler
+                        </a>
+                    {% else %}
+                        <span class="text-muted small fst-italic">
+                            {% if reservation.status == 'A' %}
+                                Cette réservation a été annulée.
+                            {% else %}
+                                Réservation passée.
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </nav>
+
                 <nav class="action-reservation">
                 <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-warning">
                     Modifier
-                </a>
-                <a href="{{ path('app_reservation_delete', {id: reservation.id}) }}" class="btn btn-sm btn-danger">
-                    Supprimer
                 </a>
                 </nav>
             </div>

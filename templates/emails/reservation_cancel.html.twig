@@ -1,0 +1,22 @@
+{% block body %}
+    <div style="font-family: Arial, sans-serif; color: #333;">
+        <h2 style="color: #d9534f;">Réservation Annulée</h2>
+
+        <p>Bonjour {{ reservation.user.firstName }},</p>
+
+        <p>
+            Votre réservation au restaurant <strong>{{ restaurant.name }}</strong> a bien été annulée.
+        </p>
+
+        <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #d9534f; margin: 20px 0;">
+            <p><strong>Date prévue :</strong> {{ reservation.reservationDate|date('d/m/Y à H:i') }}</p>
+            <p><strong>Couverts :</strong> {{ reservation.numberOfPeople }} personnes</p>
+        </div>
+
+        <p>
+            Nous espérons vous revoir bientôt chez {{ restaurant.name }} !
+        </p>
+
+        <p>Cordialement,<br>L'équipe Resto'N</p>
+    </div>
+{% endblock %}

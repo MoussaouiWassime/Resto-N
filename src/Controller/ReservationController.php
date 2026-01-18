@@ -312,4 +312,78 @@ final class ReservationController extends AbstractController
 
         return $date;
     }
+
+    #[Route('/reservation/{id}/cancel', name: 'app_reservation_cancel')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function cancel(
+        Reservation $reservation,
+        EntityManagerInterface $entityManager,
+        RoleRepository $roleRepository,
+        MailerInterface $mailer,
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        $restaurant = $reservation->getRestaurant();
+
+        $isManager = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+        if ($reservation->getUser() !== $user && !$isManager) {
+            throw $this->createAccessDeniedException("Vous n'avez pas le droit d'annuler cette réservation.");
+        }
+
+        if ('A' === $reservation->getStatus() || 'T' === $reservation->getStatus()) {
+            $this->addFlash('warning', 'Cette réservation ne peut plus être annulée.');
+            if ($isManager) {
+                return $this->redirectToRoute('app_reservation_restaurant', ['id' => $restaurant->getId()]);
+            }
+
+            return $this->redirectToRoute('app_reservation');
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('confirm', SubmitType::class, [
+                'label' => "Confirmer l'annulation",
+                'attr' => ['class' => 'btn btn-danger'],
+            ])
+            ->add('return', SubmitType::class, [
+                'label' => 'Ne pas annuler',
+                'attr' => ['class' => 'btn btn-secondary'],
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('confirm')->isClicked()) {
+                $reservation->setStatus('A');
+                $reservation->setRestaurantTable(null);
+
+                $entityManager->flush();
+
+                $this->addFlash('success', 'La réservation a été annulée avec succès.');
+
+                $email = (new TemplatedEmail())
+                    ->from(new Address('resto.n@reston.com', "Resto'N"))
+                    ->to($reservation->getUser()->getEmail())
+                    ->subject('Annulation réservation - '.$restaurant->getName())
+                    ->htmlTemplate('emails/reservation_cancel.html.twig')
+                    ->context([
+                        'reservation' => $reservation,
+                        'restaurant' => $restaurant,
+                    ]);
+
+                $mailer->send($email);
+            }
+
+            if ($isManager) {
+                return $this->redirectToRoute('app_reservation_restaurant', ['id' => $restaurant->getId()]);
+            }
+
+            return $this->redirectToRoute('app_reservation');
+        }
+
+        return $this->render('reservation/cancel.html.twig', [
+            'reservation' => $reservation,
+            'form' => $form->createView(),
+        ]);
+    }
 }

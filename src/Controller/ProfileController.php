@@ -87,6 +87,7 @@ final class ProfileController extends AbstractController
 
                 $entityManager->remove($user);
                 $entityManager->flush();
+                $this->addFlash('info', 'Votre compte a été définitivement supprimé.');
 
                 return $this->redirectToRoute('app_login');
             }

@@ -18,13 +18,13 @@ class RestaurantRepository extends ServiceEntityRepository
 
     public function search(string $text): array
     {
-        $qb = $this->createQueryBuilder('c');
+        $queryBuilder = $this->createQueryBuilder('c');
         if ('' != $text) {
-            $qb->where('c.name LIKE :text')
+            $queryBuilder->where('c.name LIKE :text')
                 ->setParameter('text', "%{$text}%");
         }
 
-        return $qb->orderBy('c.name', 'ASC')
+        return $queryBuilder->orderBy('c.name', 'ASC')
             ->leftJoin('c.categories', 'cat')
             ->addSelect('cat')
             ->getQuery()
@@ -38,6 +38,32 @@ class RestaurantRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function searchByCriteria(array $filters): array
+    {
+        $queryBuilder = $this->createQueryBuilder('r')
+            ->leftJoin('r.categories', 'c')
+            ->addSelect('c');
+
+        if (!empty($filters['city'])) {
+            $queryBuilder->andWhere('LOWER(r.city) LIKE :city')
+                ->setParameter('city', '%'.strtolower($filters['city']).'%');
+        }
+
+        if (!empty($filters['category'])) {
+            $queryBuilder->andWhere('LOWER(c.name) LIKE :category')
+                ->setParameter('category', '%'.strtolower($filters['category']).'%');
+        }
+
+        if (!empty($filters['name'])) {
+            $queryBuilder->andWhere('LOWER(r.name) LIKE :name')
+                ->setParameter('name', '%'.strtolower($filters['name']).'%');
+        }
+
+        return $queryBuilder->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

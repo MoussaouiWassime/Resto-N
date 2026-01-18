@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260118141857 extends AbstractMigration
+final class Version20260118195236 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -26,7 +26,7 @@ final class Version20260118141857 extends AbstractMigration
         $this->addSql('CREATE TABLE product (id INT AUTO_INCREMENT NOT NULL, category_id INT NOT NULL, product_name VARCHAR(100) NOT NULL, INDEX IDX_D34A04AD12469DE2 (category_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE product_category (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE reservation (id INT AUTO_INCREMENT NOT NULL, restaurant_id INT NOT NULL, restaurant_table_id INT DEFAULT NULL, user_id INT DEFAULT NULL, reservation_date DATETIME NOT NULL, number_of_people INT DEFAULT NULL, status VARCHAR(1) NOT NULL, INDEX IDX_42C84955B1E7706E (restaurant_id), INDEX IDX_42C84955CC5AE6B3 (restaurant_table_id), INDEX IDX_42C84955A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE restaurant (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) NOT NULL, description VARCHAR(100) DEFAULT NULL, address VARCHAR(150) NOT NULL, postal_code VARCHAR(5) NOT NULL, city VARCHAR(150) NOT NULL, opening_time TIME DEFAULT NULL, closing_time TIME DEFAULT NULL, image VARCHAR(255) DEFAULT NULL, dark_kitchen TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE restaurant (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) NOT NULL, description VARCHAR(250) DEFAULT NULL, address VARCHAR(150) NOT NULL, postal_code VARCHAR(5) NOT NULL, city VARCHAR(150) NOT NULL, opening_time TIME DEFAULT NULL, closing_time TIME DEFAULT NULL, image VARCHAR(255) DEFAULT NULL, dark_kitchen TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE restaurant_restaurant_category (restaurant_id INT NOT NULL, restaurant_category_id INT NOT NULL, INDEX IDX_A3171BA8B1E7706E (restaurant_id), INDEX IDX_A3171BA8433DA7F8 (restaurant_category_id), PRIMARY KEY(restaurant_id, restaurant_category_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE restaurant_category (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE restaurant_table (id INT AUTO_INCREMENT NOT NULL, restaurant_id INT NOT NULL, number INT NOT NULL, capacity INT NOT NULL, INDEX IDX_BC343C97B1E7706E (restaurant_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');

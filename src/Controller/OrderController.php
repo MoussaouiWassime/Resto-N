@@ -164,7 +164,6 @@ final class OrderController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
         ?Order $order,
-        RoleRepository $roleRepository,
         StatisticRepository $statisticRepository,
         EntityManagerInterface $entityManager,
         Request $request): Response
@@ -191,34 +190,7 @@ final class OrderController extends AbstractController
 
                 $entityManager->remove($order);
 
-                $date = clone $order->getOrderDate();
-                $date->setTime(0, 0);
-
-                if ('L' !== $order->getOrderType()) {
-                    $statisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $date);
-                    if ($statisticVisits) {
-                        $statisticVisits->setValue($statisticVisits->getValue() - 1);
-                        if ($statisticVisits->getValue() <= 0) {
-                            $entityManager->remove($statisticVisits);
-                        }
-                    }
-                }
-
-                $statisticCommandes = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::ORDERS, $date);
-                if ($statisticCommandes) {
-                    $statisticCommandes->setValue($statisticCommandes->getValue() - 1);
-                    if ($statisticCommandes->getValue() <= 0) {
-                        $entityManager->remove($statisticCommandes);
-                    }
-                }
-
-                $statisticIncome = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::INCOME, $date);
-                if ($statisticIncome) {
-                    $statisticIncome->setValue($statisticIncome->getValue() - $price);
-                    if ($statisticIncome->getValue() <= 0) {
-                        $entityManager->remove($statisticIncome);
-                    }
-                }
+                $this->updateStatistic($order, $statisticRepository, $restaurant, $entityManager, $price);
 
                 $entityManager->flush();
 
@@ -234,12 +206,6 @@ final class OrderController extends AbstractController
         }
     }
 
-    /**
-     * @param StatisticRepository $statisticRepository
-     * @param $restaurant
-     * @param \DateTime|null $date
-     * @return ?Statistic
-     */
     public function getStatisticByType(
         StatisticRepository $statisticRepository,
         $restaurant,
@@ -253,13 +219,6 @@ final class OrderController extends AbstractController
         ]);
     }
 
-    /**
-     * @param Restaurant $restaurant
-     * @param $type
-     * @param \DateTime|null $date
-     * @param int $value
-     * @return Statistic
-     */
     public function createStatisticByType(Restaurant $restaurant, $type, ?\DateTime $date, int $value): Statistic
     {
         return (new Statistic())
@@ -275,6 +234,7 @@ final class OrderController extends AbstractController
         Order $order,
         EntityManagerInterface $entityManager,
         RoleRepository $roleRepository,
+        StatisticRepository $statisticRepository,
         MailerInterface $mailer,
         Request $request,
     ): Response {
@@ -285,6 +245,11 @@ final class OrderController extends AbstractController
             'user' => $user,
             'restaurant' => $restaurant,
         ]);
+
+        $price = 0;
+        foreach ($order->getOrderItems() as $item) {
+            $price += $item->getDish()->getPrice() * $item->getQuantity();
+        }
 
         if (null === $role) {
             throw $this->createAccessDeniedException('Seul le personnel du restaurant peut annuler une commande.');
@@ -312,7 +277,6 @@ final class OrderController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('confirm')->isClicked()) {
                 $order->setStatus('A');
-                $entityManager->flush();
 
                 $email = (new TemplatedEmail())
                     ->from(new Address('resto.n@reston.com', "Resto'N"))
@@ -327,6 +291,10 @@ final class OrderController extends AbstractController
                 $mailer->send($email);
 
                 $this->addFlash('success', 'La commande a été annulée avec succès.');
+
+                $this->updateStatistic($order, $statisticRepository, $restaurant, $entityManager, $price);
+
+                $entityManager->flush();
             }
 
             return $this->redirectToRoute('app_order_restaurant', ['id' => $restaurant->getId()]);
@@ -336,5 +304,37 @@ final class OrderController extends AbstractController
             'order' => $order,
             'form' => $form->createView(),
         ]);
+    }
+
+    public function updateStatistic(Order $order, StatisticRepository $statisticRepository, ?Restaurant $restaurant, EntityManagerInterface $entityManager, $price): void
+    {
+        $date = clone $order->getOrderDate();
+        $date->setTime(0, 0);
+
+        if ('L' !== $order->getOrderType()) {
+            $statisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $date);
+            if ($statisticVisits) {
+                $statisticVisits->setValue($statisticVisits->getValue() - 1);
+                if ($statisticVisits->getValue() <= 0) {
+                    $entityManager->remove($statisticVisits);
+                }
+            }
+        }
+
+        $statisticCommandes = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::ORDERS, $date);
+        if ($statisticCommandes) {
+            $statisticCommandes->setValue($statisticCommandes->getValue() - 1);
+            if ($statisticCommandes->getValue() <= 0) {
+                $entityManager->remove($statisticCommandes);
+            }
+        }
+
+        $statisticIncome = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::INCOME, $date);
+        if ($statisticIncome) {
+            $statisticIncome->setValue($statisticIncome->getValue() - $price);
+            if ($statisticIncome->getValue() <= 0) {
+                $entityManager->remove($statisticIncome);
+            }
+        }
     }
 }

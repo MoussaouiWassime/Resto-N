@@ -241,6 +241,8 @@ final class ReservationController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager): Response
     {
+        $restaurant = $reservation->getRestaurant();
+
         $form = $this->createFormBuilder()
             ->add('delete', SubmitType::class, ['label' => 'Supprimer'])
             ->add('cancel', SubmitType::class, ['label' => 'Annuler'])

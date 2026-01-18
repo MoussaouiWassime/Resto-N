@@ -173,6 +173,8 @@ final class OrderController extends AbstractController
             throw $this->createNotFoundException('Commande introuvable.');
         }
 
+        $restaurant = $order->getRestaurant();
+
         $form = $this->createFormBuilder($restaurant)
             ->add('delete', SubmitType::class)
             ->add('cancel', SubmitType::class)
@@ -228,7 +230,6 @@ final class OrderController extends AbstractController
             return $this->render('order/delete.html.twig', [
                 'order' => $order,
                 'form' => $form,
-                'restaurant' => $restaurant,
             ]);
         }
     }

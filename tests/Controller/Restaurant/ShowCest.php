@@ -10,29 +10,38 @@ use App\Tests\Support\ControllerTester;
 
 final class ShowCest
 {
-    public function restaurantPageContainsRightNumberDishCategories(ControllerTester $I): void
+    public function restaurantPageShowsDishes(ControllerTester $I): void
     {
-        $dishes = DishFactory::createMany(10);
-        RestaurantFactory::createOne(['name' => 'Aaaaamanda', 'dishes' => $dishes]);
-        $I->amOnPage('/restaurant');
-        $I->click('Aaaaamanda');
+        $restaurant = RestaurantFactory::createOne(['name' => 'Resto avec Plats']);
+        DishFactory::createMany(3, ['restaurant' => $restaurant]);
+
+        $I->amOnPage('/restaurant/' . $restaurant->getId());
+
         $I->seeResponseCodeIsSuccessful();
-        $I->see('Aaaaamanda', 'h1');
-        $I->seeElement('nav.filtres-dish');
-        $I->seeNumberOfElements('nav.filtres-dish > a', 4);
+        $I->see('Notre Carte', 'h2');
+        $I->seeElement('.card');
     }
 
     public function restaurantPageContainsDescriptionAdressAndAction(ControllerTester $I): void
     {
-        $dishes = DishFactory::createMany(10);
-        RestaurantFactory::createOne(['name' => 'Aaaaamanda', 'dishes' => $dishes]);
-        $I->amOnPage('/restaurant');
-        $I->click('Aaaaamanda');
-        $I->amOnPage('/restaurant/1');
+        $restaurant = RestaurantFactory::createOne([
+            'name' => 'Aaaaamanda',
+            'description' => 'Une super description de test',
+            'address' => '10 Rue de la Paix',
+            'city' => 'Paris',
+            'postalCode' => '75000',
+        ]);
+
+        $I->amOnPage('/restaurant/' . $restaurant->getId());
+
         $I->seeResponseCodeIsSuccessful();
-        $I->seeElement('span.description');
-        $I->seeElement('span.address');
-        $I->seeElement('nav.action-restaurant');
-        $I->seeElement('a.btn');
+
+        $I->see('Aaaaamanda', 'h1');
+        $I->see('Une super description de test');
+        $I->see('10 Rue de la Paix');
+        $I->see('Paris');
+
+        $I->see('Commander', 'a');
+        $I->see('Réserver une table', 'a');
     }
 }

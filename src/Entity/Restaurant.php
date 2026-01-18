@@ -44,9 +44,9 @@ class Restaurant
     private ?bool $darkKitchen = null;
 
     /**
-     * @var Collection<int, restaurantCategory>
+     * @var Collection<int, RestaurantCategory>
      */
-    #[ORM\ManyToMany(targetEntity: RestaurantCategory::class, inversedBy: 'restaurant')]
+    #[ORM\ManyToMany(targetEntity: RestaurantCategory::class, inversedBy: 'restaurants')]
     private Collection $categories;
 
     /**
@@ -224,14 +224,14 @@ class Restaurant
     }
 
     /**
-     * @return Collection<int, restaurantCategory>
+     * @return Collection<int, RestaurantCategory>
      */
     public function getCategories(): Collection
     {
         return $this->categories;
     }
 
-    public function addCategory(restaurantCategory $category): static
+    public function addCategory(RestaurantCategory $category): static
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
@@ -240,7 +240,7 @@ class Restaurant
         return $this;
     }
 
-    public function removeCategory(restaurantCategory $category): static
+    public function removeCategory(RestaurantCategory $category): static
     {
         $this->categories->removeElement($category);
 

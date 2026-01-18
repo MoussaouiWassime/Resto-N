@@ -45,6 +45,6 @@ final class IndexCest
         $I->see('Table 12');
 
         $I->see('Modifier', 'a');
-        $I->see('Supprimer', 'a');
+        $I->see('Annuler', 'a');
     }
 }

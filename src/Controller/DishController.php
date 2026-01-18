@@ -79,6 +79,8 @@ final class DishController extends AbstractController
             $entityManager->persist($dish);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Le plat a bien été ajouté à la carte !');
+
             return $this->redirectToRoute('app_restaurant_show', [
                 'id' => $restaurant->getId(),
             ], 307);
@@ -128,6 +130,7 @@ final class DishController extends AbstractController
                 $dish->setPhoto($newFileName);
             }
             $entityManager->flush();
+            $this->addFlash('success', 'Le plat a été modifié avec succès.');
 
             return $this->redirectToRoute('app_restaurant_show', [
                 'id' => $restaurant->getId(),

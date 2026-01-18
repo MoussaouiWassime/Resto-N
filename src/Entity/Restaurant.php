@@ -19,7 +19,7 @@ class Restaurant
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    #[ORM\Column(length: 250, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(length: 150)]

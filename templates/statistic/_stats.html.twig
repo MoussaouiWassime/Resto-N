@@ -16,7 +16,7 @@
     {% set euroSign = ' €' %}
 {% endif %}
 
-{% block title %} {{ statTitle }} à {{ restaurant.name }}{% endblock %}
+{% block title %} {{ statTitle|raw }} à {{ restaurant.name }}{% endblock %}
 
 {% block head %}
 

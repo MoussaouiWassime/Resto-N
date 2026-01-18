@@ -112,7 +112,6 @@ final class ReservationController extends AbstractController
         return $this->render('reservation/create.html.twig', [
             'form' => $form,
             'restaurant' => $restaurant,
-            'error' => $errorMessage,
         ], new Response(null, $form->isSubmitted() ? 422 : 200));
     }
 

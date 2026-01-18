@@ -138,6 +138,8 @@ final class OrderController extends AbstractController
             if ($form->get('delete')->isClicked()) {
                 $entityManager->remove($order);
                 $entityManager->flush();
+
+                $this->addFlash('success', 'La commande a été supprimé de votre historique.');
             }
 
             return $this->redirectToRoute('app_order', [], 307);

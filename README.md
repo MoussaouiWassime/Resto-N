@@ -34,7 +34,8 @@ Afin de tester le site en local, veuillez suivre ces étapes :
 - Installation des dépendances avec`composer install`
 - Copier le fichier `.env` en `.env.local` et : 
   - Adapter la variable `DATABASE_URL` selon ce modèle : `DATABASE_URL="mysql://<login>:<password>@mysql:3306/<db_name>?serverVersion=mariadb-10.2.25&charset=utf8mb4"`
-  -  
+  - Adapter la variable du google mailer. Le mot de passe d'application d'un compte google obtensible par cette méthode : https://support.google.com/mail/answer/185833?hl=fr
+  - Obtener votre clé api mistral pour le chat bot ici (gratuit dispo) : https://console.mistral.ai/home 
 - Créer une migration `php bin/console make:migration`
 - Lancer ce script : `composer db` afin de créer la base de données, et générer les fixtures
 - Lancer le serveur local (voir Scripts)

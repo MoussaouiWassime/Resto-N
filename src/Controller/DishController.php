@@ -184,6 +184,8 @@ final class DishController extends AbstractController
                 }
                 $entityManager->remove($dish);
                 $entityManager->flush();
+
+                $this->addFlash('success', 'Le plat a été supprimé de la carte.');
             }
 
             return $this->redirectToRoute('app_restaurant_show', [

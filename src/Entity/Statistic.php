@@ -8,6 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: StatisticRepository::class)]
 class Statistic
 {
+    public const INCOME = 'CA_JOURNALIER';
+    public const VISITS = 'NB_VISITES';
+    public const ORDERS = 'NB_COMMANDES';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -183,24 +183,18 @@ final class ReservationController extends AbstractController
             }
         }
 
-        $oldDate = clone $reservation->getReservationDate();
-        $oldDate->setTime(0, 0);
+        $oldDate = $this->getDate($reservation);
 
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $newDate = clone $reservation->getReservationDate();
-            $newDate->setTime(0, 0);
+            $newDate = $this->getDate($reservation);
 
             // Si les deux dates correspondent, pas besoin de modifier la table Statistic
             if ($oldDate->format('Y-m-d') !== $newDate->format('Y-m-d')) {
                 // L'ancienne Statistic
-                $oldStatisticVisits = $statisticRepository->findOneBy([
-                    'restaurant' => $restaurant,
-                    'statisticType' => 'NB_VISITES',
-                    'date' => $oldDate,
-                ]);
+                $oldStatisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $oldDate);
 
                 // On décrémente de 1, et si la valeur est <= 0, on la supprime de la table.
                 if ($oldStatisticVisits) {
@@ -211,12 +205,7 @@ final class ReservationController extends AbstractController
                 }
 
                 // La nouvelle Statistic
-                $newStatisticVisits = $statisticRepository->findOneBy([
-                    'restaurant' => $restaurant,
-                    'statisticType' => 'NB_VISITES',
-                    'date' => $newDate,
-                ]);
-
+                $newStatisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $newDate);
                 // Si elle n'existe pas encore dans la BD, on insère une nouvelle, sinon on incrémente de 1.
                 if (!$newStatisticVisits) {
                     $newStatisticVisits = (new Statistic())
@@ -272,16 +261,9 @@ final class ReservationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('delete')->isClicked()) {
+                $date = $this->getDate($reservation);
 
-                $date = clone $reservation->getReservationDate();
-                $date->setTime(0, 0);
-
-                $statisticVisits = $statisticRepository->findOneBy([
-                    'restaurant' => $restaurant,
-                    'statisticType' => 'NB_VISITES',
-                    'date' => $date,
-                ]);
-
+                $statisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $date);
                 // Si statisticVisites existe, on décrémente la valeur de 1.
                 if ($statisticVisits) {
                     $statisticVisits->setValue($statisticVisits->getValue() - 1);
@@ -308,5 +290,26 @@ final class ReservationController extends AbstractController
             'reservation' => $reservation,
             'form' => $form,
         ]);
+    }
+
+    public function getStatisticByType(
+        StatisticRepository $statisticRepository,
+        ?Restaurant $restaurant,
+        $type,
+        ?\DateTime $date): ?Statistic
+    {
+        return $statisticRepository->findOneBy([
+            'restaurant' => $restaurant,
+            'statisticType' => $type,
+            'date' => $date,
+        ]);
+    }
+
+    public function getDate(Reservation $reservation): ?\DateTime
+    {
+        $date = clone $reservation->getReservationDate();
+        $date->setTime(0, 0);
+
+        return $date;
     }
 }

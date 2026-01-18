@@ -107,50 +107,26 @@ final class OrderController extends AbstractController
                 $date->setTime(0, 0);
 
                 if ('L' !== $order->getOrderType()) {
-                    $statisticVisites = $statisticRepository->findOneBy([
-                        'restaurant' => $restaurant,
-                        'statisticType' => 'NB_VISITES',
-                        'date' => $date,
-                    ]);
+                    $statisticVisites = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $date);
                     if (!$statisticVisites) {
-                        $statisticVisites = (new Statistic())
-                            ->setRestaurant($restaurant)
-                            ->setStatisticType('NB_VISITES')
-                            ->setDate($date)
-                            ->setValue(1);
+                        $statisticVisites = $this->createStatisticByType($restaurant, Statistic::VISITS, $date, 1);
                         $entityManager->persist($statisticVisites);
                     } else {
                         $statisticVisites->setValue($statisticVisites->getValue() + 1);
                     }
                 }
 
-                $statisticCA = $statisticRepository->findOneBy([
-                    'restaurant' => $restaurant,
-                    'statisticType' => 'CA_JOURNALIER',
-                    'date' => $date,
-                ]);
+                $statisticCA = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::INCOME, $date);
                 if (!$statisticCA) {
-                    $statisticCA = (new Statistic())
-                        ->setRestaurant($restaurant)
-                        ->setStatisticType('CA_JOURNALIER')
-                        ->setDate($date)
-                        ->setValue($price);
+                    $statisticCA = $this->createStatisticByType($restaurant, Statistic::INCOME, $date, $price);
                     $entityManager->persist($statisticCA);
                 } else {
                     $statisticCA->setValue($statisticCA->getValue() + $price);
                 }
 
-                $statisticCommandes = $statisticRepository->findOneBy([
-                    'restaurant' => $restaurant,
-                    'statisticType' => 'NB_COMMANDES',
-                    'date' => $date,
-                ]);
+                $statisticCommandes = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::ORDERS, $date);
                 if (!$statisticCommandes) {
-                    $statisticCommandes = (new Statistic())
-                        ->setRestaurant($restaurant)
-                        ->setStatisticType('NB_COMMANDES')
-                        ->setDate($date)
-                        ->setValue(1);
+                    $statisticCommandes = $this->createStatisticByType($restaurant, Statistic::ORDERS, $date, 1);
                     $entityManager->persist($statisticCommandes);
                 } else {
                     $statisticCommandes->setValue($statisticCommandes->getValue() + 1);
@@ -225,11 +201,7 @@ final class OrderController extends AbstractController
                 $date->setTime(0, 0);
 
                 if ('L' !== $order->getOrderType()) {
-                    $statisticVisits = $statisticRepository->findOneBy([
-                        'restaurant' => $restaurant,
-                        'statisticType' => 'NB_VISITES',
-                        'date' => $date,
-                    ]);
+                    $statisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $date);
                     if ($statisticVisits) {
                         $statisticVisits->setValue($statisticVisits->getValue() - 1);
                         if ($statisticVisits->getValue() <= 0) {
@@ -238,11 +210,7 @@ final class OrderController extends AbstractController
                     }
                 }
 
-                $statisticCommandes = $statisticRepository->findOneBy([
-                    'restaurant' => $restaurant,
-                    'statisticType' => 'NB_COMMANDES',
-                    'date' => $date,
-                ]);
+                $statisticCommandes = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::ORDERS, $date);
                 if ($statisticCommandes) {
                     $statisticCommandes->setValue($statisticCommandes->getValue() - 1);
                     if ($statisticCommandes->getValue() <= 0) {
@@ -250,11 +218,7 @@ final class OrderController extends AbstractController
                     }
                 }
 
-                $statisticIncome = $statisticRepository->findOneBy([
-                    'restaurant' => $restaurant,
-                    'statisticType' => 'CA_JOURNALIER',
-                    'date' => $date,
-                ]);
+                $statisticIncome = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::INCOME, $date);
                 if ($statisticIncome) {
                     $statisticIncome->setValue($statisticIncome->getValue() - $price);
                     if ($statisticIncome->getValue() <= 0) {
@@ -274,5 +238,40 @@ final class OrderController extends AbstractController
                 'form' => $form,
             ]);
         }
+    }
+
+    /**
+     * @param StatisticRepository $statisticRepository
+     * @param $restaurant
+     * @param \DateTime|null $date
+     * @return ?Statistic
+     */
+    public function getStatisticByType(
+        StatisticRepository $statisticRepository,
+        $restaurant,
+        $type,
+        ?\DateTime $date): ?Statistic
+    {
+        return $statisticRepository->findOneBy([
+            'restaurant' => $restaurant,
+            'statisticType' => $type,
+            'date' => $date,
+        ]);
+    }
+
+    /**
+     * @param Restaurant $restaurant
+     * @param $type
+     * @param \DateTime|null $date
+     * @param int $value
+     * @return Statistic
+     */
+    public function createStatisticByType(Restaurant $restaurant, $type, ?\DateTime $date, int $value): Statistic
+    {
+        return (new Statistic())
+            ->setRestaurant($restaurant)
+            ->setStatisticType($type)
+            ->setDate($date)
+            ->setValue($value);
     }
 }

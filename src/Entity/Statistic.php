@@ -8,6 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: StatisticRepository::class)]
 class Statistic
 {
+    public const INCOME = 'CA_JOURNALIER';
+    public const VISITS = 'NB_VISITES';
+    public const ORDERS = 'NB_COMMANDES';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -17,7 +21,7 @@ class Statistic
     private ?string $statisticType = null;
 
     #[ORM\Column(nullable: true)]
-    private ?float $value = null;
+    private ?int $value = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $date = null;
@@ -43,12 +47,12 @@ class Statistic
         return $this;
     }
 
-    public function getValue(): ?float
+    public function getValue(): ?int
     {
         return $this->value;
     }
 
-    public function setValue(?float $value): static
+    public function setValue(?int $value): static
     {
         $this->value = $value;
 

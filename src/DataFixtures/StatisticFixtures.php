@@ -18,7 +18,7 @@ class StatisticFixtures extends Fixture implements DependentFixtureInterface
         $restaurants = RestaurantFactory::all();
 
         foreach ($restaurants as $restaurant) {
-            StatisticFactory::createMany(2, [
+            StatisticFactory::createMany(10, [
                 'restaurant' => $restaurant,
             ]);
         }

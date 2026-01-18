@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Reservation;
 use App\Entity\Restaurant;
+use App\Entity\Statistic;
 use App\Form\ReservationType;
 use App\Repository\ReservationRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\RestaurantTableRepository;
 use App\Repository\RoleRepository;
+use App\Repository\StatisticRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,6 +54,7 @@ final class ReservationController extends AbstractController
         int $id,
         RestaurantRepository $restaurantRepository,
         RestaurantTableRepository $tableRepository,
+        StatisticRepository $statisticRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
@@ -100,6 +103,32 @@ final class ReservationController extends AbstractController
                 if ($assignedTable) {
                     $reservation->setRestaurantTable($assignedTable);
                     $entityManager->persist($reservation);
+
+                    // On met à jour/crée une Statistic de type NB_VISITES.
+                    $date = clone $reservation->getReservationDate();
+                    $date->setTime(0, 0);
+                    $statisticVisites = $statisticRepository->findOneBy([
+                        'restaurant' => $restaurant,
+                        'statisticType' => 'NB_VISITES',
+                        'date' => $date,
+                    ]);
+
+                    /*
+                        Si on la met à jour, on incrémente la valeur de 1
+                        Sinon, on crée une nouvelle Statistic
+                    */
+                    if (!$statisticVisites) {
+                        $statisticVisites = (new Statistic())
+                            ->setRestaurant($restaurant)
+                            ->setStatisticType('NB_VISITES')
+                            ->setDate($date)
+                            ->setValue(1);
+                        $entityManager->persist($statisticVisites);
+                    } else {
+                        $statisticVisites->setValue($statisticVisites->getValue() + 1);
+                    }
+
+                    // Mise à jour dans la BD
                     $entityManager->flush();
                     $this->addFlash('success', 'Votre réservation est confirmée !');
 
@@ -135,6 +164,7 @@ final class ReservationController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function update(
         RoleRepository $roleRepository,
+        StatisticRepository $statisticRepository,
         Request $request,
         EntityManagerInterface $entityManager,
         ?Reservation $reservation): Response
@@ -145,23 +175,55 @@ final class ReservationController extends AbstractController
 
         $restaurant = $reservation->getRestaurant();
         $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
 
+        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
         if (null === $role) {
             if ($reservation->getUser() !== $user) {
-                return $this->redirectToRoute('app_restaurant', [],
-                    307);
+                return $this->redirectToRoute('app_restaurant', [], 307);
             }
         }
+
+        $oldDate = $this->getDate($reservation);
 
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $newDate = $this->getDate($reservation);
+
+            // Si les deux dates correspondent, pas besoin de modifier la table Statistic
+            if ($oldDate->format('Y-m-d') !== $newDate->format('Y-m-d')) {
+                // L'ancienne Statistic
+                $oldStatisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $oldDate);
+
+                // On décrémente de 1, et si la valeur est <= 0, on la supprime de la table.
+                if ($oldStatisticVisits) {
+                    $oldStatisticVisits->setValue($oldStatisticVisits->getValue() - 1);
+                    if ($oldStatisticVisits->getValue() <= 0) {
+                        $entityManager->remove($oldStatisticVisits);
+                    }
+                }
+
+                // La nouvelle Statistic
+                $newStatisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $newDate);
+                // Si elle n'existe pas encore dans la BD, on insère une nouvelle, sinon on incrémente de 1.
+                if (!$newStatisticVisits) {
+                    $newStatisticVisits = (new Statistic())
+                        ->setRestaurant($restaurant)
+                        ->setStatisticType('NB_VISITES')
+                        ->setDate($newDate)
+                        ->setValue(1);
+                    $entityManager->persist($newStatisticVisits);
+                } else {
+                    $newStatisticVisits->setValue($newStatisticVisits->getValue() + 1);
+                }
+            }
+
+            // Mise à jour dans la BD.
             $entityManager->flush();
             $this->addFlash('success', 'Réservation modifié avec succès.');
 
-            return $this->redirectToRoute('app_reservation');
+            return $this->redirectToRoute('app_reservation', [], 307);
         }
 
         return $this->render('reservation/update.html.twig', [
@@ -174,6 +236,7 @@ final class ReservationController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function delete(
         RoleRepository $roleRepository,
+        StatisticRepository $statisticRepository,
         Reservation $reservation,
         Request $request,
         EntityManagerInterface $entityManager): Response
@@ -198,6 +261,23 @@ final class ReservationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('delete')->isClicked()) {
+                $date = $this->getDate($reservation);
+
+                $statisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $date);
+                // Si statisticVisites existe, on décrémente la valeur de 1.
+                if ($statisticVisits) {
+                    $statisticVisits->setValue($statisticVisits->getValue() - 1);
+                    /*
+                        Si la valeur est égale à 0, ou inférieure
+                        (ce qui ne devrait jamais arriver, mais juste au cas où),
+                        on supprime cette Statistic de la BD.
+
+                        Sinon, on met à jour la nouvelle valeur dans la BD.
+                    */
+                    if ($statisticVisits->getValue() <= 0) {
+                        $entityManager->remove($statisticVisits);
+                    }
+                }
                 $entityManager->remove($reservation);
                 $entityManager->flush();
                 $this->addFlash('success', "Réservation supprimé de l'historique avec succès.");
@@ -210,5 +290,26 @@ final class ReservationController extends AbstractController
             'reservation' => $reservation,
             'form' => $form,
         ]);
+    }
+
+    public function getStatisticByType(
+        StatisticRepository $statisticRepository,
+        ?Restaurant $restaurant,
+        $type,
+        ?\DateTime $date): ?Statistic
+    {
+        return $statisticRepository->findOneBy([
+            'restaurant' => $restaurant,
+            'statisticType' => $type,
+            'date' => $date,
+        ]);
+    }
+
+    public function getDate(Reservation $reservation): ?\DateTime
+    {
+        $date = clone $reservation->getReservationDate();
+        $date->setTime(0, 0);
+
+        return $date;
     }
 }

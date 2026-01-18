@@ -60,5 +60,32 @@
     <footer class="text-center p-3 bg-light bg-opacity-35">
         <div>Resto'N - © 2025</div>
     </footer>
+    <div id="chatbot-container" data-url="{{ path('app_chatbot') }}">
+
+        <div id="chat-window" class="card">
+
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fs-6">🤖 Assistant Resto'N</h5>
+                <button type="button" id="close-btn" class="btn-close btn-close-white" aria-label="Close"></button>
+            </div>
+
+            <div id="chat-messages" class="card-body overflow-auto bg-light d-flex flex-column gap-2">
+                <div class="message-bot bg-white border p-2 rounded align-self-start shadow-sm" style="max-width: 85%;">
+                    Bonjour ! Bienvenue sur Resto'n
+                </div>
+            </div>
+
+            <div class="card-footer bg-white">
+                <div class="input-group">
+                    <input type="text" id="chat-input" class="form-control" placeholder="Bonjour...">
+                    <button class="btn btn-primary" id="send-btn">➤</button>
+                </div>
+            </div>
+        </div>
+
+        <button id="toggle-btn" class="btn btn-primary rounded-circle shadow position-fixed bottom-0 end-0 m-4 z-3 d-flex align-items-center justify-content-center">
+            💬
+        </button>
+    </div>
     </body>
 </html>

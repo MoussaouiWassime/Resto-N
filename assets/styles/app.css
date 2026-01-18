@@ -116,3 +116,17 @@ li:nth-child(even) {
     object-fit: cover;
 }
 
+#toggle-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+}
+
+#chat-window {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    z-index: 1000;
+}

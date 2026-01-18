@@ -228,6 +228,7 @@ final class OrderController extends AbstractController
             return $this->render('order/delete.html.twig', [
                 'order' => $order,
                 'form' => $form,
+                'restaurant' => $restaurant,
             ]);
         }
     }

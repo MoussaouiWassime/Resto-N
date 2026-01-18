@@ -138,6 +138,7 @@ final class RestaurantController extends AbstractController
             $entityManager->persist($newRole);
 
             $entityManager->flush();
+            $this->addFlash('success', 'Votre restaurant a été créé ! Commencez par ajouter des plats.');
 
             return $this->redirectToRoute('app_restaurant_show', [
                 'id' => $restaurant->getId(),
@@ -187,6 +188,8 @@ final class RestaurantController extends AbstractController
                 }
                 $entityManager->remove($restaurant);
                 $entityManager->flush();
+                $this->addFlash('success', 'Votre restaurant a été supprimé.');
+
 
                 return $this->redirectToRoute('app_restaurant', [], 307);
             } elseif ($form->get('cancel')->isClicked()) {
@@ -238,6 +241,7 @@ final class RestaurantController extends AbstractController
                 $restaurant->setImage($newFileName);
             }
             $entityManager->flush();
+            $this->addFlash('success', 'Les informations du restaurant ont été mises à jour.');
 
             return $this->redirectToRoute('app_restaurant_show', [
                 'id' => $restaurant->getId(),

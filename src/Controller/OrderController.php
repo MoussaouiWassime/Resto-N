@@ -161,7 +161,7 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/order/{id}/delete', name: 'app_order_delete', requirements: ['id' => '\d+'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(
         ?Order $order,
         RoleRepository $roleRepository,
@@ -171,14 +171,6 @@ final class OrderController extends AbstractController
     {
         if (!$order) {
             throw $this->createNotFoundException('Commande introuvable.');
-        }
-
-        $user = $this->getUser();
-        $restaurant = $order->getRestaurant();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (null === $role) {
-            return $this->redirectToRoute('app_restaurant', [], 307);
         }
 
         $form = $this->createFormBuilder($restaurant)

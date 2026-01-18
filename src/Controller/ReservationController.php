@@ -10,10 +10,13 @@ use App\Repository\RestaurantRepository;
 use App\Repository\RestaurantTableRepository;
 use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -51,6 +54,7 @@ final class ReservationController extends AbstractController
         RestaurantTableRepository $tableRepository,
         Request $request,
         EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
     ): Response {
         $restaurant = $restaurantRepository->find($id);
 
@@ -98,6 +102,18 @@ final class ReservationController extends AbstractController
                     $entityManager->persist($reservation);
                     $entityManager->flush();
                     $this->addFlash('success', 'Votre réservation est confirmée !');
+
+                    $email = (new TemplatedEmail())
+                        ->from(new Address('resto.n@reston.com', "Resto'N"))
+                        ->to($this->getUser()->getEmail())
+                        ->subject('Confirmation de réservation - '.$restaurant->getName())
+                        ->htmlTemplate('emails/reservation_confirmation.html.twig')
+                        ->context([
+                            'reservation' => $reservation,
+                            'restaurant' => $restaurant,
+                        ]);
+
+                    $mailer->send($email);
 
                     return $this->redirectToRoute('app_reservation');
                 } else {

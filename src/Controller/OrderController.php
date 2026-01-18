@@ -96,6 +96,8 @@ final class OrderController extends AbstractController
                 $this->addFlash('success', 'Votre commande a été passé avec succès !');
 
                 return $this->redirectToRoute('app_order', [], 307);
+            } else {
+                $this->addFlash('danger', 'Votre commande est vide.');
             }
         }
 

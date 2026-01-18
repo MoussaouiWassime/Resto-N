@@ -32,15 +32,6 @@ class ReservationType extends AbstractType
                     'max' => 10,
                 ],
             ])
-            ->add('status', ChoiceType::class, [
-                'label' => 'Statut',
-                'choices' => [
-                    'Confirmée' => 'C',
-                    'Annulée' => 'A',
-                    'Terminée' => 'T',
-                ],
-                'empty_data' => 'C',
-            ])
             ->add('restaurantTable', EntityType::class, [
                 'class' => RestaurantTable::class,
                 'label' => 'Table attribuée',

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuler la commande{% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-danger shadow">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="mb-0">Confirmation d'annulation</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            Êtes-vous sûr de vouloir annuler la commande <strong>#{{ order.id }}</strong> ?
+                            <br>
+                            Le client sera automatiquement notifié par email.
+                        </div>
+
+                        <h5 class="mt-4">Détails de la commande :</h5>
+                        <ul class="list-group mb-4">
+                            <li class="list-group-item"><strong>Client :</strong> {{ order.user.firstName }} {{ order.user.lastName }}</li>
+                            <li class="list-group-item"><strong>Date :</strong> {{ order.orderDate|date('d/m/Y H:i') }}</li>
+                            <li class="list-group-item">
+                                <strong>Contenu :</strong>
+                                <ul>
+                                    {% for item in order.orderItems %}
+                                        <li>{{ item.quantity }}x {{ item.dish.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+
+                        {# Affichage des boutons du formulaire #}
+                        {{ form_start(form) }}
+                        <div class="d-flex justify-content-between">
+                            {{ form_widget(form.return) }}
+                            {{ form_widget(form.confirm) }}
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

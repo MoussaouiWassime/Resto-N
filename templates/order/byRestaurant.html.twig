@@ -20,6 +20,8 @@
                                 'Client inconnu'
                             {% endif %}
                         </span>
+
+
                         <span class="badge bg-primary">
                             {% if order.orderType == 'L' %}
                                 Livraison
@@ -29,18 +31,15 @@
                                 Sur place
                             {% endif %}
                         </span>
-                        {% if order.orderType == 'L' %}
-                        <span class="badge bg-success">
-                            Livré
-                        </span>
-                        {% elseif order.orderType == 'P' %}
-                            <span class="badge bg-success">
-                            Préparé
-                        </span>
+
+                        {% if order.status == 'A' %}
+                            <span class="badge bg-danger">Annulée</span>
+                        {% elseif order.status == 'L' %}
+                            <span class="badge bg-success">Livré</span>
+                        {% elseif order.status == 'P' %}
+                            <span class="badge bg-success">Préparé</span>
                         {% else %}
-                            <span class="badge bg-info">
-                            En cours
-                        </span>
+                            <span class="badge bg-info">En cours</span>
                         {% endif %}
 
                     </h5>
@@ -92,9 +91,13 @@
                     </ul>
 
                     <nav class="action-reservation">
-                        <a href="{{ path('app_order_delete', {id: order.id}) }}" class="btn bg-danger btn-sm btn-danger">
-                            Supprimer la Commande
-                        </a>
+                        {% if order.status != 'A' %}
+                            <a href="{{ path('app_order_cancel', {id: order.id}) }}" class="btn btn-warning btn-sm">
+                                Annuler la Commande
+                            </a>
+                        {% else %}
+                            <span class="text-danger fw-bold me-2">Commande Annulée</span>
+                        {% endif %}
                     </nav>
                 </div>
             </div>

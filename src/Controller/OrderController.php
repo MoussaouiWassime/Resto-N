@@ -161,7 +161,7 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/order/{id}/delete', name: 'app_order_delete', requirements: ['id' => '\d+'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(
         ?Order $order,
         RoleRepository $roleRepository,
@@ -171,14 +171,6 @@ final class OrderController extends AbstractController
     {
         if (!$order) {
             throw $this->createNotFoundException('Commande introuvable.');
-        }
-
-        $user = $this->getUser();
-        $restaurant = $order->getRestaurant();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (null === $role) {
-            return $this->redirectToRoute('app_restaurant', [], 307);
         }
 
         $form = $this->createFormBuilder($restaurant)
@@ -236,6 +228,7 @@ final class OrderController extends AbstractController
             return $this->render('order/delete.html.twig', [
                 'order' => $order,
                 'form' => $form,
+                'restaurant' => $restaurant,
             ]);
         }
     }
@@ -273,5 +266,74 @@ final class OrderController extends AbstractController
             ->setStatisticType($type)
             ->setDate($date)
             ->setValue($value);
+    }
+
+    #[Route('/order/{id}/cancel', name: 'app_order_cancel')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function cancel(
+        Order $order,
+        EntityManagerInterface $entityManager,
+        RoleRepository $roleRepository,
+        MailerInterface $mailer,
+        Request $request,
+    ): Response {
+        $user = $this->getUser();
+        $restaurant = $order->getRestaurant();
+
+        $role = $roleRepository->findOneBy([
+            'user' => $user,
+            'restaurant' => $restaurant,
+        ]);
+
+        if (null === $role) {
+            throw $this->createAccessDeniedException('Seul le personnel du restaurant peut annuler une commande.');
+        }
+
+        if ('A' === $order->getStatus()) {
+            $this->addFlash('warning', 'Cette commande est déjà annulée.');
+
+            return $this->redirectToRoute('app_order_restaurant', ['id' => $restaurant->getId()]);
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('confirm', SubmitType::class, [
+                'label' => "Confirmer l'annulation",
+                'attr' => ['class' => 'btn btn-danger'],
+            ])
+            ->add('return', SubmitType::class, [
+                'label' => 'Retour',
+                'attr' => ['class' => 'btn btn-secondary'],
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('confirm')->isClicked()) {
+                $order->setStatus('A');
+                $entityManager->flush();
+
+                $email = (new TemplatedEmail())
+                    ->from(new Address('resto.n@reston.com', "Resto'N"))
+                    ->to($order->getUser()->getEmail())
+                    ->subject('Annulation de votre commande - '.$restaurant->getName())
+                    ->htmlTemplate('emails/order_cancel.html.twig')
+                    ->context([
+                        'order' => $order,
+                        'restaurant' => $restaurant,
+                    ]);
+
+                $mailer->send($email);
+
+                $this->addFlash('success', 'La commande a été annulée avec succès.');
+            }
+
+            return $this->redirectToRoute('app_order_restaurant', ['id' => $restaurant->getId()]);
+        }
+
+        return $this->render('order/cancel.html.twig', [
+            'order' => $order,
+            'form' => $form->createView(),
+        ]);
     }
 }

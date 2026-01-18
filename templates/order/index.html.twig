@@ -30,12 +30,14 @@
                             <div class="badge bg-warning text-dark">Livraison</div>
                         {% endif %}
 
-                        {% if order.status == 'E' %}
-                            <div class="badge bg-secondary">En attente</div>
+                        {% if order.status == 'A' %}
+                            <span class="badge bg-danger">Annulée</span>
+                        {% elseif order.status == 'L' %}
+                            <span class="badge bg-success">Livré</span>
                         {% elseif order.status == 'P' %}
-                            <div class="badge bg-secondary">Prêt, en livraison</div>
-                        {% elseif order.status == 'P' %}
-                            <div class="badge bg-success">Commande livré</div>
+                            <span class="badge bg-success">Préparé</span>
+                        {% else %}
+                            <span class="badge bg-info">En cours</span>
                         {% endif %}
                     </div>
 

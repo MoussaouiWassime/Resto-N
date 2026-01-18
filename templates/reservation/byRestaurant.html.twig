@@ -19,6 +19,14 @@
                             {% endif %}
                         </span>
                         </h5>
+
+                        {% if reservation.status == 'A' %}
+                            <span class="badge bg-danger">Annulée</span>
+                        {% elseif reservation.status == 'T' %}
+                            <span class="badge bg-success">Terminée</span>
+                        {% else %}
+                            <span class="badge bg-success">Confirmée</span>
+                        {% endif %}
                     </div>
                     <div class="card-body">
                         <div><span class="title-card-reservation">Date : </span><span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span></div>
@@ -31,8 +39,8 @@
                             <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-warning">
                                 Modifier
                             </a>
-                            <a href="{{ path('app_reservation_delete', {id: reservation.id}) }}" class="btn btn-sm btn-danger">
-                                Supprimer
+                            <a href="{{ path('app_reservation_cancel', {id: reservation.id}) }}" class="btn btn-sm btn-danger ms-2">
+                                Annuler
                             </a>
                         </nav>
                     </div>

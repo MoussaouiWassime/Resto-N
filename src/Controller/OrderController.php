@@ -93,6 +93,8 @@ final class OrderController extends AbstractController
                 $entityManager->persist($order);
                 $entityManager->flush();
 
+                $this->addFlash('success', 'Votre commande a été passé avec succès !');
+
                 return $this->redirectToRoute('app_order', [], 307);
             }
         }

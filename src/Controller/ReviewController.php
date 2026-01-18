@@ -19,7 +19,7 @@ final class ReviewController extends AbstractController
     public function update(
         Review $review,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
         // Sécurité : On vérifie que l'utilisateur est bien l'auteur de l'avis
         if ($review->getUser() !== $this->getUser()) {
@@ -36,7 +36,7 @@ final class ReviewController extends AbstractController
             $this->addFlash('success', 'Votre avis a bien été modifié.');
 
             return $this->redirectToRoute('app_restaurant_show', [
-                'id' => $review->getRestaurant()->getId()
+                'id' => $review->getRestaurant()->getId(),
             ]);
         }
 
@@ -51,7 +51,7 @@ final class ReviewController extends AbstractController
     public function delete(
         Review $review,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
         // Sécurité : On vérifie que l'utilisateur est bien l'auteur de l'avis
         if ($review->getUser() !== $this->getUser()) {

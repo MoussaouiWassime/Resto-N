@@ -21,7 +21,7 @@ final class ChatbotController extends AbstractController
         RestaurantRepository $restaurantRepo,
         HtmlSanitizerInterface $htmlSanitizer,
         LoggerInterface $logger,
-        UrlGeneratorInterface $urlGenerator
+        UrlGeneratorInterface $urlGenerator,
     ): JsonResponse {
         $rawMessage = $request->request->get('message', '');
         $cleanMessage = $htmlSanitizer->sanitizeFor('chatbot_sanitizer', $rawMessage);
@@ -73,8 +73,7 @@ final class ChatbotController extends AbstractController
         array $restaurants,
         HttpClientInterface $client,
         UrlGeneratorInterface $urlGenerator,
-    ): string
-    {
+    ): string {
         $context = "Tu es l'assistant officiel de Resto'N. Ton but est de convertir la conversation en réservation ou en commande.\n";
 
         if (empty($restaurants)) {

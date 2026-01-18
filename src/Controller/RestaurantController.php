@@ -4,16 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Restaurant;
 use App\Entity\Review;
-use App\Form\ReviewType;
 use App\Entity\Role;
 use App\Form\RestaurantType;
+use App\Form\ReviewType;
 use App\Repository\RestaurantRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\RoleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
@@ -47,7 +47,9 @@ final class RestaurantController extends AbstractController
         $averageRating = null;
         if (count($reviews) > 0) {
             $total = 0;
-            foreach ($reviews as $r) { $total += $r->getRating(); }
+            foreach ($reviews as $r) {
+                $total += $r->getRating();
+            }
             $averageRating = $total / count($reviews);
         }
 
@@ -56,7 +58,7 @@ final class RestaurantController extends AbstractController
         if ($user) {
             $existingReview = $entityManager->getRepository(Review::class)->findOneBy([
                 'user' => $user,
-                'restaurant' => $restaurant
+                'restaurant' => $restaurant,
             ]);
         }
 
@@ -76,6 +78,7 @@ final class RestaurantController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Merci pour votre avis !');
+
                 return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
             }
         }
@@ -193,6 +196,7 @@ final class RestaurantController extends AbstractController
                     'role' => $role], 307);
             }
         }
+
         return $this->render('restaurant/delete.html.twig', [
             'restaurant' => $restaurant,
             'form' => $form,

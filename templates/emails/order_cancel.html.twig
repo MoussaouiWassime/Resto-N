@@ -1,0 +1,15 @@
+{% block body %}
+    <h1>Bonjour {{ order.user.firstName }},</h1>
+
+    <p>
+        Nous vous informons que votre commande au restaurant <strong>{{ restaurant.name }}</strong> a été annulée.
+    </p>
+
+    <h3>Détails de la commande annulée :</h3>
+    <ul>
+        <li><strong>Date de commande :</strong> {{ order.orderDate|date('d/m/Y H:i') }}</li>
+        <li><strong>Numéro de commande :</strong> #{{ order.id }}</li>
+    </ul>
+
+    <p>Cordialement,<br>L'équipe Resto'N</p>
+{% endblock %}

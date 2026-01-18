@@ -97,6 +97,7 @@ final class ReservationController extends AbstractController
                     $reservation->setRestaurantTable($assignedTable);
                     $entityManager->persist($reservation);
                     $entityManager->flush();
+                    $this->addFlash('success', 'Votre réservation est confirmée !');
 
                     return $this->redirectToRoute('app_reservation');
                 } else {

@@ -17,7 +17,7 @@ class Role
     private ?string $role = null;
 
     #[ORM\ManyToOne(inversedBy: 'roles')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Restaurant $restaurant = null;
 
     #[ORM\ManyToOne(inversedBy: 'restaurantRoles')]

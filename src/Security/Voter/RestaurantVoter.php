@@ -46,20 +46,24 @@ final class RestaurantVoter extends Voter
 
         $userRoleValue = $roleEntity->getRole();
 
+        if (is_string($userRoleValue)) {
+            $userRoleValue = RestaurantRole::tryFrom($userRoleValue);
+        }
+
         switch ($attribute) {
             case self::MANAGE:
-                if ($userRoleValue === RestaurantRole::OWNER->value) {
+                if (RestaurantRole::OWNER === $userRoleValue) {
                     return true;
                 }
                 break;
 
             case self::STAFF:
                 $allowedRoles = [
-                    RestaurantRole::OWNER->value,
-                    RestaurantRole::SERVER->value,
+                    RestaurantRole::OWNER,
+                    RestaurantRole::SERVER,
                 ];
 
-                if (in_array($userRoleValue, $allowedRoles)) {
+                if (in_array($userRoleValue, $allowedRoles, true)) {
                     return true;
                 }
                 break;

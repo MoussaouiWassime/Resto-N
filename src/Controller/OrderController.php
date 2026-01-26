@@ -13,6 +13,7 @@ use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\RoleRepository;
 use App\Repository\StatisticRepository;
+use App\Security\Voter\RestaurantVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,19 +37,11 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/order/restaurant/{id}', name: 'app_order_restaurant')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted(RestaurantVoter::STAFF, subject: 'restaurant')]
     public function byRestaurant(
         Restaurant $restaurant,
-        RoleRepository $roleRepository,
-        OrderRepository $orderRepository): Response
-    {
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (null === $role) {
-            return $this->redirectToRoute('app_restaurant', [], 307);
-        }
-
+        OrderRepository $orderRepository,
+    ): Response {
         $orders = $orderRepository->findBy(
             ['restaurant' => $restaurant],
             ['orderDate' => 'ASC']

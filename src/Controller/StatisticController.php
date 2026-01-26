@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\RestaurantRepository;
+use App\Entity\Restaurant;
 use App\Repository\StatisticRepository;
 use App\Security\Voter\RestaurantVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,11 +33,9 @@ final class StatisticController extends AbstractController
     #[Route('restaurant/{id}/statistic', name: 'app_statistic', requirements: ['id' => '\d+'])]
     #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function index(
-        int $id,
         StatisticRepository $statisticRepository,
-        RestaurantRepository $restaurantRepository,
+        Restaurant $restaurant,
     ): Response {
-        $restaurant = $restaurantRepository->findWithId($id);
         $statistics = $statisticRepository->findBy(
             ['restaurant' => $restaurant],
             ['date' => 'ASC']
@@ -52,12 +50,10 @@ final class StatisticController extends AbstractController
     #[Route('restaurant/{id}/statistic/{type}', name: 'app_statistic_show', requirements: ['id' => '\d+'])]
     #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function showStats(
-        int $id,
         string $type,
         StatisticRepository $statisticRepository,
-        RestaurantRepository $restaurantRepository,
+        Restaurant $restaurant,
     ): Response {
-        $restaurant = $restaurantRepository->findWithId($id);
 
         $statType = self::STAT_TYPES[$type];
 

@@ -312,7 +312,7 @@ final class ReservationController extends AbstractController
             throw $this->createAccessDeniedException("Vous n'avez pas le droit d'annuler cette réservation.");
         }
 
-        if ('A' === $reservation->getStatus() || 'T' === $reservation->getStatus()) {
+        if (ReservationStatus::CANCELED === $reservation->getStatus() || ReservationStatus::TAKEN === $reservation->getStatus()) {
             $this->addFlash('warning', 'Cette réservation ne peut plus être annulée.');
             if ($isManager) {
                 return $this->redirectToRoute('app_reservation_restaurant', ['id' => $restaurant->getId()]);

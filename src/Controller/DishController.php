@@ -135,7 +135,6 @@ final class DishController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function delete(
         Dish $dish,
-        RoleRepository $roleRepository,
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
@@ -145,13 +144,10 @@ final class DishController extends AbstractController
             throw $this->createNotFoundException('Restaurant introuvable.');
         }
 
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (null === $role || 'P' != $role->getRole()) {
-            return $this->redirectToRoute('app_restaurant_show', [
-                'id' => $restaurant->getId(),
-            ], 307);
+        $restaurant = $dish->getRestaurant();
+        if (!$this->isGranted(RestaurantVoter::MANAGE, $restaurant)) {
+            $this->addFlash('danger', "Vous n'êtes pas un employé du restaurant.");
+            return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
         }
 
         $form = $this->createFormBuilder($dish)

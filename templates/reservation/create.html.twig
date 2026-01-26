@@ -1,26 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Réserver{% endblock %}
+{% block title %}Réserver une table{% endblock %}
 
 {% block main %}
-<div class="container mt-3">
-    <div class="mb-3">
-        <h5>Horaires d'ouverture</h5>
-        <p>
-            {% if restaurant.openingTime and restaurant.closingTime %}
-                Ce restaurant est ouvert de {{ restaurant.openingTime|date('H:i') }} à {{ restaurant.closingTime|date('H:i') }}
-            {% else %}
-                Ce restaurant est ouvert 24h/24.
-            {% endif %}
-        </p>
-    </div>
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
 
-    {{ include('reservation/_form.html.twig', {
-        form: form,
-        submit_label: 'Valider',
-    }, with_context: false) }}
-    <div class="mb-3 pt-3">
-    <a href="{{ path('app_reservation', {id: restaurant.id}) }}" class="btn btn-secondary form-btn">Annuler</a>
+                <div class="card shadow border-0">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h4 class="mb-0">🍽️ Réserver chez {{ restaurant.name }}</h4>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div class="alert alert-info d-flex align-items-center mb-4">
+                            <span class="fs-4 me-3">🕒</span>
+                            <div>
+                                <strong>Horaires d'ouverture :</strong><br>
+                                {% if restaurant.openingTime and restaurant.closingTime %}
+                                    {{ restaurant.openingTime|date('H:i') }} - {{ restaurant.closingTime|date('H:i') }}
+                                {% else %}
+                                    Ouvert 24h/24
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {{ include('reservation/_form.html.twig', {
+                            form: form,
+                            submit_label: 'Valider ma réservation',
+                        }, with_context: false) }}
+
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_home') }}" class="text-muted text-decoration-none small">
+                                Annuler et retour à l'accueil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-</div>
 {% endblock %}

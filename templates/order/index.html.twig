@@ -4,71 +4,63 @@
 
 {% block main %}
     <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
-            <a href="{{ path('app_profile_show') }}" class="btn btn-secondary">Retour au profil</a>
-        </div>
-
         {% for order in orders %}
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        {{ order.orderDate|date('d/m/Y à H:i') }}
-                    </h5>
-                    <div class="text-muted">
-                        Chez {{ order.restaurant.name }}
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom d-flex flex-wrap justify-content-between align-items-center py-3">
+                    <div>
+                        <h5 class="mb-0 text-primary fw-bold">{{ order.restaurant.name }}</h5>
+                        <small class="text-muted">📅 {{ order.orderDate|date('d/m/Y à H:i') }}</small>
                     </div>
-                </div>
 
-                <div class="card-body">
-                    <div class="mb-3">
+                    <div class="d-flex gap-2 align-items-center mt-2 mt-md-0">
                         {% if order.orderType == 'S' %}
-                            <div class="badge bg-primary">Sur place</div>
+                            <span class="badge bg-info text-dark">🍽️ Sur place</span>
                         {% elseif order.orderType == 'E' %}
-                            <div class="badge bg-info text-dark">A emporter</div>
-                        {% elseif order.orderType == 'L' %}
-                            <div class="badge bg-warning text-dark">Livraison</div>
+                            <span class="badge bg-warning text-dark">🛍️ A emporter</span>
+                        {% else %}
+                            <span class="badge bg-primary">🚚 Livraison</span>
                         {% endif %}
 
                         {% if order.status == 'A' %}
                             <span class="badge bg-danger">Annulée</span>
                         {% elseif order.status == 'L' %}
-                            <span class="badge bg-success">Livré</span>
+                            <span class="badge bg-success">Livrée / Terminée</span>
                         {% elseif order.status == 'P' %}
-                            <span class="badge bg-success">Préparé</span>
+                            <span class="badge bg-info">Prête</span>
                         {% else %}
-                            <span class="badge bg-info">En cours</span>
+                            <span class="badge bg-secondary">En préparation</span>
                         {% endif %}
                     </div>
+                </div>
 
-                    <ul class="list-group list-group-flush mb-3">
-                        {% set total = 0 %}
-
-                        {% for item in order.orderItems %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    {{ item.quantity }}x {{ item.dish.name }}
-                                </div>
-                                <div>
-                                    {{ (item.dish.price * item.quantity) / 100 }} €
-                                </div>
-                            </li>
-
-                            {% set total = total + (item.dish.price * item.quantity) %}
-                        {% endfor %}
-                    </ul>
-
-                    <div class="d-flex justify-content-end">
-                        <h4 class="fw-bold">
-                            Total : {{ total / 100 }} €
-                        </h4>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless mb-0">
+                            {% set total = 0 %}
+                            <tbody>
+                            {% for item in order.orderItems %}
+                                <tr>
+                                    <td class="fw-bold text-secondary" style="width: 50px;">{{ item.quantity }}x</td>
+                                    <td>{{ item.dish.name }}</td>
+                                    <td class="text-end">{{ (item.dish.price * item.quantity) / 100 }} €</td>
+                                </tr>
+                                {% set total = total + (item.dish.price * item.quantity) %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
 
+                <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                    <span class="text-muted small">Numéro de commande #{{ order.id }}</span>
+                    <span class="fs-5 fw-bold text-dark">Total : {{ total / 100 }} €</span>
+                </div>
+            </div>
         {% else %}
-            <div class="alert alert-info text-center">
-                Aucune commande
+            <div class="text-center py-5">
+                <div class="fs-1 mb-3">🍽️</div>
+                <h3 class="text-muted">Vous n'avez pas encore passé de commande.</h3>
+                <a href="/" class="btn btn-primary mt-3">Trouver un restaurant</a>
             </div>
         {% endfor %}
     </div>

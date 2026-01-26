@@ -1,26 +1,44 @@
 {% block main %}
-{{ form_start(form) }}
-    <div class="mb-3">
-    {{ form_row(form.reservationDate, {label: 'Date et heure'}) }}
+    {{ form_start(form) }}
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.reservationDate, {
+                label: '📅 Date et Heure',
+                attr: {class: 'form-control'}
+            }) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.numberOfPeople, {
+                label: '👤 Nombre de couverts',
+                attr: {class: 'form-control', min: 1}
+            }) }}
+        </div>
     </div>
-    <div class="mb-3">
-    {{ form_row(form.numberOfPeople, {label: 'Nombre de couverts'}) }}
-    </div>
-    {% if form.status is defined %}
-    <div class="mb-3">
-    {{ form_row(form.status, {label: 'Statut de la réservation'}) }}
-    </div>
+
+    {# Ces champs ne s'affichent que pour le restaurateur ou en édition #}
+    {% if form.status is defined or form.restaurantTable is defined %}
+        <hr class="my-3">
+        <h6 class="text-muted mb-3">Gestion (Restaurateur)</h6>
+        <div class="row">
+            {% if form.status is defined %}
+                <div class="col-md-6">
+                    {{ form_row(form.status, {label: 'Statut'}) }}
+                </div>
+            {% endif %}
+            {% if form.restaurantTable is defined %}
+                <div class="col-md-6">
+                    {{ form_row(form.restaurantTable, {label: '🍽️ Table attribuée'}) }}
+                </div>
+            {% endif %}
+        </div>
     {% endif %}
 
-    {% if form.restaurantTable is defined %}
-    <div class="mb-3">
-    {{ form_row(form.restaurantTable, {label: 'Table attribuée'}) }}
+    <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+            {{ submit_label|default('📅 Confirmer la réservation') }}
+        </button>
     </div>
-    {% endif %}
-
-    <button type="submit" class="btn btn-primary w-100 p-3 mt-3">
-        {{ submit_label|default('Enregistrer') }}
-    </button>
 
     {{ form_rest(form) }}
     {{ form_end(form) }}

@@ -1,83 +1,97 @@
 {% extends 'base.html.twig' %}
 
-{% set statTitle = 'Nombre de Visites par jour' %}
-{% set caption = 'Nombre de Visites' %}
+{# --- 1. Configuration des variables --- #}
+{% set statTitle = 'Statistiques' %}
+{% set caption = 'Valeur' %}
 {% set toEuros = 1 %}
 {% set euroSign = '' %}
+{% set chartColor = '#3498db' %}
+{% set chartBgColor = 'rgba(52, 152, 219, 0.2)' %}
 
-
-{% if statistics[0].statisticType == 'NB_COMMANDES' %}
-    {% set statTitle = 'Nombre de Commandes par jour' %}
-    {% set caption = "Nombre de Commandes" %}
-{% elseif statistics[0].statisticType == 'CA_JOURNALIER' %}
-    {% set statTitle = "Chiffre d'Affaire par jour" %}
-    {% set caption = "Chiffre d'Affaire (en €)" %}
-    {% set toEuros = 100 %}
-    {% set euroSign = ' €' %}
+{% if statistics is defined and statistics is not empty %}
+    {% if statistics[0].statisticType == 'NB_COMMANDES' %}
+        {% set statTitle = 'Volume de Commandes' %}
+        {% set caption = "Commandes" %}
+        {% set chartColor = '#e67e22' %}
+        {% set chartBgColor = 'rgba(230, 126, 34, 0.2)' %}
+    {% elseif statistics[0].statisticType == 'CA_JOURNALIER' %}
+        {% set statTitle = "Chiffre d'Affaires" %}
+        {% set caption = "Revenus (€)" %}
+        {% set toEuros = 100 %}
+        {% set euroSign = ' €' %}
+        {% set chartColor = '#27ae60' %}
+        {% set chartBgColor = 'rgba(39, 174, 96, 0.2)' %}
+    {% endif %}
 {% endif %}
 
-{% block title %} {{ statTitle|raw }} à {{ restaurant.name }}{% endblock %}
-
-{% block head %}
-
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Date');
-            data.addColumn('number', "{{ caption|escape('js') }}");
-            data.addColumn({role: 'annotation'})
-
-            {% for element in statistics %}
-            {% set value = element.value/toEuros %}
-
-            data.addRow([
-                "{{ element.date|date('d/m/Y')|escape('js') }}",
-                {{ value }},
-                "{{ value }}{{ euroSign }}",
-            ]);
-            {% endfor %}
-
-
-            var options = {
-                'width':1000,
-                'height':500,
-                'hAxis': {
-                    'textStyle': {
-                        'bold' : true,
-                        'italic': true,
-                        'fontSize': 15,
-                    }
-                },
-                'annotations': {
-                    'textStyle' : {
-                        'color' : 'black',
-                        'bold' : true,
-                        'fontSize' : 15,
-                    },
-                },
-                'colors' : ['silver'],
-            };
-
-            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-            chart.draw(data, options);
-        }
-    </script>
-
-{% endblock %}
+{% block title %} {{ statTitle }} - {{ restaurant.name }}{% endblock %}
 
 {% block main %}
+    {# --- Chargement des scripts --- #}
+    {# 1. La librairie Chart.js #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <div class="d-flex flex-column align-items-center mt-4">
-        <span class="mb-3" id="chart_div"></span>
-        <div class="mb-0">
-            <a href="{{ path('app_statistic', {id : restaurant.id}) }}" class="btn btn-secondary">Retour au menu des Statistiques</a>
+    {# 2. Notre script personnalisé (Type module pour utiliser import/export) #}
+    <script type="module">
+        import { initChart } from "{{ asset('js/chart-handler.js') }}";
+
+        // On lance l'initialisation dès que le HTML est prêt
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart('myChart');
+        });
+    </script>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3 fw-bold mb-0">{{ statTitle }}</h2>
+                    <a href="{{ path('app_statistic', {id : restaurant.id}) }}" class="btn btn-outline-secondary btn-sm">
+                        ← Retour
+                    </a>
+                </div>
+
+                <div class="card shadow border-0">
+                    <div class="card-body p-4">
+
+                        {% if statistics is empty %}
+                            <div class="text-center py-5">
+                                <div class="fs-1 mb-3 text-muted">📊</div>
+                                <h4 class="text-muted">Aucune donnée disponible</h4>
+                                <p class="text-secondary small">
+                                    Il n'y a pas encore eu d'activité pour cette catégorie.
+                                </p>
+                            </div>
+                        {% else %}
+
+                            {# Préparation des tableaux de données #}
+                            {% set dates = [] %}
+                            {% set values = [] %}
+                            {% for element in statistics %}
+                                {% set dates = dates|merge([element.date|date('d/m')]) %}
+                                {% set values = values|merge([element.value / toEuros]) %}
+                            {% endfor %}
+
+                            {#
+                            LE CANVAS MAGIQUE :
+                            On injecte les données JSON dans les attributs data-*
+                            #}
+                            <div style="position: relative; height: 400px; width: 100%;">
+                                <canvas id="myChart"
+                                        data-dates="{{ dates|json_encode }}"
+                                        data-values="{{ values|json_encode }}"
+                                        data-caption="{{ caption }}"
+                                        data-color="{{ chartColor }}"
+                                        data-bgcolor="{{ chartBgColor }}"
+                                ></canvas>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
 {% endblock %}

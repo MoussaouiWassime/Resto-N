@@ -3,24 +3,45 @@
 {% block title %}Modifier mon profil{% endblock %}
 
 {% block main %}
-<div class="container mt-3">
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h4 class="mb-0">✏️ Modifier mes informations</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
 
-    {{ form_start(form) }}
-    <div class="mb-3">
-        {{ form_row(form.email) }}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form_label(form.firstName, 'Prénom', {label_attr: {class: 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.firstName, {attr: {class: 'form-control', placeholder: 'Votre prénom'}}) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_label(form.lastName, 'Nom', {label_attr: {class: 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.lastName, {attr: {class: 'form-control', placeholder: 'Votre nom'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.email, 'Adresse Email', {label_attr: {class: 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.email, {attr: {class: 'form-control', placeholder: 'exemple@email.com'}}) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_label(form.phone, 'Téléphone', {label_attr: {class: 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.phone, {attr: {class: 'form-control', placeholder: '06 12 34 56 78'}}) }}
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a class="btn btn-outline-secondary me-md-2" href="{{ path('app_profile_show') }}">Annuler</a>
+                            <button class="btn btn-primary px-4" type="submit">💾 Enregistrer</button>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        {{ form_row(form.firstName) }}
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.lastName) }}
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.phone) }}
-    </div>
-        <br>
-        <button class="btn btn-primary" type="submit">Enregistrer</button>
-        <a class="btn btn-secondary" href="{{ path('app_profile_show') }}">Annuler</a>
-    {{ form_end(form) }}
-</div>
 {% endblock %}

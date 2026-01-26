@@ -3,32 +3,52 @@
 {% block title %}Inscription{% endblock %}
 
 {% block main %}
-    <div class="container mt-3">
-        {{ form_errors(registrationForm) }}
-        {{ form_start(registrationForm) }}
-        <div class="mb3">
-            {{ form_row(registrationForm.firstName) }}
-        </div>
-        <div class="mb3">
-            {{ form_row(registrationForm.lastName) }}
-        </div>
-        <div class="mb3">
-            {{ form_row(registrationForm.email) }}
-        </div>
-        <div class="mb3">
-            {{ form_row(registrationForm.phone) }}
-        </div>
-        <div class="mb3">
-            {{ form_row(registrationForm.plainPassword) }}
-        </div>
-        <div class="mb3">
-            {{ form_row(registrationForm.agreeTerms) }}
-        </div>
-        <div class="mb-3">
-            <div class="action-register gap-2">
-                <button type="submit" class="btn btn-primary">Inscription</button>
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h4 class="mb-0">📝 Créer un compte</h4>
+                    </div>
+
+                    <div class="card-body p-4">
+                        {{ form_errors(registrationForm) }}
+
+                        {{ form_start(registrationForm) }}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.firstName) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.lastName) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(registrationForm.email) }}
+
+                        {{ form_row(registrationForm.phone) }}
+
+                        {{ form_row(registrationForm.plainPassword) }}
+
+                        {{ form_row(registrationForm.agreeTerms) }}
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">S'inscrire</button>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_login') }}" class="text-decoration-none text-muted">
+                                Déjà un compte ? <span class="text-primary fw-bold">Connectez-vous</span>
+                            </a>
+                        </div>
+
+                        {{ form_end(registrationForm) }}
+                    </div>
+                </div>
+
             </div>
         </div>
-    {{ form_end(registrationForm) }}
     </div>
 {% endblock %}

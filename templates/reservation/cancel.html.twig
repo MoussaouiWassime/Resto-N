@@ -5,30 +5,36 @@
 {% block main %}
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="card border-danger shadow">
-                    <div class="card-header bg-danger text-white">
-                        <h4 class="mb-0">Confirmation d'annulation</h4>
+                    <div class="card-header bg-danger text-white text-center py-3">
+                        <h4 class="mb-0">⚠️ Annulation</h4>
                     </div>
-                    <div class="card-body">
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle-fill"></i>
-                            Êtes-vous sûr de vouloir annuler cette réservation ?
-                            <br>
-                            La table sera libérée pour d'autres clients.
+
+                    <div class="card-body text-center p-4">
+                        <div class="display-1 text-danger mb-3">📅</div>
+
+                        <h5 class="fw-bold">Voulez-vous annuler ce repas ?</h5>
+                        <p class="text-muted">
+                            Chez <strong>{{ reservation.restaurant.name }}</strong><br>
+                            Le {{ reservation.reservationDate|date('d/m/Y à H:i') }} pour {{ reservation.numberOfPeople }} pers.
+                        </p>
+
+                        <div class="alert alert-warning small">
+                            Cette action libérera la table pour d'autres clients.
                         </div>
 
-                        <h5 class="mt-4">Détails :</h5>
-                        <ul class="list-group mb-4">
-                            <li class="list-group-item"><strong>Restaurant :</strong> {{ reservation.restaurant.name }}</li>
-                            <li class="list-group-item"><strong>Date :</strong> {{ reservation.reservationDate|date('d/m/Y à H:i') }}</li>
-                            <li class="list-group-item"><strong>Couverts :</strong> {{ reservation.numberOfPeople }} personnes</li>
-                        </ul>
-
                         {{ form_start(form) }}
-                        <div class="d-flex justify-content-between">
-                            {{ form_widget(form.return) }}
-                            {{ form_widget(form.confirm) }}
+                        <div class="d-grid gap-3 mt-4">
+                            {{ form_widget(form.return, {
+                                label: 'Non, garder ma réservation',
+                                attr: {class: 'btn btn-secondary btn-lg'}
+                            }) }}
+
+                            {{ form_widget(form.confirm, {
+                                label: 'Oui, annuler définitivement',
+                                attr: {class: 'btn btn-danger'}
+                            }) }}
                         </div>
                         {{ form_end(form) }}
                     </div>

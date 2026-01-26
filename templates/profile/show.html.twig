@@ -1,41 +1,117 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil de {{ user.firstName }}, {{ user.lastName }} {% endblock %}
+{% block title %}Mon Profil{% endblock %}
 
 {% block main %}
-    <div class="container mt-3">
-    <div class="mb-3">
-        <div class="card-body fs-5">
+    <div class="container mt-5 mb-5">
+        <div class="row g-4">
 
-            <p><strong>Nom :</strong> {{ user.firstName }}, {{ user.lastName }}</p>
-            <p><strong>Tel :</strong> <span class="badge bg-primary">{{ user.phone }}</span></p>
-            <p><strong>Email :</strong> <span class="badge bg-info">{{ user.email }}</span></p>
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm text-center p-4">
+                    <div class="mb-3 mx-auto bg-light rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                        {{ user.firstName|first }}{{ user.lastName|first }}
+                    </div>
 
-            {# damien : je peaufinerai le css plus tard quand j'aurai terminé toutes les principales features. #}
-            <div> Vous travaillez dans ces restaurants :
+                    <h3 class="fw-bold text-dark">{{ user.firstName }} {{ user.lastName }}</h3>
+                    <p class="text-muted mb-4">Membre depuis 2025</p>
+
+                    <div class="text-start w-100 px-3">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="fs-4 me-3">📧</span>
+                            <div class="overflow-hidden">
+                                <small class="text-muted d-block">Email</small>
+                                <span class="fw-bold text-dark">{{ user.email }}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="fs-4 me-3">📞</span>
+                            <div>
+                                <small class="text-muted d-block">Téléphone</small>
+                                <span class="fw-bold text-dark">{{ user.phone|default('Non renseigné') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-4 d-grid gap-2">
+                        <a href="{{ path('app_profile_update') }}" class="btn btn-outline-primary">
+                            ✏️ Modifier mes infos
+                        </a>
+                        <a href="{{ path('app_logout') }}" class="btn btn-outline-secondary">
+                            🚪 Déconnexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+
                 {% if roles %}
-                    {% for role in roles %}
-                        {% if role.role == 'P' %}
-                            <a href="{{ path('app_restaurant_show', {id: role.restaurant.id}) }}">
-                                <span class="badge bg-primary"> {{ role.restaurant.name }}</span>
-                            </a>
-                        {% else %}
-                            <a href="{{ path('app_restaurant_show', {id: role.restaurant.id}) }}">
-                                <span class="badge bg-secondary"> {{ role.restaurant.name }}</span>
-                            </a>
-                        {% endif %}
-                    {% endfor %}
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 fw-bold">💼 Mes Restaurants</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                {% for role in roles %}
+                                    <div class="col-md-6">
+                                        <a href="{{ path('app_restaurant_show', {id: role.restaurant.id}) }}" class="text-decoration-none">
+                                            <div class="p-3 border rounded hover-shadow d-flex justify-content-between align-items-center bg-light">
+                                                <span class="fw-bold text-dark">{{ role.restaurant.name }}</span>
+                                                {% if role.role == 'P' %}
+                                                    <span class="badge bg-warning text-dark">👑 Gérant</span>
+                                                {% else %}
+                                                    <span class="badge bg-info text-dark">👨‍🍳 Employé</span>
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">🕒 Mon Activité</h5>
+                    </div>
+                    <div class="list-group list-group-flush mx-3">
+                        <a href="{{ path('app_order') }}" class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fs-5 me-2">📦</span>
+                                <strong>Historique des commandes</strong>
+                                <small class="d-block text-muted ms-4">Retrouvez vos anciens repas</small>
+                            </div>
+                            <span class="text-primary">Voir →</span>
+                        </a>
+                        <a href="{{ path('app_reservation') }}" class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fs-5 me-2">📅</span>
+                                <strong>Historique des réservations</strong>
+                                <small class="d-block text-muted ms-4">Vos tables passées et à venir</small>
+                            </div>
+                            <span class="text-primary">Voir →</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">⚙️ Gestion</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a href="{{ path('app_restaurant_create') }}" class="btn btn-success text-white">
+                                ➕ Créer un restaurant
+                            </a>
+                            <a href="{{ path('app_profile_delete') }}" class="btn btn-outline-danger ms-auto">
+                                🗑️ Supprimer mon compte
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-        <h3>Actions</h3>
-        <a href="{{ path('app_profile_update') }}" class="btn btn-primary">Modifier mes informations</a>
-        <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
-        <a href="{{ path('app_profile_delete') }}" class="btn btn-primary">Supprimer mon compte</a>
-        <a href="{{ path('app_restaurant_create') }}" class="btn btn-primary">Créer un restaurant</a>
-        <h3>Historique</h3>
-        <a href="{{ path('app_reservation') }}" class="btn btn-primary">Historique des réservations</a>
-        <a href="{{ path('app_order') }}" class="btn btn-primary">Historique des commandes</a>
     </div>
 {% endblock %}

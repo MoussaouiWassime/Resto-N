@@ -3,15 +3,37 @@
 {% block title %}Supprimer mon avis{% endblock %}
 
 {% block main %}
-    <div class="container mt-4">
-        <div class="alert alert-warning">
-            <h1>Êtes-vous sûr ?</h1>
-            Voulez-vous vraiment supprimer votre avis pour le restaurant {{ review.restaurant.name }} ?
-        </div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-danger shadow">
+                    <div class="card-header bg-danger text-white text-center py-3">
+                        <h4 class="mb-0">🗑️ Supprimer l'avis</h4>
+                    </div>
 
-        {{ form_start(form) }}
-            {{ form_widget(form.delete) }}
-            {{ form_widget(form.cancel) }}
-        {{ form_end(form) }}
+                    <div class="card-body text-center p-4">
+                        <h5 class="fw-bold mb-3">Voulez-vous retirer votre note ?</h5>
+                        <p class="text-muted mb-4">
+                            Vous allez supprimer votre avis pour le restaurant <br>
+                            <strong>{{ review.restaurant.name }}</strong>.
+                        </p>
+
+                        {{ form_start(form) }}
+                        <div class="d-grid gap-3">
+                            {{ form_widget(form.cancel, {
+                                label: 'Non, garder mon avis',
+                                attr: {class: 'btn btn-secondary'}
+                            }) }}
+
+                            {{ form_widget(form.delete, {
+                                label: 'Oui, supprimer définitivement',
+                                attr: {class: 'btn btn-outline-danger'}
+                            }) }}
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

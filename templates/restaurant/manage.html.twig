@@ -1,46 +1,100 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    Gérer le restaurant {{ restaurant.name }}
-{% endblock %}
+{% block title %}Gestion - {{ restaurant.name }}{% endblock %}
 
 {% block main %}
-    {% if role %}
-        <div class="d-flex flex-column align-items-center justify-content-center">
-            <a href="{{ path('app_reservation_restaurant', {'id' : restaurant.id}) }}">
-                <span class="btn btn-primary bg-primary">Gérer les réservations</span>
-            </a>
-            <a href="{{ path('app_order_restaurant', {'id': restaurant.id}) }}">
-                <span class="btn btn-primary bg-primary">Gérer les commandes</span>
-            </a>
-            {% if role.role == 'P' %}
-                <a href="{{ path('app_statistic', {'id': restaurant.id}) }}">
-                    <span class="btn bg-info">Accéder aux statistiques du Restaurant</span>
-                </a>
-                <a href="{{ path('app_stock_index', {'id': restaurant.id}) }}">
-                    <span class="btn bg-info">Accéder aux stocks du Restaurant</span>
-                </a>
-                <a href="{{ path('app_dish_create', {id: restaurant.id}) }}">
-                    <span class="btn bg-info">Ajouter un plat</span>
-                </a>
-                <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}">
-                    <span class="btn bg-info">Mettre à jour le Restaurant</span>
-                </a>
-                <a href="{{ path('app_restaurant_delete', {'id': restaurant.id}) }}">
-                    <span class="btn btn-danger bg-danger">Supprimer le Restaurant</span>
-                </a>
-                <div class="card p-4 bg-light">
-                    <h5>Inviter un serveur</h5>
-                    <p class="small text-muted">L'utilisateur doit déjà être inscrit sur le site.</p>
+    <div class="container py-5">
 
-                    <form action="{{ path('app_invitation_send', {'id': restaurant.id}) }}" method="post" class="d-flex gap-2">
-                        <input type="email" name="server_email" class="form-control" placeholder="Email du serveur" required>
-                        <button type="submit" class="btn btn-primary">Inviter</button>
-                    </form>
-                </div>
-            {% endif %}
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 class="h3 fw-bold mb-1">🛠️ Dashboard : <span class="text-primary">{{ restaurant.name }}</span></h1>
+                <p class="text-muted">Gérez votre activité en temps réel.</p>
+            </div>
+            <a href="{{ path('app_restaurant_show', {id: restaurant.id}) }}" class="btn btn-outline-secondary">
+                👁️ Voir la page publique
+            </a>
         </div>
-    {% endif %}
 
+        {% if role %}
+            <div class="row g-4">
+
+                <div class="col-12">
+                    <div class="card border-primary shadow-sm h-100">
+                        <div class="card-header bg-primary text-white fw-bold">🚀 Opérations en cours</div>
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <a href="{{ path('app_order_restaurant', {'id': restaurant.id}) }}" class="btn btn-outline-primary w-100 p-4 d-flex flex-column align-items-center gap-2 hover-bg-primary">
+                                        <span class="fs-1">👨‍🍳</span>
+                                        <span class="fw-bold">Gérer les Commandes</span>
+                                        <small class="text-muted">Cuisine & Livraison</small>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ path('app_reservation_restaurant', {'id' : restaurant.id}) }}" class="btn btn-outline-primary w-100 p-4 d-flex flex-column align-items-center gap-2 hover-bg-primary">
+                                        <span class="fs-1">📅</span>
+                                        <span class="fw-bold">Cahier de Réservations</span>
+                                        <small class="text-muted">Placement & Annulations</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if role.role == 'P' %}
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white fw-bold">📊 Gestion & Carte</div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <a href="{{ path('app_dish_create', {id: restaurant.id}) }}" class="btn btn-light w-100 text-start p-3 border">
+                                            🍽️ Ajouter un plat
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="{{ path('app_stock_index', {'id': restaurant.id}) }}" class="btn btn-light w-100 text-start p-3 border">
+                                            📦 Stocks & Ingrédients
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="{{ path('app_statistic', {'id': restaurant.id}) }}" class="btn btn-light w-100 text-start p-3 border">
+                                            📈 Statistiques
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="{{ path('app_restaurant_update', {'id': restaurant.id}) }}" class="btn btn-light w-100 text-start p-3 border">
+                                            ✏️ Modifier les infos du resto
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white fw-bold">🤝 Équipe</div>
+                            <div class="card-body">
+                                <p class="small text-muted mb-2">Inviter un serveur (email)</p>
+                                <form action="{{ path('app_invitation_send', {'id': restaurant.id}) }}" method="post" class="d-flex gap-2">
+                                    <input type="email" name="server_email" class="form-control form-control-sm" placeholder="exemple@email.com" required>
+                                    <button type="submit" class="btn btn-sm btn-dark">Inviter</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card border-danger bg-danger bg-opacity-10">
+                            <div class="card-body text-center">
+                                <a href="{{ path('app_restaurant_delete', {'id': restaurant.id}) }}" class="btn btn-sm btn-danger mt-1">
+                                    🗑️ Supprimer ce restaurant
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
-

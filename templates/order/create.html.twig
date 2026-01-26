@@ -3,58 +3,82 @@
 {% block title %}Commander chez {{ restaurant.name }}{% endblock %}
 
 {% block main %}
-    <div class="container mt-3">
+    <div class="container mt-4 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
 
-        <hr>
+                <h2 class="mb-4">🍽️ Votre commande chez <span class="text-primary">{{ restaurant.name }}</span></h2>
 
-        {{ form_start(form) }}
-        <div class="mb-3">
-            {{ form_row(form.orderType, {attr: {class: 'form-select'}}) }}
-        </div>
+                {{ form_start(form) }}
 
-        <div class="mb-3">
-            {{ form_row(form.deliveryAddress, {attr: {class: 'form-control'}}) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_row(form.deliveryPostalCode, {attr: {class: 'form-control'}}) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form_row(form.deliveryCity, {attr: {class: 'form-control'}}) }}
-        </div>
-
-        <hr>
-
-        <h3>La Carte</h3>
-
-        <ul class="list-group mb-3">
-            {% for itemField in form.orderItems %}
-                {% set dish = itemField.vars.value.dish %}
-
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        {{ dish.name }} - {{ dish.price / 100 }} €
-                        <br>
-                        {{ dish.description }}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        📍 Informations de réception
                     </div>
-                    <div>
-                        {{ form_widget(itemField.quantity, {
-                            attr: {
-                                class: 'form-control',
-                                style: 'width: 80px',
-                                min: '0',
-                            },
-                        }) }}
-                    </div>
-                </li>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Type de commande</label>
+                            {{ form_widget(form.orderType, {attr: {class: 'form-select form-select-lg'}}) }}
+                        </div>
 
-            {% endfor %}
-        </ul>
-        <button type="submit" class="btn btn-success w-100">Valider la commande</button>
-        <div class="mt-2">
-            <a href="{{ path('app_order') }}" class="btn btn-secondary action-btn">Retour</a>
+                        <div class="delivery-info border-top pt-3 mt-3">
+                            <h6 class="text-muted mb-3">Si livraison :</h6>
+                            <div class="mb-3">
+                                {{ form_widget(form.deliveryAddress, {attr: {class: 'form-control', placeholder: 'Adresse de livraison'}}) }}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    {{ form_widget(form.deliveryPostalCode, {attr: {class: 'form-control', placeholder: 'Code Postal'}}) }}
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    {{ form_widget(form.deliveryCity, {attr: {class: 'form-control', placeholder: 'Ville'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        📋 La Carte
+                    </div>
+                    <div class="list-group list-group-flush mx-3">
+                        {% for itemField in form.orderItems %}
+                            {% set dish = itemField.vars.value.dish %}
+
+                            <div class="list-group-item py-3 d-flex align-items-center justify-content-between">
+                                <div class="me-3 flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="fw-bold fs-5">{{ dish.name }}</span>
+                                        <span class="badge bg-light text-dark border fs-6">{{ dish.price / 100 }} €</span>
+                                    </div>
+                                    <small class="text-muted fst-italic">{{ dish.description }}</small>
+                                </div>
+
+                                <div class="text-center" style="width: 20%;">
+                                    <small class="d-block text-muted mb-1">Quantité</small>
+                                    {{ form_widget(itemField.quantity, {
+                                        attr: {
+                                            class: 'form-control text-center fw-bold border-primary',
+                                            style: 'font-size: 1.1rem;',
+                                            min: '0'
+                                        }
+                                    }) }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg p-3 shadow-sm">
+                        Valider ma commande
+                    </button>
+                    <a href="{{ path('app_order') }}" class="btn btn-outline-secondary">Annuler et retour</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
         </div>
-        {{ form_end(form) }}
     </div>
 {% endblock %}

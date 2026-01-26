@@ -1,25 +1,40 @@
-{% extends 'base.html.twig' %}
-
-{% if app.request.query.has('search') %}
-    {% set currentSearch = app.request.query.get('search') %}
-{% else %}
-    {% set currentSearch = '' %}
-{% endif %}
-
-{% block title %}Liste des Plats{% endblock %}
-
 {% block main %}
-
-    <ul class="list-group nav">
+    <ul class="list-group nav container mt-4">
         {% for dish in dishes %}
+            <li class="list-group-item nav-item">
+                <a class="nav-link h-100 d-flex flex-column" href="{{ path('app_dish_show', {id: dish.id}) }}">
 
-            <li class="list-group-item nav-item"
-            ><a class="nav-link" href="{{ path('app_dish_show', {id: dish.id}) }}">
-                    <span class="name">{{ dish.name }}</span
-                    >, <span class="description">{{ dish.description }}</span
-                    ></a
-                ></li>
+                    <div class="mb-3 rounded overflow-hidden" style="height: 180px; width: 100%;">
+                        {% if dish.photo %}
+                            <img src="{{ asset('images/dishes/' ~ dish.photo) }}"
+                                 alt="{{ dish.name }}"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center text-muted">
+                                🍽️ Pas de photo
+                            </div>
+                        {% endif %}
+                    </div>
 
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="name text-truncate" style="max-width: 70%;">{{ dish.name }}</span>
+                        <span class="badge bg-warning text-dark">{{ dish.price }} €</span>
+                    </div>
+
+                    <span class="description text-muted small flex-grow-1">
+                        {{ dish.description|length > 80 ? dish.description|slice(0, 80) ~ '...' : dish.description }}
+                    </span>
+
+                    <div class="mt-3 text-end text-primary small fw-bold">
+                        Voir le détail →
+                    </div>
+                </a>
+            </li>
+        {% else %}
+            <div class="col-12 text-center p-5">
+                <h3 class="text-muted">Aucun plat trouvé 😢</h3>
+                <p>Revenez plus tard ou essayez une autre recherche.</p>
+            </div>
         {% endfor %}
     </ul>
 {% endblock %}

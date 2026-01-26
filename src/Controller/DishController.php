@@ -7,6 +7,7 @@ use App\Entity\Restaurant;
 use App\Form\DishType;
 use App\Repository\DishRepository;
 use App\Repository\RoleRepository;
+use App\Security\Voter\RestaurantVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -40,23 +41,14 @@ final class DishController extends AbstractController
     }
 
     #[Route('/restaurant/{id}/dish/create', name: 'app_dish_create', requirements: ['id' => '\d+'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function create(
         ?Restaurant $restaurant,
-        RoleRepository $roleRepository,
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
         if (null == $restaurant) {
             throw $this->createNotFoundException('Vous ne pouvez pas créer un plat sans restaurant');
-        }
-
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-        if (null === $role || 'P' != $role->getRole()) {
-            return $this->redirectToRoute('app_restaurant_show', [
-                'id' => $restaurant->getId(),
-            ], 307);
         }
 
         $dish = new Dish();
@@ -96,18 +88,13 @@ final class DishController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function update(
         Dish $dish,
-        RoleRepository $roleRepository,
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
         $restaurant = $dish->getRestaurant();
-
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-        if (null === $role || 'P' != $role->getRole()) {
-            return $this->redirectToRoute('app_restaurant_show', [
-                'id' => $restaurant->getId(),
-            ], 307);
+        if (!$this->isGranted(RestaurantVoter::MANAGE, $restaurant)) {
+            $this->addFlash('danger', "Vous n'êtes pas un employé du restaurant.");
+            return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
         }
 
         $form = $this->createForm(DishType::class, $dish);

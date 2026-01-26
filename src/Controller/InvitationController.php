@@ -43,8 +43,7 @@ final class InvitationController extends AbstractController
             if ($existingRole) {
                 $this->addFlash('warning', "Cet utilisateur est déjà dans l'équipe ou invité.");
             } else {
-                $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                $token = substr(str_shuffle($chars), 0, 30);
+                $token = bin2hex(random_bytes(15));
 
                 $newRole = new Role();
                 $newRole->setUser($serverUser);

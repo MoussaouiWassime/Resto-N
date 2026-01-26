@@ -13,9 +13,9 @@
         <div class="row">
             {% for order in orders %}
                 <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
-                    <div class="card h-100 shadow-sm {{ order.status == 'A' ? 'border-danger opacity-75' : 'border-primary' }}">
+                    <div class="card h-100 shadow-sm {{ order.status.value == 'A' ? 'border-danger opacity-75' : 'border-primary' }}">
 
-                        <div class="card-header d-flex justify-content-between align-items-start {{ order.status == 'A' ? 'bg-danger text-white' : 'bg-light' }}">
+                        <div class="card-header d-flex justify-content-between align-items-start {{ order.status.value == 'A' ? 'bg-danger text-white' : 'bg-light' }}">
                             <div>
                                 <strong class="d-block fs-5">
                                     {% if order.user %}
@@ -27,9 +27,9 @@
                                 <small>{{ order.orderDate|date('H:i') }}</small>
                             </div>
                             <div class="text-end">
-                                {% if order.orderType == 'L' %}
+                                {% if order.orderType.value == 'L' %}
                                     <span class="badge bg-warning text-dark">🚚 Livr.</span>
-                                {% elseif order.orderType == 'E' %}
+                                {% elseif order.orderType.value == 'E' %}
                                     <span class="badge bg-info text-dark">🛍️ Emp.</span>
                                 {% else %}
                                     <span class="badge bg-primary">🍽️ Place</span>
@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="card-body">
-                            {% if order.orderType == 'L' %}
+                            {% if order.orderType.value == 'L' %}
                                 <div class="alert alert-warning py-2 small mb-3">
                                     📍 {{ order.deliveryAddress }}<br>
                                     {{ order.deliveryPostalCode }} {{ order.deliveryCity }}
@@ -64,7 +64,7 @@
                             </div>
 
                             <div class="d-grid gap-2">
-                                {% if order.status != 'A' %}
+                                {% if order.status.value != 'A' %}
                                     <a href="{{ path('app_order_cancel', {id: order.id}) }}" class="btn btn-outline-danger btn-sm">
                                         ✖ Annuler Commande
                                     </a>

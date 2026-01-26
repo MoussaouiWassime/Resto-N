@@ -13,19 +13,19 @@
                     </div>
 
                     <div class="d-flex gap-2 align-items-center mt-2 mt-md-0">
-                        {% if order.orderType == 'S' %}
+                        {% if order.orderType.value == 'S' %}
                             <span class="badge bg-info text-dark">🍽️ Sur place</span>
-                        {% elseif order.orderType == 'E' %}
+                        {% elseif order.orderType.value == 'E' %}
                             <span class="badge bg-warning text-dark">🛍️ A emporter</span>
                         {% else %}
                             <span class="badge bg-primary">🚚 Livraison</span>
                         {% endif %}
 
-                        {% if order.status == 'A' %}
+                        {% if order.status.value == 'A' %}
                             <span class="badge bg-danger">Annulée</span>
-                        {% elseif order.status == 'L' %}
+                        {% elseif order.status.value == 'L' %}
                             <span class="badge bg-success">Livrée / Terminée</span>
-                        {% elseif order.status == 'P' %}
+                        {% elseif order.status.value == 'P' %}
                             <span class="badge bg-info">Prête</span>
                         {% else %}
                             <span class="badge bg-secondary">En préparation</span>

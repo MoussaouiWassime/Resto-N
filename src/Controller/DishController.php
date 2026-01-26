@@ -6,8 +6,8 @@ use App\Entity\Dish;
 use App\Entity\Restaurant;
 use App\Form\DishType;
 use App\Repository\DishRepository;
-use App\Repository\RoleRepository;
 use App\Security\Voter\RestaurantVoter;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -45,7 +45,8 @@ final class DishController extends AbstractController
     public function create(
         ?Restaurant $restaurant,
         EntityManagerInterface $entityManager,
-        Request $request): Response
+        Request $request,
+        FileUploader $fileUploader): Response
     {
         if (null == $restaurant) {
             throw $this->createNotFoundException('Vous ne pouvez pas créer un plat sans restaurant');
@@ -60,11 +61,7 @@ final class DishController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $photo = $form->get('photo')->getData();
             if ($photo) {
-                $newFileName = md5(uniqid(null, true)).'.'.$photo->guessExtension();
-                $photo->move(
-                    $this->getParameter('kernel.project_dir').'/public/images/dishes',
-                    $newFileName,
-                );
+                $newFileName = $fileUploader->upload($photo);
                 $dish->setPhoto($newFileName);
             }
 
@@ -94,6 +91,7 @@ final class DishController extends AbstractController
         $restaurant = $dish->getRestaurant();
         if (!$this->isGranted(RestaurantVoter::MANAGE, $restaurant)) {
             $this->addFlash('danger', "Vous n'êtes pas un employé du restaurant.");
+
             return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
         }
 
@@ -147,6 +145,7 @@ final class DishController extends AbstractController
         $restaurant = $dish->getRestaurant();
         if (!$this->isGranted(RestaurantVoter::MANAGE, $restaurant)) {
             $this->addFlash('danger', "Vous n'êtes pas un employé du restaurant.");
+
             return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
         }
 

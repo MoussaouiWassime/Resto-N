@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Role;
+use App\Enum\RestaurantRole;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -32,8 +33,7 @@ final class RoleFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            // P = Proprio, S = Serveur
-            'role' => self::faker()->randomElement(['P', 'C', 'S']),
+            'role' => self::faker()->randomElement(RestaurantRole::cases()),
             'restaurant' => RestaurantFactory::random(),
             'user' => UserFactory::new(),
         ];

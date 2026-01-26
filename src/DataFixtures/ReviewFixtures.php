@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Enum\RestaurantRole;
 use App\Factory\RestaurantCategoryFactory;
 use App\Factory\RestaurantFactory;
 use App\Factory\ReviewFactory;
@@ -32,17 +33,17 @@ class ReviewFixtures extends Fixture
         RoleFactory::createOne([
             'restaurant' => $restaurant,
             'user' => $cutrona[0],
-            'role' => 'P',
+            'role' => RestaurantRole::OWNER,
         ]);
         RoleFactory::createOne([
             'restaurant' => $restaurant,
             'user' => $damien[0],
-            'role' => 'S',
+            'role' => RestaurantRole::SERVER,
         ]);
         RoleFactory::createOne([
             'restaurant' => $restaurant,
             'user' => $wassime[0],
-            'role' => 'S',
+            'role' => RestaurantRole::SERVER,
         ]);
 
 

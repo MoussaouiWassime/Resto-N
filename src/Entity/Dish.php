@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\DishCategory;
 use App\Repository\DishRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -33,8 +34,8 @@ class Dish
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'dish')]
     private Collection $orderItems;
 
-    #[ORM\Column(length: 1)]
-    private ?string $category = null;
+    #[ORM\Column(length: 1, enumType: DishCategory::class)]
+    private ?DishCategory $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'dishes')]
     private ?Restaurant $restaurant = null;
@@ -127,12 +128,12 @@ class Dish
         return $this;
     }
 
-    public function getCategory(): ?string
+    public function getCategory(): DishCategory
     {
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(DishCategory $category): static
     {
         $this->category = $category;
 

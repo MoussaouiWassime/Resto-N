@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Restaurant;
 use App\Entity\RestaurantTable;
+use App\Enum\ReservationStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -36,7 +37,7 @@ class RestaurantTableRepository extends ServiceEntityRepository
             )')
             ->setParameter('restaurant', $restaurant)
             ->setParameter('people', $people)
-            ->setParameter('status', 'C')
+            ->setParameter('status', ReservationStatus::CONFIRMED)
             ->setParameter('start', $start)
             ->setParameter('end', $end)
             ->orderBy('t.capacity', 'ASC')

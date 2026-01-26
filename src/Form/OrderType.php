@@ -3,9 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Order;
+use App\Enum\OrderMode;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,13 +17,16 @@ class OrderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('orderType', ChoiceType::class, [
+            ->add('orderType', EnumType::class, [
+                'class' => OrderMode::class,
                 'label' => 'Type de commande',
-                'choices' => [
-                    'Sur place' => 'S',
-                    'A emporter' => 'E',
-                    'Livraison' => 'L',
-                ],
+                'choice_label' => function (OrderMode $mode) {
+                    return match ($mode) {
+                        OrderMode::ON_SITE => 'Sur place',
+                        OrderMode::TAKEAWAY => 'A emporter',
+                        OrderMode::DELIVERY => 'Livraison',
+                    };
+                },
             ])
             ->add('deliveryAddress', TextType::class, [
                 'label' => 'Adresse (si livraison)',

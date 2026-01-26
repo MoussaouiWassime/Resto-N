@@ -4,9 +4,11 @@ namespace App\Form;
 
 use App\Entity\Dish;
 use App\Entity\Restaurant;
+use App\Enum\DishCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -47,13 +49,12 @@ class DishType extends AbstractType
                     ),
                 ],
             ])
-            ->add('category', ChoiceType::class, [
-                'choices' => [
-                    'Entree' => 'E',
-                    'Plat' => 'P',
-                    'Boisson' => 'B',
-                    'Dessert' => 'D',
-                ],
+            ->add('category', EnumType::class, [
+                'class' => DishCategory::class,
+                'label' => 'Catégorie',
+                'choice_label' => function ($choice) {
+                    return $choice->getLabel();
+                },
             ])
             ->add('restaurant', EntityType::class, [
                 'class' => Restaurant::class,

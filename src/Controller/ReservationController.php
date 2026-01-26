@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Reservation;
 use App\Entity\Restaurant;
 use App\Entity\Statistic;
+use App\Enum\ReservationStatus;
 use App\Form\ReservationType;
 use App\Repository\ReservationRepository;
 use App\Repository\RestaurantRepository;
@@ -63,7 +64,7 @@ final class ReservationController extends AbstractController
 
         $reservation = new Reservation();
         $reservation->setRestaurant($restaurant);
-        $reservation->setStatus('C');
+        $reservation->setStatus(ReservationStatus::CONFIRMED);
         $reservation->setReservationDate(new \DateTime('+1 day 19:00'));
         $reservation->setUser($this->getUser());
 
@@ -334,7 +335,7 @@ final class ReservationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('confirm')->isClicked()) {
-                $reservation->setStatus('A');
+                $reservation->setStatus(ReservationStatus::CANCELED);
                 $reservation->setRestaurantTable(null);
 
                 $date = clone $this->getDate($reservation);

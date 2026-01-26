@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Order;
+use App\Enum\OrderMode;
+use App\Enum\OrderStatus;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -47,16 +49,29 @@ class OrderCrudController extends AbstractCrudController
                 }),
             DateTimeField::new('order_date', 'Date de la Commande'),
             TextField::new('order_type', 'Type de Commande')
-                ->formatValue(static function ($order_type, $entity) {
-                    return 'L' === $order_type ? 'Livraison' :
-                        ('E' === $order_type ? 'à Emporter' :
-                            'Sur Place');
+                ->formatValue(static function ($value, $entity) {
+                    if (!$value instanceof OrderMode) {
+                        return '';
+                    }
+
+                    return match ($value) {
+                        OrderMode::DELIVERY => 'Livraison',
+                        OrderMode::TAKEAWAY => 'À Emporter',
+                        OrderMode::ON_SITE => 'Sur Place',
+                    };
                 }),
             TextField::new('status', 'Statut de la commande')
-                ->formatValue(static function ($status, $entity) {
-                    return 'L' === $status ? 'Livré' :
-                        ('E' === $status ? 'En Cours' :
-                            'à Préparer');
+                ->formatValue(static function ($value, $entity) {
+                    if (!$value instanceof OrderStatus) {
+                        return '';
+                    }
+
+                    return match ($value) {
+                        OrderStatus::DELIVERING => 'Livré',
+                        OrderStatus::PENDING => 'En Cours',
+                        OrderStatus::PREPARING => 'À Préparer',
+                        OrderStatus::CANCELED => 'Annulé',
+                    };
                 }),
             TextField::new('delivery_address', 'Adresse de Livraison')
                 ->formatValue(static function ($address, $entity) {

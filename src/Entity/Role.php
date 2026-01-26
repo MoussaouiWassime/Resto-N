@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\RestaurantRole;
 use App\Repository\RoleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,11 +14,10 @@ class Role
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 1)]
-    private ?string $role = null;
-
+    #[ORM\Column(length: 1, enumType: RestaurantRole::class)]
+    private ?RestaurantRole $role = null;
     #[ORM\ManyToOne(inversedBy: 'roles')]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Restaurant $restaurant = null;
 
     #[ORM\ManyToOne(inversedBy: 'restaurantRoles')]
@@ -31,12 +31,12 @@ class Role
         return $this->id;
     }
 
-    public function getRole(): ?string
+    public function getRole(): ?RestaurantRole
     {
         return $this->role;
     }
 
-    public function setRole(string $role): static
+    public function setRole(RestaurantRole $role): static
     {
         $this->role = $role;
 

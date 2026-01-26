@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Enum\OrderStatus;
+use App\Enum\OrderMode;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -19,11 +21,11 @@ class Order
     #[ORM\Column]
     private ?\DateTime $orderDate = null;
 
-    #[ORM\Column(length: 1)]
-    private ?string $orderType = null;
+    #[ORM\Column(length: 1, enumType: OrderMode::class)]
+    private ?OrderMode $orderType = null;
 
-    #[ORM\Column(length: 1)]
-    private ?string $status = null;
+    #[ORM\Column(length: 1, enumType: OrderStatus::class)]
+    private ?OrderStatus $status = null;
 
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $deliveryAddress = null;
@@ -69,24 +71,24 @@ class Order
         return $this;
     }
 
-    public function getOrderType(): ?string
+    public function getOrderType(): ?OrderMode
     {
         return $this->orderType;
     }
 
-    public function setOrderType(string $orderType): static
+    public function setOrderType(OrderMode $orderType): static
     {
         $this->orderType = $orderType;
 
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?OrderStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(OrderStatus $status): static
     {
         $this->status = $status;
 

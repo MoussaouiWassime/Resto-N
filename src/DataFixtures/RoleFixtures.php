@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Enum\RestaurantRole;
 use App\Factory\RestaurantFactory;
 use App\Factory\RoleFactory;
 use App\Factory\UserFactory;
@@ -18,12 +19,12 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         foreach ($restaurants as $restaurant) {
             RoleFactory::createOne([
                 'restaurant' => $restaurant,
-                'role' => 'P',
+                RestaurantRole::OWNER,
             ]);
 
             RoleFactory::createMany(3, [
                 'restaurant' => $restaurant,
-                'role' => 'S',
+                RestaurantRole::SERVER,
             ]);
         }
     }

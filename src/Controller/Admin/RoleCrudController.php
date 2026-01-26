@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Role;
+use App\Enum\RestaurantRole;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -55,8 +56,8 @@ class RoleCrudController extends AbstractCrudController
                 }),
             ChoiceField::new('role', 'Rôle')
                 ->setChoices([
-                    'Propriétaire' => 'P',
-                    'Serveur' => 'S',
+                    'Propriétaire' => RestaurantRole::OWNER,
+                    'Serveur' => RestaurantRole::SERVER,
                 ])
                 ->formatValue(static function ($value) {
                     return 'P' === $value ? 'Propriétaire' : 'Serveur';

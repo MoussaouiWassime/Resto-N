@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Restaurant;
 use App\Entity\Review;
 use App\Entity\Role;
+use App\Enum\RestaurantRole;
 use App\Form\RestaurantType;
 use App\Form\ReviewType;
 use App\Repository\RestaurantCategoryRepository;
@@ -140,7 +141,7 @@ final class RestaurantController extends AbstractController
             $entityManager->persist($restaurant);
 
             $newRole = new Role();
-            $newRole->setRole('P')
+            $newRole->setRole(RestaurantRole::OWNER)
                 ->setRestaurant($restaurant)
                 ->setUser($user);
             $entityManager->persist($newRole);

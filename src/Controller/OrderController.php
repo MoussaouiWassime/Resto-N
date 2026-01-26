@@ -6,6 +6,7 @@ use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Restaurant;
 use App\Entity\Statistic;
+use App\Enum\OrderStatus;
 use App\Form\OrderType;
 use App\Repository\DishRepository;
 use App\Repository\OrderRepository;
@@ -76,7 +77,7 @@ final class OrderController extends AbstractController
         $order->setRestaurant($restaurant);
         $order->setUser($this->getUser());
         $order->setOrderDate(new \DateTime());
-        $order->setStatus('E');
+        $order->setStatus(OrderStatus::PENDING);
 
         $dishes = $dishRepository->findBy(['restaurant' => $restaurant]);
         foreach ($dishes as $dish) {
@@ -276,7 +277,7 @@ final class OrderController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('confirm')->isClicked()) {
-                $order->setStatus('A');
+                $order->setStatus(OrderStatus::CANCELED);
 
                 $email = (new TemplatedEmail())
                     ->from(new Address('resto.n@reston.com', "Resto'N"))

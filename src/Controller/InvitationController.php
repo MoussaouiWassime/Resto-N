@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Restaurant;
 use App\Entity\Role;
+use App\Enum\RestaurantRole;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -54,7 +55,7 @@ final class InvitationController extends AbstractController
                 $newRole = new Role();
                 $newRole->setUser($serverUser);
                 $newRole->setRestaurant($restaurant);
-                $newRole->setRole('P');
+                $newRole->setRole(RestaurantRole::OWNER);
                 $newRole->setInvitationToken($token);
 
                 $entityManager->persist($newRole);
@@ -113,7 +114,7 @@ final class InvitationController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        $role->setRole('S');
+        $role->setRole(RestaurantRole::SERVER);
         $role->setInvitationToken(null);
 
         $entityManager->flush();

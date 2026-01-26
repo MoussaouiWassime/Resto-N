@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ReservationStatus;
 use App\Repository\ReservationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,8 +20,8 @@ class Reservation
     #[ORM\Column(nullable: true)]
     private ?int $numberOfPeople = null;
 
-    #[ORM\Column(length: 1)]
-    private ?string $status = null;
+    #[ORM\Column(length: 1, enumType: ReservationStatus::class)]
+    private ?ReservationStatus $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -61,12 +62,12 @@ class Reservation
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?ReservationStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ReservationStatus $status): static
     {
         $this->status = $status;
 

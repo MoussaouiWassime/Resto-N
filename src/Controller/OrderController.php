@@ -6,6 +6,7 @@ use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Restaurant;
 use App\Entity\Statistic;
+use App\Enum\OrderMode;
 use App\Enum\OrderStatus;
 use App\Form\OrderType;
 use App\Repository\DishRepository;
@@ -14,6 +15,7 @@ use App\Repository\RestaurantRepository;
 use App\Repository\RoleRepository;
 use App\Repository\StatisticRepository;
 use App\Security\Voter\RestaurantVoter;
+use App\Service\StatisticService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,7 +61,7 @@ final class OrderController extends AbstractController
         int $id,
         RestaurantRepository $restaurantRepository,
         DishRepository $dishRepository,
-        StatisticRepository $statisticRepository,
+        StatisticService $statisticService,
         Request $request,
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
@@ -100,31 +102,12 @@ final class OrderController extends AbstractController
                 $date = clone $order->getOrderDate();
                 $date->setTime(0, 0);
 
-                if ('L' !== $order->getOrderType()) {
-                    $statisticVisites = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $date);
-                    if (!$statisticVisites) {
-                        $statisticVisites = $this->createStatisticByType($restaurant, Statistic::VISITS, $date, 1);
-                        $entityManager->persist($statisticVisites);
-                    } else {
-                        $statisticVisites->setValue($statisticVisites->getValue() + 1);
-                    }
+                if (OrderMode::DELIVERY !== $order->getOrderType()) {
+                    $statisticService->updateStatistic($restaurant, Statistic::VISITS, $order->getOrderDate(), 1);
                 }
 
-                $statisticCA = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::INCOME, $date);
-                if (!$statisticCA) {
-                    $statisticCA = $this->createStatisticByType($restaurant, Statistic::INCOME, $date, $price);
-                    $entityManager->persist($statisticCA);
-                } else {
-                    $statisticCA->setValue($statisticCA->getValue() + $price);
-                }
-
-                $statisticCommandes = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::ORDERS, $date);
-                if (!$statisticCommandes) {
-                    $statisticCommandes = $this->createStatisticByType($restaurant, Statistic::ORDERS, $date, 1);
-                    $entityManager->persist($statisticCommandes);
-                } else {
-                    $statisticCommandes->setValue($statisticCommandes->getValue() + 1);
-                }
+                $statisticService->updateStatistic($restaurant, Statistic::INCOME, $order->getOrderDate(), $price);
+                $statisticService->updateStatistic($restaurant, Statistic::ORDERS, $order->getOrderDate(), 1);
 
                 $entityManager->flush();
 
@@ -158,7 +141,7 @@ final class OrderController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
         ?Order $order,
-        StatisticRepository $statisticRepository,
+        StatisticService $statisticService,
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
@@ -184,7 +167,11 @@ final class OrderController extends AbstractController
 
                 $entityManager->remove($order);
 
-                $this->updateStatistic($order, $statisticRepository, $restaurant, $entityManager, $price);
+                if (OrderMode::DELIVERY !== $order->getOrderType()) {
+                    $statisticService->updateStatistic($restaurant, Statistic::VISITS, $order->getOrderDate(), -1);
+                }
+                $statisticService->updateStatistic($restaurant, Statistic::INCOME, $order->getOrderDate(), -$price);
+                $statisticService->updateStatistic($restaurant, Statistic::ORDERS, $order->getOrderDate(), -1);
 
                 $entityManager->flush();
 
@@ -200,35 +187,13 @@ final class OrderController extends AbstractController
         }
     }
 
-    public function getStatisticByType(
-        StatisticRepository $statisticRepository,
-        $restaurant,
-        $type,
-        ?\DateTime $date): ?Statistic
-    {
-        return $statisticRepository->findOneBy([
-            'restaurant' => $restaurant,
-            'statisticType' => $type,
-            'date' => $date,
-        ]);
-    }
-
-    public function createStatisticByType(Restaurant $restaurant, $type, ?\DateTime $date, int $value): Statistic
-    {
-        return (new Statistic())
-            ->setRestaurant($restaurant)
-            ->setStatisticType($type)
-            ->setDate($date)
-            ->setValue($value);
-    }
-
     #[Route('/order/{id}/cancel', name: 'app_order_cancel')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function cancel(
         Order $order,
         EntityManagerInterface $entityManager,
         RoleRepository $roleRepository,
-        StatisticRepository $statisticRepository,
+        StatisticService $statisticService,
         MailerInterface $mailer,
         Request $request,
     ): Response {
@@ -286,7 +251,11 @@ final class OrderController extends AbstractController
 
                 $this->addFlash('success', 'La commande a été annulée avec succès.');
 
-                $this->updateStatistic($order, $statisticRepository, $restaurant, $entityManager, $price);
+                if (OrderMode::DELIVERY !== $order->getOrderType()) {
+                    $statisticService->updateStatistic($restaurant, Statistic::VISITS, $order->getOrderDate(), -1);
+                }
+                $statisticService->updateStatistic($restaurant, Statistic::INCOME, $order->getOrderDate(), -$price);
+                $statisticService->updateStatistic($restaurant, Statistic::ORDERS, $order->getOrderDate(), -1);
 
                 $entityManager->flush();
             }
@@ -298,37 +267,5 @@ final class OrderController extends AbstractController
             'order' => $order,
             'form' => $form->createView(),
         ]);
-    }
-
-    public function updateStatistic(Order $order, StatisticRepository $statisticRepository, ?Restaurant $restaurant, EntityManagerInterface $entityManager, $price): void
-    {
-        $date = clone $order->getOrderDate();
-        $date->setTime(0, 0);
-
-        if ('L' !== $order->getOrderType()) {
-            $statisticVisits = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::VISITS, $date);
-            if ($statisticVisits) {
-                $statisticVisits->setValue($statisticVisits->getValue() - 1);
-                if ($statisticVisits->getValue() <= 0) {
-                    $entityManager->remove($statisticVisits);
-                }
-            }
-        }
-
-        $statisticCommandes = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::ORDERS, $date);
-        if ($statisticCommandes) {
-            $statisticCommandes->setValue($statisticCommandes->getValue() - 1);
-            if ($statisticCommandes->getValue() <= 0) {
-                $entityManager->remove($statisticCommandes);
-            }
-        }
-
-        $statisticIncome = $this->getStatisticByType($statisticRepository, $restaurant, Statistic::INCOME, $date);
-        if ($statisticIncome) {
-            $statisticIncome->setValue($statisticIncome->getValue() - $price);
-            if ($statisticIncome->getValue() <= 0) {
-                $entityManager->remove($statisticIncome);
-            }
-        }
     }
 }

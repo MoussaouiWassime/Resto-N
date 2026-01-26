@@ -12,6 +12,7 @@ use App\Repository\RestaurantRepository;
 use App\Repository\RestaurantTableRepository;
 use App\Repository\RoleRepository;
 use App\Repository\StatisticRepository;
+use App\Security\Voter\RestaurantVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,7 +36,7 @@ final class ReservationController extends AbstractController
     }
 
     #[Route('/reservation/restaurant/{id}', name: 'app_reservation_restaurant')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted(RestaurantVoter::STAFF, subject: 'restaurant')]
     public function byRestaurant(Restaurant $restaurant, ReservationRepository $reservationRepository): Response
     {
         $reservations = $reservationRepository->findBy(

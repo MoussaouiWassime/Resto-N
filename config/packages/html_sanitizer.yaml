@@ -1,0 +1,8 @@
+framework:
+    html_sanitizer:
+        sanitizers:
+            chatbot_sanitizer:
+                allow_safe_elements: true
+                allow_elements:
+                    a: ['href', 'target', 'rel']
+                block_elements: ['script', 'iframe', 'object']

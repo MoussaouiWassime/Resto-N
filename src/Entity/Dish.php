@@ -128,12 +128,12 @@ class Dish
         return $this;
     }
 
-    public function getCategory(): DishCategory
+    public function getCategory(): ?DishCategory
     {
         return $this->category;
     }
 
-    public function setCategory(DishCategory $category): static
+    public function setCategory(?DishCategory $category): static
     {
         $this->category = $category;
 

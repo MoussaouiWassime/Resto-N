@@ -10,6 +10,7 @@ use App\Form\StockType;
 use App\Repository\ProductRepository;
 use App\Repository\RoleRepository;
 use App\Repository\StockRepository;
+use App\Security\Voter\RestaurantVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,21 +25,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class StockController extends AbstractController
 {
     #[Route('/restaurant/{id}/stock', name: 'app_stock_index')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function index(
         ?Restaurant $restaurant,
-        RoleRepository $roleRepository,
         StockRepository $stockRepository): Response
     {
         if (!$restaurant) {
             throw $this->createNotFoundException('Restaurant introuvable.');
-        }
-
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (null === $role || 'P' !== $role->getRole()) {
-            return $this->redirectToRoute('app_restaurant', [], 307);
         }
 
         return $this->render('stock/index.html.twig', [
@@ -48,22 +41,14 @@ final class StockController extends AbstractController
     }
 
     #[Route('/restaurant/{id}/stock/add', name: 'app_stock_add_list')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function addList(
         ?Restaurant $restaurant,
-        RoleRepository $roleRepository,
         ProductRepository $productRepository,
         Request $request): Response
     {
         if (!$restaurant) {
             throw $this->createNotFoundException('Restaurant introuvable.');
-        }
-
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (null === $role || 'P' !== $role->getRole()) {
-            return $this->redirectToRoute('app_restaurant', [], 307);
         }
 
         $searchText = $request->query->get('q');
@@ -86,23 +71,15 @@ final class StockController extends AbstractController
     }
 
     #[Route('/restaurant/{id}/stock/create/{productId}', name: 'app_stock_create')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function createStock(
         ?Restaurant $restaurant,
-        RoleRepository $roleRepository,
         #[MapEntity(mapping: ['productId' => 'id'])] Product $product,
         Request $request,
         EntityManagerInterface $entityManager,
     ): Response {
         if (!$restaurant) {
             throw $this->createNotFoundException('Restaurant introuvable.');
-        }
-
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (null === $role || 'P' !== $role->getRole()) {
-            return $this->redirectToRoute('app_restaurant', [], 307);
         }
 
         $existingStock = $entityManager->getRepository(Stock::class)->findOneBy([
@@ -140,21 +117,14 @@ final class StockController extends AbstractController
     }
 
     #[Route('/restaurant/{id}/stock/new-product', name: 'app_product_new')]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function newProduct(
         ?Restaurant $restaurant,
-        RoleRepository $roleRepository,
         Request $request,
         EntityManagerInterface $em): Response
     {
         if (!$restaurant) {
             throw $this->createNotFoundException('Restaurant introuvable.');
-        }
-
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (null === $role || 'P' !== $role->getRole()) {
-            return $this->redirectToRoute('app_restaurant', [], 307);
         }
 
         $product = new Product();

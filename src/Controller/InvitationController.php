@@ -7,6 +7,7 @@ use App\Entity\Role;
 use App\Enum\RestaurantRole;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
+use App\Security\Voter\RestaurantVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class InvitationController extends AbstractController
 {
     #[Route('/restaurant/{id}/invite', name: 'app_invitation_send', methods: ['POST'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function send(
         Restaurant $restaurant,
         Request $request,
@@ -30,13 +31,6 @@ final class InvitationController extends AbstractController
         MailerInterface $mailer,
     ): Response {
         $user = $this->getUser();
-        $ownerRole = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (!$ownerRole || 'P' !== $ownerRole->getRole()) {
-            $this->addFlash('danger', 'Action non autorisée.');
-
-            return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
-        }
 
         $emailTarget = $request->request->get('server_email');
 

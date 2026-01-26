@@ -19,7 +19,7 @@
             {% for reservation in reservations %}
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="card h-100 shadow-sm border-top-0 border-end-0 border-bottom-0 border-start border-4
-                        {{ reservation.status == 'A' ? 'border-danger bg-light text-muted' : 'border-success' }}">
+                        {{ reservation.status.value == 'A' ? 'border-danger bg-light text-muted' : 'border-success' }}">
 
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-3">
@@ -30,8 +30,8 @@
                                         <span class="fst-italic">Client Inconnu</span>
                                     {% endif %}
                                 </h5>
-                                <span class="badge {{ reservation.status == 'A' ? 'bg-danger' : 'bg-success' }}">
-                                    {{ reservation.status == 'A' ? 'ANNULÉE' : 'CONFIRMÉE' }}
+                                <span class="badge {{ reservation.status.value == 'A' ? 'bg-danger' : 'bg-success' }}">
+                                    {{ reservation.status.value == 'A' ? 'ANNULÉE' : 'CONFIRMÉE' }}
                                 </span>
                             </div>
 
@@ -60,7 +60,7 @@
                                 <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
                                     Gérer
                                 </a>
-                                {% if reservation.status != 'A' %}
+                                {% if reservation.status.value != 'A' %}
                                     <a href="{{ path('app_reservation_cancel', {id: reservation.id}) }}" class="btn btn-sm btn-outline-danger" title="Annuler">
                                         ✖
                                     </a>

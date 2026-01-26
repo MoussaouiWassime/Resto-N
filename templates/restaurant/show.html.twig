@@ -30,7 +30,7 @@
                                         Voir
                                     </a>
                                 </div>
-                                {% if role and role.role == 'P' %}
+                                {% if role and role.role.value == 'P' %}
                                     <div class="mt-2 d-flex justify-content-between border-top pt-2">
                                         <a href="{{ path('app_dish_update', {id: dish.id}) }}" class="text-decoration-none small text-secondary">Modifier</a>
                                         <a href="{{ path('app_dish_delete', {id: dish.id}) }}" class="text-decoration-none small text-danger">Supprimer</a>

@@ -78,4 +78,9 @@ class Role
 
         return $this;
     }
+
+    public function isOwner(): bool
+    {
+        return $this->role === RestaurantRole::OWNER;
+    }
 }

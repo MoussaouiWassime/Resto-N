@@ -14,8 +14,7 @@
                     <div class="card-body p-4">
                         <div class="text-center mb-4">
                             <small class="text-muted text-uppercase">Produit sélectionné</small>
-                            <h4 class="fw-bold text-dark mt-1">Nom du Produit Ici</h4>
-                            {# ^^^ Idéalement, passe le nom du produit depuis le contrôleur si possible #}
+                            <h4 class="fw-bold text-dark mt-1">{{ product.productName }}</h4>
                         </div>
 
                         {{ form_start(form) }}

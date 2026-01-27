@@ -5,8 +5,10 @@
 {% endblock %}
 
 {% block main %}
+    <div class="container mt-3">
+        <h1 class="h3 fw-bold mb-4">Suppression de la commande numéro {{ order.id }}</h1>
 
-    {{ form_start(form, {attr: {class: 'd-flex justify-content-evenly'}}) }}
+        {{ form_start(form, {attr: {class: 'd-flex justify-content-evenly'}}) }}
 
     {{ form_row(form.delete, {
         label: 'Supprimer',

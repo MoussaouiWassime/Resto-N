@@ -4,6 +4,7 @@
 
 {% block main %}
     <div class="container mt-3">
+        <h1 class="h3 fw-bold mb-4">Création d'un nouveau plat pour {{ restaurant.name }}</h1>
         {{ include('dish/_form.html.twig', {submit_label: 'Créer le plat', form: form, restaurant: restaurant}, with_context: false) }}
     </div>
     <a href="{{ path('app_restaurant_show', {id: restaurant.id}) }}" class="btn btn-primary w-100 p-3 mt-3">

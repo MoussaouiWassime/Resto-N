@@ -10,20 +10,21 @@
 
         {{ form_start(form, {attr: {class: 'd-flex justify-content-evenly'}}) }}
 
-    {{ form_row(form.delete, {
-        label: 'Supprimer',
-        attr: {class: 'btn btn-primary'},
-    })
-    }}
+        {{ form_row(form.delete, {
+            label: 'Supprimer',
+            attr: {class: 'btn btn-primary'},
+        })
+        }}
 
-    {{ form_row(form.cancel, {
-        label: 'Annuler',
-        attr: {class: 'btn btn-secondary'},
-    })
-    }}
+        {{ form_row(form.cancel, {
+            label: 'Annuler',
+            attr: {class: 'btn btn-secondary'},
+        })
+        }}
 
-    {{ form_rest(form) }}
+        {{ form_rest(form) }}
 
-    {{ form_end(form) }}
+        {{ form_end(form) }}
+    </div>
 
 {% endblock %}

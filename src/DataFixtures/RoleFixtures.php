@@ -19,12 +19,12 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         foreach ($restaurants as $restaurant) {
             RoleFactory::createOne([
                 'restaurant' => $restaurant,
-                RestaurantRole::OWNER,
+                'role' => RestaurantRole::OWNER,
             ]);
 
             RoleFactory::createMany(3, [
                 'restaurant' => $restaurant,
-                RestaurantRole::SERVER,
+                'role' => RestaurantRole::SERVER,
             ]);
         }
     }

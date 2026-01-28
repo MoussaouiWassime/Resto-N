@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
-use App\Repository\RestaurantRepository;
-use App\Repository\RoleRepository;
+use App\Entity\Restaurant;
 use App\Repository\StatisticRepository;
+use App\Security\Voter\RestaurantVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class StatisticController extends AbstractController
 {
@@ -30,22 +31,11 @@ final class StatisticController extends AbstractController
     ];
 
     #[Route('restaurant/{id}/statistic', name: 'app_statistic', requirements: ['id' => '\d+'])]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function index(
-        int $id,
         StatisticRepository $statisticRepository,
-        RestaurantRepository $restaurantRepository,
-        RoleRepository $roleRepository): Response
-    {
-        $restaurant = $restaurantRepository->findWithId($id);
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (!$role || 'P' !== $role->getRole()) {
-            $this->addFlash('danger', "Vous n'avez pas accès à ce contenu.");
-
-            return $this->redirectToRoute('app_restaurant', [], 307);
-        }
-
+        Restaurant $restaurant,
+    ): Response {
         $statistics = $statisticRepository->findBy(
             ['restaurant' => $restaurant],
             ['date' => 'ASC']
@@ -58,16 +48,12 @@ final class StatisticController extends AbstractController
     }
 
     #[Route('restaurant/{id}/statistic/{type}', name: 'app_statistic_show', requirements: ['id' => '\d+'])]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function showStats(
-        int $id,
         string $type,
         StatisticRepository $statisticRepository,
-        RestaurantRepository $restaurantRepository,
-        RoleRepository $roleRepository): Response
-    {
-        $restaurant = $restaurantRepository->findWithId($id);
-        $user = $this->getUser();
-        $role = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
+        Restaurant $restaurant,
+    ): Response {
 
         $statType = self::STAT_TYPES[$type];
 
@@ -75,12 +61,6 @@ final class StatisticController extends AbstractController
             ['restaurant' => $restaurant, 'statisticType' => $statType['constant']],
             ['date' => 'ASC']
         );
-
-        if (!$role || 'P' !== $role->getRole()) {
-            $this->addFlash('danger', "Vous n'avez pas accès à ce contenu.");
-
-            return $this->redirectToRoute('app_restaurant', [], 307);
-        }
 
         if (empty($statistics)) {
             $this->addFlash('danger', "Aucune donnée de Commandes n'a été trouvée.");

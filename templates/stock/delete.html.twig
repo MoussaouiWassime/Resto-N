@@ -1,23 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    Suppression du stock
-{% endblock %}
+{% block title %}Retirer du stock{% endblock %}
 
 {% block main %}
-    <div class="container mt-4">
-        <h3>Êtes-vous sûr de vouloir retirer ce produit du stock ?</h3>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-danger shadow">
+                    <div class="card-header bg-danger text-white text-center py-3">
+                        <h5 class="mb-0">🗑️ Retirer du stock</h5>
+                    </div>
 
-        Produit : {{ stock.product.productName }}
-        <br>
-        Quantité actuelle : {{ stock.quantity }} {{ stock.measureUnit }}
-        <br>
-        Catégorie : {{ stock.product.category.name }}
-        <br>
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3 text-danger" style="font-size: 3rem;">📦</div>
 
-        {{ form_start(form) }}
-        {{ form_row(form.delete) }}
-        {{ form_row(form.cancel) }}
-        {{ form_end(form) }}
+                        <h5 class="fw-bold mb-3">Retirer "{{ stock.product.productName }}" ?</h5>
+
+                        <div class="bg-light p-3 rounded border mb-4 text-start">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Stock actuel :</span>
+                                <span class="fw-bold">{{ stock.quantity }} {{ stock.measureUnit.value }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Catégorie :</span>
+                                <span>{{ stock.product.category.name }}</span>
+                            </div>
+                        </div>
+
+                        {{ form_start(form) }}
+                        <div class="d-grid gap-2">
+                            {{ form_widget(form.cancel, {
+                                label: 'Non, conserver',
+                                attr: {class: 'btn btn-secondary'}
+                            }) }}
+
+                            {{ form_widget(form.delete, {
+                                label: 'Oui, retirer définitivement',
+                                attr: {class: 'btn btn-danger'}
+                            }) }}
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

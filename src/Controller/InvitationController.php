@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Restaurant;
 use App\Entity\Role;
+use App\Enum\RestaurantRole;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
+use App\Security\Voter\RestaurantVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class InvitationController extends AbstractController
 {
     #[Route('/restaurant/{id}/invite', name: 'app_invitation_send', methods: ['POST'])]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted(RestaurantVoter::MANAGE, subject: 'restaurant')]
     public function send(
         Restaurant $restaurant,
         Request $request,
@@ -29,13 +31,6 @@ final class InvitationController extends AbstractController
         MailerInterface $mailer,
     ): Response {
         $user = $this->getUser();
-        $ownerRole = $roleRepository->findOneBy(['user' => $user, 'restaurant' => $restaurant]);
-
-        if (!$ownerRole || 'P' !== $ownerRole->getRole()) {
-            $this->addFlash('danger', 'Action non autorisée.');
-
-            return $this->redirectToRoute('app_restaurant_show', ['id' => $restaurant->getId()]);
-        }
 
         $emailTarget = $request->request->get('server_email');
 
@@ -48,13 +43,12 @@ final class InvitationController extends AbstractController
             if ($existingRole) {
                 $this->addFlash('warning', "Cet utilisateur est déjà dans l'équipe ou invité.");
             } else {
-                $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                $token = substr(str_shuffle($chars), 0, 30);
+                $token = bin2hex(random_bytes(15));
 
                 $newRole = new Role();
                 $newRole->setUser($serverUser);
                 $newRole->setRestaurant($restaurant);
-                $newRole->setRole('P');
+                $newRole->setRole(RestaurantRole::SERVER);
                 $newRole->setInvitationToken($token);
 
                 $entityManager->persist($newRole);
@@ -113,7 +107,7 @@ final class InvitationController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        $role->setRole('S');
+        $role->setRole(RestaurantRole::SERVER);
         $role->setInvitationToken(null);
 
         $entityManager->flush();

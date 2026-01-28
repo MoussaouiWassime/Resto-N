@@ -1,19 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier le stock de {{ stock.product.productName }}{% endblock %}
+{% block title %}Ajustement Stock{% endblock %}
 
 {% block main %}
-    <div class="container mt-4">
-        <div class="col-md-6">
-            <div class="mb-3">
-                {{ form_row(form.quantity) }}
-            </div>
-            <div class="mb-3">
-                {{ form_row(form.measureUnit) }}
-            </div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-warning text-dark py-3 text-center">
+                        <h5 class="mb-0">✏️ Ajuster le stock</h5>
+                    </div>
 
-            <button class="btn btn-warning">Mettre à jour</button>
-            <a href="{{ path('app_stock_index', {id: restaurant.id}) }}" class="btn btn-secondary">Retour</a>
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <h4 class="fw-bold text-dark">{{ stock.product.productName }}</h4>
+                            <span class="badge bg-light text-secondary border">{{ stock.product.category.name }}</span>
+                        </div>
+
+                        {{ form_start(form) }}
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-7">
+                                {{ form_row(form.quantity, {
+                                    label: 'Nouvelle Quantité',
+                                    attr: {class: 'form-control form-control-lg fw-bold text-center'}
+                                }) }}
+                            </div>
+                            <div class="col-5">
+                                {{ form_row(form.measureUnit, {
+                                    label: 'Unité',
+                                    attr: {class: 'form-select form-select-lg'}
+                                }) }}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-warning btn-lg shadow-sm">Enregistrer</button>
+                            <a href="{{ path('app_stock_index', {id: restaurant.id}) }}" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

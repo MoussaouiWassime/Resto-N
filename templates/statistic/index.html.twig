@@ -4,6 +4,7 @@
 {% set countVisit = 0 %}
 {% set countIncome = 0 %}
 
+{# On garde ta logique de comptage qui est très bien #}
 {% for element in statistics %}
     {% if element.statisticType == 'NB_COMMANDES' %}
         {% set countOrder = countOrder + 1 %}
@@ -14,31 +15,82 @@
     {% endif %}
 {% endfor %}
 
-{% block title %}Accéder aux statistiques de {{ restaurant.name }}{% endblock %}
+{% block title %}Statistiques - {{ restaurant.name }}{% endblock %}
 
 {% block main %}
+    <div class="container py-5">
 
-    <div class="d-flex flex-column align-items-center mt-5">
-        {% if countOrder > 0 %}
-            <a href="{{ path('app_statistic_show', { id : restaurant.id, type : 'order' }) }}">
-                <span class="btn btn-secondary">Commandes</span>
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 class="h3 fw-bold mb-1">📈 Statistiques : <span class="text-primary">{{ restaurant.name }}</span></h1>
+                <p class="text-muted">Analysez la performance de votre établissement.</p>
+            </div>
+            <a href="{{ path('app_restaurant_manage', {id : restaurant.id}) }}" class="btn btn-outline-secondary">
+                ← Retour Gestion
             </a>
-        {% endif %}
-        {% if countVisit > 0 %}
-            <a href="{{ path('app_statistic_show', { id : restaurant.id, type : 'visit' }) }}">
-                <span class="btn btn-secondary">Visites</span>
-            </a>
-        {% endif %}
-        {% if countIncome > 0 %}
-            <a href="{{ path('app_statistic_show', { id : restaurant.id, type : 'income' }) }}">
-                <span class="btn btn-secondary">Chiffre d'affaire</span>
-            </a>
-        {% endif %}
-        <div class="mb-0">
-            <a href="{{ path('app_restaurant_manage', {id : restaurant.id}) }}" class="btn btn-primary">Retour au menu de Gestion</a>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+
+            {% if countOrder > 0 %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3 rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <span class="fs-1">📦</span>
+                            </div>
+                            <h3 class="h5 fw-bold text-dark">Volume de Commandes</h3>
+                            <p class="text-muted small">Suivez l'évolution du nombre de commandes jour par jour.</p>
+                            <a href="{{ path('app_statistic_show', { id : restaurant.id, type : 'order' }) }}" class="btn btn-primary w-100 mt-2">
+                                Voir le graphique
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if countVisit > 0 %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3 rounded-circle bg-info bg-opacity-10 d-inline-flex align-items-center justify-content-center text-info" style="width: 80px; height: 80px;">
+                                <span class="fs-1">👥</span>
+                            </div>
+                            <h3 class="h5 fw-bold text-dark">Fréquentation</h3>
+                            <p class="text-muted small">Analysez le nombre de visiteurs uniques sur votre page.</p>
+                            <a href="{{ path('app_statistic_show', { id : restaurant.id, type : 'visit' }) }}" class="btn btn-info text-white w-100 mt-2">
+                                Voir le graphique
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if countIncome > 0 %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3 rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center text-success" style="width: 80px; height: 80px;">
+                                <span class="fs-1">💰</span>
+                            </div>
+                            <h3 class="h5 fw-bold text-dark">Chiffre d'Affaires</h3>
+                            <p class="text-muted small">Visualisez vos revenus journaliers en euros.</p>
+                            <a href="{{ path('app_statistic_show', { id : restaurant.id, type : 'income' }) }}" class="btn btn-success w-100 mt-2">
+                                Voir le graphique
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if countOrder == 0 and countVisit == 0 and countIncome == 0 %}
+                <div class="col-12 text-center py-5">
+                    <div class="fs-1 mb-3 text-muted">📉</div>
+                    <h4 class="text-muted">Pas encore de données suffisantes.</h4>
+                    <p class="text-secondary">Revenez quand votre restaurant aura un peu plus d'activité !</p>
+                </div>
+            {% endif %}
+
         </div>
     </div>
-
-
-
 {% endblock %}

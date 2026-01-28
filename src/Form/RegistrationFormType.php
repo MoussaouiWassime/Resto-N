@@ -21,15 +21,27 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
+                'attr' => [
+                    'placeholder' => 'Ex: Jean',
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
+                'attr' => [
+                    'placeholder' => 'Ex: Dupont',
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
+                'attr' => [
+                    'placeholder' => 'jean.dupont@email.com',
+                ],
             ])
             ->add('phone', TextType::class, [
                 'label' => 'Téléphone',
+                'attr' => [
+                    'placeholder' => '06 12 34 56 78',
+                ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
@@ -43,7 +55,10 @@ class RegistrationFormType extends AbstractType
                 // this is read and encoded in the controller
                 'mapped' => false,
                 'label' => 'Mot de passe',
-                'attr' => ['autocomplete' => 'new-password'],
+                'attr' => [
+                    'autocomplete' => 'new-password',
+                    'placeholder' => '••••••••',
+                ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a password',

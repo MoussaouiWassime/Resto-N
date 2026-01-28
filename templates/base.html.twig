@@ -1,94 +1,106 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% apply striptags %}Resto'N - {% block title %}{% endblock %}{% endapply %}</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% apply striptags %}Resto'N - {% block title %}{% endblock %}{% endapply %}</title>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-        {% block head %}{% endblock %}
-    </head>
-    <body class="container-xxl p-0">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Resto'N</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Lien</a>
-                    </li>
-                </ul>
-                <form class="d-flex" role="search" action="">
-                    <input class="form-control me-2" name="search" type="search" placeholder="Recherche..." aria-label="Recherche"/>
-                    <button class="btn btn-outline-success" type="submit" >Rechercher</button>
-                </form>
-                <div class="d-flex ms-2">
-                    {% if app.user %}
-                        <a class="btn btn-secondary" href="{{ path('app_profile_show') }}">Mon profil</a>
-                        {% if 'ROLE_ADMIN' in app.user.roles %}
-                            <a class="btn bg-info" href="{{ path('admin') }}">Admin</a>
-                        {% endif %}
-                    {% else %}
-                        <a class="btn btn-primary" href="{{ path('app_register') }}">Inscription</a>
-                        <a class="btn btn-secondary" href="{{ path('app_login') }}">Connexion</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </nav>
-    <main class="mt-lg-3 mb-5">
-        <div class="container mt-3">
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endfor %}
-        </div>
-        <h1>{{ block('title') }}</h1>
-        {% block main %}{% endblock %}
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <footer class="fixed-bottom text-center p-3 bg-light bg-opacity-35">
-        <div>Resto'N - © 2025</div>
-    </footer>
-    <div id="chatbot-container" data-url="{{ path('app_chatbot') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-        <div id="chat-window" class="card d-none">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 fs-6">🤖 Assistant Resto'N</h5>
-                <button type="button" id="close-btn" class="btn-close btn-close-white" aria-label="Close"></button>
-            </div>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+    {% endblock %}
 
-            <div id="chat-messages" class="card-body overflow-auto bg-light d-flex flex-column gap-2">
-                <div class="message-bot bg-white border p-2 rounded align-self-start shadow-sm" style="max-width: 85%;">
-                    Bonjour ! Bienvenue sur Resto'n
-                </div>
-            </div>
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+</head>
 
-            <div class="card-footer bg-white">
-                <div class="input-group">
-                    <input type="text" id="chat-input" class="form-control" placeholder="Bonjour...">
-                    <button class="btn btn-primary" id="send-btn">➤</button>
-                </div>
-            </div>
-        </div>
+<body>
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Resto'N</a>
 
-        <button id="toggle-btn" class="btn btn-primary rounded-circle shadow position-fixed bottom-0 end-0 m-4 d-flex align-items-center justify-content-center">
-            💬
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Restaurants</a>
+                </li>
+            </ul>
+
+            <form class="d-flex me-3" role="search">
+                <input class="form-control me-2" name="search" type="search" placeholder="Rechercher un plat..." aria-label="Recherche"/>
+                <button class="btn btn-outline-secondary" type="submit">🔍</button>
+            </form>
+
+            <div class="d-flex gap-2">
+                {% if app.user %}
+                    <a class="btn btn-secondary" href="{{ path('app_profile_show') }}">Mon profil</a>
+                    {% if 'ROLE_ADMIN' in app.user.roles %}
+                        <a class="btn btn-warning" href="{{ path('admin') }}">Admin</a>
+                    {% endif %}
+                    <a class="btn btn-outline-danger" href="{{ path('app_logout') }}">Déconnexion</a>
+                {% else %}
+                    <a class="btn btn-secondary" href="{{ path('app_login') }}">Connexion</a>
+                    <a class="btn btn-primary" href="{{ path('app_register') }}">Inscription</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    </body>
+</nav>
+
+<main>
+    <div class="container mt-4">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <h1 class="mb-4">{{ block('title') }}</h1>
+    </div>
+
+    {% block main %}{% endblock %}
+</main>
+
+<footer class="text-center p-4 mt-5 text-muted bg-white border-top">
+    <div>Resto'N - © {{ 'now'|date('Y') }}</div>
+</footer>
+
+<div id="chatbot-container" data-url="{{ path('app_chatbot') }}">
+    <div id="chat-window" class="d-none">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="fw-bold">🤖 Assistant Resto'N</span>
+            <button type="button" id="close-btn" class="btn-close btn-close-white" aria-label="Close"></button>
+        </div>
+
+        <div id="chat-messages" class="overflow-auto p-3 d-flex flex-column gap-2">
+            <div class="message-bot shadow-sm align-self-start">
+                Bonjour ! Bienvenue sur Resto'n 🍽️<br>Je peux vous aider à choisir ?
+            </div>
+        </div>
+
+        <div class="card-footer p-2">
+            <div class="input-group">
+                <input type="text" id="chat-input" class="form-control border-0" placeholder="Posez une question...">
+                <button class="btn btn-primary" id="send-btn">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="toggle-btn" class="rounded-circle shadow position-fixed bottom-0 end-0 m-4 d-flex align-items-center justify-content-center text-white">
+        💬
+    </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
 </html>

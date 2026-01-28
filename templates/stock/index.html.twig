@@ -1,36 +1,84 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion Stock : {{ restaurant.name }}{% endblock %}
+{% block title %}Inventaire - {{ restaurant.name }}{% endblock %}
 
 {% block main %}
-    <div class="container mt-4">
-        <a href="{{ path('app_stock_add_list', {id: restaurant.id}) }}" class="btn btn-primary">
-            Ajouter Produit
-        </a>
-        <table class="table table-bordered">
-            <tr>
-                <th>Produit</th>
-                <th>Catégorie</th>
-                <th>Quantité</th>
-                <th>Actions</th>
-            </tr>
-            {% for stock in stocks %}
-                <tr>
-                    <td>{{ stock.product.productName }}</td>
-                    <td>{{ stock.product.category.name }}</td>
-                    <td>{{ stock.quantity }} {{ stock.measureUnit }}</td>
-                    <td>
-                        <div>
-                            <a href="{{ path('app_stock_update', {id: restaurant.id, productId: stock.product.id}) }}" class="btn">Modifier</a>
-                            <a href="{{ path('app_stock_delete', {id: stock.id}) }}" class="btn">Supprimer</a>
-                        </div>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4" class="text-center">Vide</td>
-                </tr>
-            {% endfor %}
-        </table>
+    <div class="container py-5">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+            <div>
+                <h1 class="h3 fw-bold mb-1">📦 Inventaire : <span class="text-primary">{{ restaurant.name }}</span></h1>
+                <p class="text-muted mb-0">Suivez vos stocks et ingrédients en temps réel.</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-outline-secondary">
+                    ← Dashboard
+                </a>
+                <a href="{{ path('app_stock_add_list', {id: restaurant.id}) }}" class="btn btn-primary shadow-sm">
+                    ➕ Ajouter un produit
+                </a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3 text-secondary text-uppercase small">Produit</th>
+                            <th class="text-secondary text-uppercase small">Catégorie</th>
+                            <th class="text-secondary text-uppercase small">Stock Actuel</th>
+                            <th class="text-end pe-4 text-secondary text-uppercase small">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for stock in stocks %}
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">
+                                    {{ stock.product.productName }}
+                                </td>
+                                <td>
+                                        <span class="badge bg-light text-dark border">
+                                            {{ stock.product.category.name }}
+                                        </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-baseline">
+                                            <span class="fs-5 fw-bold {{ stock.quantity == 0 ? 'text-danger' : 'text-dark' }} me-1">
+                                                {{ stock.quantity }}
+                                            </span>
+                                        <span class="text-muted small">{{ stock.measureUnit.value }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <a href="{{ path('app_stock_update', {id: restaurant.id, productId: stock.product.id}) }}" class="btn btn-sm btn-outline-primary" title="Ajuster le stock">
+                                            ✏️
+                                        </a>
+                                        <a href="{{ path('app_stock_delete', {id: stock.id}) }}" class="btn btn-sm btn-outline-danger" title="Retirer de l'inventaire">
+                                            🗑️
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <div class="display-6 mb-3 text-muted">📦</div>
+                                    <h4 class="text-muted h5">Votre inventaire est vide.</h4>
+                                    <p class="text-muted small mb-4">Commencez par ajouter des produits (ingrédients, boissons, etc.).</p>
+                                    <a href="{{ path('app_stock_add_list', {id: restaurant.id}) }}" class="btn btn-primary btn-sm">
+                                        Ajouter mon premier produit
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

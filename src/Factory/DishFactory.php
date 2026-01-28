@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Dish;
+use App\Enum\DishCategory;
 use Zenstruck\Foundry\LazyValue;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -33,8 +34,7 @@ final class DishFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            // E = Entree, P = Plat, D = Dessert, B = Boisson
-            'category' => self::faker()->randomElement(['E', 'P', 'D', 'B']),
+            'category' => self::faker()->randomElement(DishCategory::cases()),
             'name' => mb_convert_case(self::faker()->words(3, true), MB_CASE_TITLE),
             'price' => self::faker()->numberBetween(500, 3500),
             'photo' => 'https://placehold.co/100x100',

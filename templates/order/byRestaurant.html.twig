@@ -1,111 +1,85 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Commandes du restaurant {{ restaurant.name }}{% endblock %}
+{% block title %}Cuisine - {{ restaurant.name }}{% endblock %}
 
 {% block main %}
-    <div class="container mt-3">
-        <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-primary action-btn mb-3">Retour</a>
-        {% for order in orders %}
-        <div class="container m-3">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <span class="name-index">
-                            {% if order.user %}
-                                <a class="link-offset-2 link-underline link-underline-opacity-0"
-                                   href="{{ path('app_profile_show', {id: order.user.id}) }}">
-                                    {{ order.user.lastName }} {{ order.user.firstName }}
-                                </a>
-                            {% else %}
-                                'Client inconnu'
-                            {% endif %}
-                        </span>
+    <div class="container-fluid mt-4 px-4">
 
-
-                        <span class="badge bg-primary">
-                            {% if order.orderType == 'L' %}
-                                Livraison
-                            {% elseif order.orderType == 'E' %}
-                                à Emporter
-                            {% else %}
-                                Sur place
-                            {% endif %}
-                        </span>
-
-                        {% if order.status == 'A' %}
-                            <span class="badge bg-danger">Annulée</span>
-                        {% elseif order.status == 'L' %}
-                            <span class="badge bg-success">Livré</span>
-                        {% elseif order.status == 'P' %}
-                            <span class="badge bg-success">Préparé</span>
-                        {% else %}
-                            <span class="badge bg-info">En cours</span>
-                        {% endif %}
-
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <span class="title-card-reservation">
-                            Date :
-                        </span>
-                        <span class="badge bg-primary">
-                            {{ order.orderDate|date('d/m/Y H:i') }}
-                        </span>
-                    </div>
-                    <div>
-                            {% if order.orderType == 'L' %}
-                            <span class="title-card-reservation">
-                                Adresse :
-                            </span>
-                            <span class="badge bg-primary">
-                                {{ order.deliveryAddress }}
-                                {{ order.deliveryCity }} ({{ order.deliveryPostalCode }})
-                            </span>
-                            {% endif %}
-                        </span>
-                    </div>
-                    {# rajouter la liste des plats commandés #}
-
-                    <ul class="list-group list-group-flush mt-3">
-                        {% set total = 0 %}
-
-                        {% for item in order.orderItems %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    {{ item.quantity }}x {{ item.dish.name }}
-                                </div>
-                                <div>
-                                    {{ (item.dish.price * item.quantity) / 100 }} €
-                                </div>
-                            </li>
-
-                            {% set total = total + (item.dish.price * item.quantity) %}
-                        {% endfor %}
-                    <div class="d-flex justify-content-center mt-2">
-                        <span class="badge bg-primary">
-                            Total : {{ total / 100 }} €
-                        </span>
-                    </div>
-
-                    </ul>
-
-                    <nav class="action-reservation">
-                        {% if order.status != 'A' %}
-                            <a href="{{ path('app_order_cancel', {id: order.id}) }}" class="btn btn-warning btn-sm">
-                                Annuler la Commande
-                            </a>
-                        {% else %}
-                            <span class="text-danger fw-bold me-2">Commande Annulée</span>
-                        {% endif %}
-                    </nav>
-                </div>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>👨‍🍳 Commandes en cours : <span class="text-primary">{{ restaurant.name }}</span></h2>
+            <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-secondary">← Retour Gestion</a>
         </div>
-                {% else %}
-                    <div class="alert alert-info text-center">
-                        Aucune Commande.
+
+        <div class="row">
+            {% for order in orders %}
+                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                    <div class="card h-100 shadow-sm {{ order.status.value == 'A' ? 'border-danger opacity-75' : 'border-primary' }}">
+
+                        <div class="card-header d-flex justify-content-between align-items-start {{ order.status.value == 'A' ? 'bg-danger text-white' : 'bg-light' }}">
+                            <div>
+                                <strong class="d-block fs-5">
+                                    {% if order.user %}
+                                        {{ order.user.lastName }} {{ order.user.firstName|first }}.
+                                    {% else %}
+                                        Client #{{ order.id }}
+                                    {% endif %}
+                                </strong>
+                                <small>{{ order.orderDate|date('H:i') }}</small>
+                            </div>
+                            <div class="text-end">
+                                {% if order.orderType.value == 'L' %}
+                                    <span class="badge bg-warning text-dark">🚚 Livr.</span>
+                                {% elseif order.orderType.value == 'E' %}
+                                    <span class="badge bg-info text-dark">🛍️ Emp.</span>
+                                {% else %}
+                                    <span class="badge bg-primary">🍽️ Place</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {% if order.orderType.value == 'L' %}
+                                <div class="alert alert-warning py-2 small mb-3">
+                                    📍 {{ order.deliveryAddress }}<br>
+                                    {{ order.deliveryPostalCode }} {{ order.deliveryCity }}
+                                </div>
+                            {% endif %}
+
+                            <ul class="list-group list-group-flush">
+                                {% set total = 0 %}
+                                {% for item in order.orderItems %}
+                                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold fs-5 badge bg-light text-dark border">{{ item.quantity }}</span>
+                                        <span class="ms-2 flex-grow-1">{{ item.dish.name }}</span>
+                                    </li>
+                                    {% set total = total + (item.dish.price * item.quantity) %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="card-footer bg-white">
+                            <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+                                <span>Total</span>
+                                <span>{{ total / 100 }} €</span>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                {% if order.status.value != 'A' %}
+                                    <a href="{{ path('app_order_cancel', {id: order.id}) }}" class="btn btn-outline-danger btn-sm">
+                                        ✖ Annuler Commande
+                                    </a>
+                                {% else %}
+                                    <button disabled class="btn btn-danger btn-sm w-100">ANNULÉE</button>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-        {% endfor %}
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <h3 class="text-muted">Aucune commande pour le moment</h3>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

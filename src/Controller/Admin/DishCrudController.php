@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Dish;
+use App\Enum\DishCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -51,10 +52,10 @@ class DishCrudController extends AbstractCrudController
                 ->setUploadDir('public/images/plats'),
             TextField::new('category', 'Catégorie')
                 ->formatValue(static function ($value, $entity) {
-                    return 'B' === $value ? 'Boisson' :
-                        ('E' === $value ? 'Entrée' :
-                            ('P' === $value ? 'Plat Principal' :
-                                'Dessert'));
+                    if (!$value instanceof DishCategory) {
+                        return $value;
+                    }
+                    return $value->getLabel();
                 }),
         ];
     }

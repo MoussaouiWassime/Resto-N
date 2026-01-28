@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Reservation;
+use App\Enum\ReservationStatus;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -34,7 +35,7 @@ final class ReservationFactory extends PersistentProxyObjectFactory
         return [
             'reservationDate' => self::faker()->dateTimeBetween('2025-12-01', '2025-12-31'),
             'restaurant' => RestaurantFactory::new(),
-            'status' => self::faker()->randomElement(['E', 'C', 'A']), // E = En attente, C = confirmé, A = annulé
+            'status' => self::faker()->randomElement(ReservationStatus::cases()),
             'user' => UserFactory::new(),
             'numberOfPeople' => self::faker()->numberBetween(1, 10),
         ];

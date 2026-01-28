@@ -3,12 +3,65 @@
 {% block title %}Modifier mon avis{% endblock %}
 
 {% block main %}
-    <div class="container mt-4">
-        <h1>Modifier votre avis pour {{ review.restaurant.name }}</h1>
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
 
-        {{ form_start(form) }}
-            {{ form_row(form.rating) }}
-            {{ form_row(form.comment) }}
-        {{ form_end(form) }}
+                <div class="card shadow border-0">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h4 class="mb-0 text-center">✏️ Modifier votre avis</h4>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div class="alert alert-light border text-center mb-4">
+                            Concernant votre repas chez <br>
+                            <strong>{{ review.restaurant.name }}</strong>
+                        </div>
+
+                        {{ form_start(form) }}
+
+                        {# 1. Champ Note (Radio buttons) #}
+                        <div class="mb-4">
+                            {{ form_label(form.rating, null, {'label_attr': {'class': 'fw-bold mb-2 d-block'}}) }}
+
+                            <div class="d-flex flex-column gap-2 border rounded p-3 bg-light">
+                                {# Comme c'est expanded=true, on boucle sur les choix pour les afficher proprement #}
+                                {% for choice in form.rating %}
+                                    <div class="form-check">
+                                        {{ form_widget(choice, {'attr': {'class': 'form-check-input'}}) }}
+                                        {{ form_label(choice, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.rating) }}
+                            </div>
+                        </div>
+
+                        {# 2. Champ Commentaire #}
+                        <div class="mb-4">
+                            {{ form_label(form.comment, null, {'label_attr': {'class': 'fw-bold mb-2'}}) }}
+                            {{ form_widget(form.comment, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.comment) }}
+                            </div>
+                        </div>
+
+                        {# 3. Boutons d'action #}
+                        <div class="d-grid gap-2">
+                            {# Le bouton Submit défini dans ton ReviewType #}
+                            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary btn-lg'}}) }}
+
+                            <a href="{{ path('app_restaurant_show', {id: review.restaurant.id}) }}" class="btn btn-outline-secondary">
+                                Annuler
+                            </a>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 {% endblock %}

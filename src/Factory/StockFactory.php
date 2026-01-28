@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Stock;
+use App\Enum\StockUnit;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -35,7 +36,7 @@ final class StockFactory extends PersistentProxyObjectFactory
             'product' => ProductFactory::random(),
             'quantity' => self::faker()->numberBetween(1, 100),
             'restaurant' => RestaurantFactory::random(),
-            'measureUnit' => self::faker()->randomElement(['pcs', 'kg', 'g', 'L', 'cL', 'btl', 'part']),
+            'measureUnit' => self::faker()->randomElement(StockUnit::cases()),
         ];
     }
 

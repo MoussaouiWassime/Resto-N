@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\StockUnit;
 use App\Repository\StockRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,8 +25,8 @@ class Stock
     #[ORM\Column]
     private ?int $quantity = null;
 
-    #[ORM\Column(length: 20)]
-    private ?string $measureUnit = null;
+    #[ORM\Column(length: 10, enumType: StockUnit::class)]
+    private ?StockUnit $measureUnit = null;
 
     public function getId(): ?int
     {
@@ -68,12 +69,12 @@ class Stock
         return $this;
     }
 
-    public function getMeasureUnit(): ?string
+    public function getMeasureUnit(): ?StockUnit
     {
         return $this->measureUnit;
     }
 
-    public function setMeasureUnit(string $measureUnit): static
+    public function setMeasureUnit(StockUnit $measureUnit): static
     {
         $this->measureUnit = $measureUnit;
 

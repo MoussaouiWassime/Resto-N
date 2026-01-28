@@ -1,65 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reservations{% endblock %}
+{% block title %}Mes Réservations{% endblock %}
 
 {% block main %}
-    <div class="container mt-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="mb-3">
-            <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
-        </div>
-        <div class="mb-3">
-            <a href="{{ path('app_profile_show') }}" class="btn btn-secondary">Retour au profil</a>
-        </div>
-    </div>
-    {% for reservation in reservations %}
-        <div class="mb-3">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                <span class="name-index">{{ reservation.restaurant.name }}</span>
-                </h5>
+    <div class="container mt-4 mb-5">
 
-                {% if reservation.status == 'A' %}
-                    <span class="badge bg-danger">Annulée</span>
-                {% elseif reservation.status == 'T' %}
-                    <span class="badge bg-success">Terminée</span>
-                {% else %}
-                    <span class="badge bg-success">Confirmée</span>
-                {% endif %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_profile_show') }}" class="btn btn-outline-secondary btn-sm">Mon profil</a>
+                <a href="{{ path('app_home') }}" class="btn btn-outline-primary btn-sm">Réserver ailleurs</a>
             </div>
-            <div class="card-body">
-                <div><span class="title-card-reservation">Date : </span><span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span></div>
-                <div><span class="title-card-reservation">Nombre de couverts : </span><span class="badge bg-info">{{ reservation.numberOfPeople }} pers.</span></div>
-                {% if reservation.restaurantTable %}
-                    <div><span class="title-card-reservation">Table : </span><span class="badge bg-success">Table {{ reservation.restaurantTable.number }}</span></div>
-                {% endif %}
+        </div>
 
-                <nav class="action-reservation mt-3">
-                    {% if reservation.status != 'A' and reservation.status != 'T' %}
-                        <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-warning">
-                            Modifier
-                        </a>
-                        <a href="{{ path('app_reservation_cancel', {id: reservation.id}) }}" class="btn btn-sm btn-danger ms-2">
-                            Annuler
-                        </a>
-                    {% else %}
-                        <span class="text-muted small fst-italic">
-                            {% if reservation.status == 'A' %}
-                                Cette réservation a été annulée.
+        <div class="row">
+            {% for reservation in reservations %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm {{ reservation.status.value == 'A' ? 'opacity-75' : '' }}">
+
+                        <div class="card-header bg-white border-bottom-0 pt-3 pb-0 d-flex justify-content-between align-items-start">
+                            <h5 class="fw-bold text-primary mb-0">{{ reservation.restaurant.name }}</h5>
+
+                            {% if reservation.status.value == 'A' %}
+                                <span class="badge bg-danger">Annulée</span>
+                            {% elseif reservation.status.value == 'T' %}
+                                <span class="badge bg-success">Terminée</span>
                             {% else %}
-                                Réservation passée.
+                                <span class="badge bg-primary">Confirmée</span>
                             {% endif %}
-                        </span>
-                    {% endif %}
-                </nav>
-            </div>
-        {% else %}
-            <div class="alert alert-info text-center">
-            Aucune réservation.
-            </div>
-        {% endfor %}
-        </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex flex-column gap-2 mt-2">
+                                <div class="d-flex align-items-center text-muted">
+                                    <span class="me-2">📅</span>
+                                    <span class="fw-bold text-dark">{{ reservation.reservationDate|date('d/m/Y à H:i') }}</span>
+                                </div>
+                                <div class="d-flex align-items-center text-muted">
+                                    <span class="me-2">👤</span>
+                                    <span>{{ reservation.numberOfPeople }} couverts</span>
+                                </div>
+                                {% if reservation.restaurantTable %}
+                                    <div class="d-flex align-items-center text-muted">
+                                        <span class="me-2">🪑</span>
+                                        <span class="text-success">Table n°{{ reservation.restaurantTable.number }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-light border-top-0 d-flex justify-content-between align-items-center">
+                            <small class="text-muted">#{{ reservation.id }}</small>
+
+                            {% if reservation.status.value != 'A' and reservation.status.value != 'T' %}
+                                <div>
+                                    <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-outline-warning" title="Modifier">✏️</a>
+                                    <a href="{{ path('app_reservation_cancel', {id: reservation.id}) }}" class="btn btn-sm btn-outline-danger" title="Annuler">✖</a>
+                                </div>
+                            {% else %}
+                                <small class="fst-italic text-muted">Clôturée</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <div class="fs-1 mb-3">📅</div>
+                    <h3 class="text-muted">Aucune réservation pour le moment.</h3>
+                    <a href="/" class="btn btn-primary mt-3">Trouver une table</a>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

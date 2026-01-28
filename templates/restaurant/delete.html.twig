@@ -1,25 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Suppression du Restaurant {{ restaurant.name }} {% endblock %}
+{% block title %}Supprimer {{ restaurant.name }}{% endblock %}
 
 {% block main %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-danger shadow">
+                    <div class="card-header bg-danger text-white text-center py-3">
+                        <h4 class="mb-0">Suppression</h4>
+                    </div>
 
-    {{ form_start(form, {attr: {class: 'd-flex justify-content-evenly'}}) }}
+                    <div class="card-body text-center p-4">
 
-    {{ form_row(form.delete, {
-        label: 'Supprimer',
-        attr: {class: 'btn btn-primary'},
-    })
-    }}
+                        <h5 class="fw-bold">Supprimer "{{ restaurant.name }}" ?</h5>
+                        <p class="text-muted">
+                            Cette action supprimera également tous les plats, commandes et réservations associés.<br>
+                        </p>
 
-    {{ form_row(form.cancel, {
-        label: 'Annuler',
-        attr: {class: 'btn btn-secondary'},
-    })
-    }}
+                        {{ form_start(form) }}
+                        <div class="d-grid gap-3 mt-4">
+                            {{ form_widget(form.cancel, {
+                                label: 'Non, annuler',
+                                attr: {class: 'btn btn-secondary btn-lg'}
+                            }) }}
 
-    {{ form_rest(form) }}
-
-    {{ form_end(form) }}
-
+                            {{ form_widget(form.delete, {
+                                label: 'Oui, tout supprimer',
+                                attr: {class: 'btn btn-danger'}
+                            }) }}
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

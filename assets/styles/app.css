@@ -1,126 +1,215 @@
+/* --- Variables & Reset --- */
+:root {
+    --primary-color: #e67e22; /* Orange appétissant pour les actions */
+    --primary-hover: #d35400;
+    --secondary-color: #2c3e50; /* Bleu nuit pour le texte/titres */
+    --bg-color: #f8f9fa;      /* Gris très clair pour le fond */
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --border-radius: 12px;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+    --shadow-md: 0 8px 16px rgba(0,0,0,0.1);
+}
+
 body {
-    background-color: #B6D9F7;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
 }
 
-.plat {
-    display: none;
-}
-
-.plat.active {
-    display: block;
-}
-
-.listPlat {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: flex-start;
+h1, h2, h3, h4, h5 {
+    color: var(--secondary-color);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
 }
 
 a {
-    margin: 0.3rem;
+    text-decoration: none;
+    transition: color 0.2s;
 }
 
-.adress {
-    color: #4A4645;
-    font-weight: bold;
+/* --- Navbar (Surcharge Bootstrap) --- */
+.navbar {
+    background-color: var(--card-bg) !important;
+    box-shadow: var(--shadow-sm);
+    padding: 1rem 0;
 }
 
-li:nth-child(even) {
-    background-color: var(--bs-light);
+.navbar-brand {
+    font-weight: 800;
+    color: var(--primary-color) !important;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.btn {
-    background-color: #064789;
-    color: #DAECFB;
+.nav-link {
+    color: var(--secondary-color) !important;
+    font-weight: 500;
 }
 
-.btn.active {
-    background-color: #043362;
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* --- Cards & Containers --- */
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--card-bg);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
 }
 
 .card-header {
-    background-color: #064789;
+    background-color: var(--card-bg);
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+    color: var(--secondary-color);
 }
 
-.card-body a {
-    text-decoration: none;
+/* --- Boutons --- */
+.btn {
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s;
 }
 
-.card {
-    background-color: #DAECFB;
-    color: #064789;
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
 }
 
-.action-restaurant {
-    display: flex;
-    justify-content: flex-end;
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: scale(1.02);
 }
 
-.reservCommand {
-    font-size: 2rem;
+.btn-secondary {
+    background-color: #ecf0f1;
+    color: var(--secondary-color);
 }
 
-.manage {
-    font-size: 2rem;
-    background-color: grey;
+.btn-danger {
+    background-color: #e74c3c !important;
+    color: white !important;
+    border: none;
+}
+.btn-danger:hover {
+    background-color: #c0392b !important;
 }
 
-.reservCommand-index {
-    font-size: 1rem;
+.btn-outline-secondary {
+    background-color: transparent !important;
+    border: 2px solid #95a5a6 !important;
+    color: #7f8c8d !important;
+}
+.btn-outline-secondary:hover {
+    background-color: #95a5a6 !important;
+    color: white !important;
 }
 
-.restaurant {
-    display: none;
+.btn-secondary:hover {
+    background-color: #bdc3c7;
 }
 
-.restaurant-item {
-    background-color: #DAECFB;
+/* --- Listes de Plats (Grille) --- */
+/* Transformation de la liste verticale en grille moderne */
+.list-group.nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 0;
+    border: none;
 }
 
-.restaurant.active {
+.list-group-item {
+    border: none;
+    padding: 0;
+    background: transparent;
+}
+
+/* Le lien devient la carte */
+.list-group-item a.nav-link {
     display: block;
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    height: 100%;
+    border: 1px solid transparent;
 }
 
-.name-index {
-    font-size: 1.2rem;
+.list-group-item a.nav-link:hover {
+    border-color: var(--primary-color);
+    color: var(--secondary-color) !important;
+    box-shadow: var(--shadow-md);
+}
+
+.list-group-item .name {
+    display: block;
+    font-size: 1.25rem;
     font-weight: bold;
-    color: #064789;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
 }
 
-.action-register {
-    display: flex;
-    justify-content: flex-end;
+.list-group-item .description {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
 }
 
-.form-btn {
-    margin: 0;
-}
-
-.action-btn {
-    margin: 0;
-}
-
-.action-reservation {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.title-card-reservation {
-    font-weight: bold;
-}
-
-.logo {
-    max-width: 300px;
-    max-height: 300px;
+/* --- Détail d'un plat (Show) --- */
+.dish-image-container img {
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    max-height: 400px;
+    width: 100%;
     object-fit: cover;
 }
 
+.price-tag {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* --- Formulaires --- */
+input.form-control, select.form-select {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 0.8rem;
+}
+
+input.form-control:focus, select.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
+}
+
+/* --- Chatbot (UX Améliorée) --- */
 #toggle-btn {
     width: 60px;
     height: 60px;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     z-index: 1700;
+    background-color: var(--secondary-color);
+    border: none;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#toggle-btn:hover {
+    transform: scale(1.1) rotate(10deg);
 }
 
 #chat-window {
@@ -130,4 +219,35 @@ li:nth-child(even) {
     width: 350px;
     height: 500px;
     z-index: 1000;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    border: none;
+    display: flex; /* Flexbox pour gérer header/body/footer */
+    flex-direction: column;
+}
+
+#chat-window .card-header {
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem;
+}
+
+#chat-messages {
+    flex-grow: 1;
+    background-color: #f1f2f6;
+}
+
+.message-bot {
+    background-color: white;
+    color: #333;
+    border-radius: 12px 12px 12px 0;
+    padding: 12px;
+    font-size: 0.95rem;
+}
+
+#chat-window .card-footer {
+    background: white;
+    border-radius: 0 0 16px 16px;
+    border-top: 1px solid #eee;
 }

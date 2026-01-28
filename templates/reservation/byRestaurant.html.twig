@@ -1,55 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Réservations : {{ restaurant.name }}{% endblock %}
+{% block title %}Cahier de Réservations{% endblock %}
 
 {% block main %}
-    <div class="container mt-3">
-        {% for reservation in reservations %}
-        <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-primary action-btn mb-3">Retour</a>
-        <div class="mb-3">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                        <span class="name-index">
-                            {% if reservation.user %}
-                                {# rajouter une redirection vers les profiles quand ça sera fait #}
-                                {{ reservation.user.lastName }} {{ reservation.user.firstName }}
-                            {% else %}
-                                'Client inconnu'
-                            {% endif %}
-                        </span>
-                        </h5>
+    <div class="container-fluid px-4 mt-4">
 
-                        {% if reservation.status == 'A' %}
-                            <span class="badge bg-danger">Annulée</span>
-                        {% elseif reservation.status == 'T' %}
-                            <span class="badge bg-success">Terminée</span>
-                        {% else %}
-                            <span class="badge bg-success">Confirmée</span>
-                        {% endif %}
-                    </div>
-                    <div class="card-body">
-                        <div><span class="title-card-reservation">Date : </span><span class="badge bg-primary">{{ reservation.reservationDate|date('d/m/Y H:i') }}</span></div>
-                        <div><span class="title-card-reservation">Nombre de couverts : </span><span class="badge bg-info">{{ reservation.numberOfPeople }} pers.</span></div>
-                        <div><span class="title-card-reservation">Statut : </span><span class="badge bg-secondary">{{ reservation.status }}</span></div>
-                        {% if reservation.restaurantTable %}
-                            <div><span class="title-card-reservation">Table : </span><span class="badge bg-success">Table {{ reservation.restaurantTable.number }}</span></div>
-                        {% endif %}
-                        <nav class="action-reservation">
-                            <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-warning">
-                                Modifier
-                            </a>
-                            <a href="{{ path('app_reservation_cancel', {id: reservation.id}) }}" class="btn btn-sm btn-danger ms-2">
-                                Annuler
-                            </a>
-                        </nav>
-                    </div>
-                    {% else %}
-                        <div class="alert alert-info text-center">
-                            Aucune réservation.
-                        </div>
-                    {% endfor %}
-                </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-0">📖 Réservations : <span class="text-primary">{{ restaurant.name }}</span></h2>
+                <p class="text-muted">Gérez les arrivées et les tables.</p>
             </div>
+            <a href="{{ path('app_restaurant_manage', {id: restaurant.id}) }}" class="btn btn-secondary">
+                ← Retour au Dashboard
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for reservation in reservations %}
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="card h-100 shadow-sm border-top-0 border-end-0 border-bottom-0 border-start border-4
+                        {{ reservation.status.value == 'A' ? 'border-danger bg-light text-muted' : 'border-success' }}">
+
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="fw-bold mb-0">
+                                    {% if reservation.user %}
+                                        {{ reservation.user.lastName|upper }} {{ reservation.user.firstName }}
+                                    {% else %}
+                                        <span class="fst-italic">Client Inconnu</span>
+                                    {% endif %}
+                                </h5>
+                                <span class="badge {{ reservation.status.value == 'A' ? 'bg-danger' : 'bg-success' }}">
+                                    {{ reservation.status.value == 'A' ? 'ANNULÉE' : 'CONFIRMÉE' }}
+                                </span>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="fs-4 fw-bold text-dark">
+                                    {{ reservation.reservationDate|date('H:i') }}
+                                </div>
+                                <small class="text-muted">{{ reservation.reservationDate|date('d/m/Y') }}</small>
+                            </div>
+
+                            <ul class="list-unstyled">
+                                <li class="mb-2">👥 <strong>{{ reservation.numberOfPeople }}</strong> Pers.</li>
+                                <li class="mb-2">
+                                    🪑
+                                    {% if reservation.restaurantTable %}
+                                        <span class="badge bg-secondary">Table {{ reservation.restaurantTable.number }}</span>
+                                    {% else %}
+                                        <span class="text-warning fw-bold">⚠️ Pas de table</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+
+                            <hr>
+
+                            <div class="d-flex gap-2">
+                                <a href="{{ path('app_reservation_update', {id: reservation.id}) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
+                                    Gérer
+                                </a>
+                                {% if reservation.status.value != 'A' %}
+                                    <a href="{{ path('app_reservation_cancel', {id: reservation.id}) }}" class="btn btn-sm btn-outline-danger" title="Annuler">
+                                        ✖
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <h3 class="text-muted">Le carnet est vide pour le moment 😴</h3>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

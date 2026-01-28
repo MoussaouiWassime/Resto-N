@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Reservation;
+use App\Enum\ReservationStatus;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -49,10 +50,17 @@ class ReservationCrudController extends AbstractCrudController
             DateTimeField::new('reservation_date', 'Réservé le'),
             IntegerField::new('number_of_people', 'Nombre de personnes'),
             TextField::new('status', 'Statut')
-                ->formatValue(static function ($status, $entity) {
-                    return 'C' === $status ? 'Confirmé' :
-                        ('E' === $status ? 'En Attente' :
-                            'Annulé');
+                ->formatValue(static function ($value, $entity) {
+                    if (!$value instanceof ReservationStatus) {
+                        return '';
+                    }
+
+                    return match ($value) {
+                        ReservationStatus::CONFIRMED => 'Confirmé',
+                        ReservationStatus::PENDING => 'En Attente',
+                        ReservationStatus::CANCELED => 'Annulé',
+                        ReservationStatus::TAKEN => 'Terminé',
+                    };
                 }),
             AssociationField::new('restaurantTable', 'Table')
                 ->formatValue(static function ($restaurant_table, $entity) {

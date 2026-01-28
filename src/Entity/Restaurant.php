@@ -486,4 +486,27 @@ class Restaurant
 
         return $this;
     }
+
+    public function getAverageRating(): ?float
+    {
+        if ($this->reviews->isEmpty()) {
+            return null;
+        }
+
+        $total = 0;
+        $count = 0;
+        foreach ($this->reviews as $review) {
+            $rating = $review->getRating();
+            if ($rating !== null) {
+                $total += $rating;
+                $count++;
+            }
+        }
+
+        if ($count === 0) {
+            return null;
+        }
+
+        return round($total / $count, 1);
+    }
 }

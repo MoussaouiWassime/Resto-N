@@ -44,6 +44,11 @@ final class RestaurantVoter extends Voter
             return false;
         }
 
+        // Deny access for pending invitations
+        if (null !== $roleEntity->getInvitationToken()) {
+            return false;
+        }
+
         $userRoleValue = $roleEntity->getRole();
 
         if (is_string($userRoleValue)) {

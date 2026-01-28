@@ -12,7 +12,7 @@ services:
             - DATABASE_URL=mysql://symfony:symfony_password@db:3306/symfony_db?serverVersion=8.0&charset=utf8mb4
 
             # --- PUT YOUR REAL GOOGLE MAIL ---
-            - MAILER_DSN=gmail://YOUR_EMAIL@gmail.com:YOUR_APPLICATION_PASSWORD@default
+            - MAILER_DSN=gmail://YOUR_EMAIL:YOUR_APPLICATION_PASSWORD@default
 
             # PUT YOUR REAL API KEY
             - MISTRAL_API_KEY=your_api_key_here

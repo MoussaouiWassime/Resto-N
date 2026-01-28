@@ -42,7 +42,7 @@ final class RestaurantFactory extends PersistentProxyObjectFactory
             'openingTime' => $isOpen24h ? null : self::faker()->dateTimeBetween('08:00', '11:00'),
             'closingTime' => $isOpen24h ? null : self::faker()->dateTimeBetween('22:00', '23:59'),
             'darkKitchen' => self::faker()->boolean(20),
-            'image' => self::faker()->imageUrl(100, 100),
+            'image' => 'https://placehold.co/600x400?text=Restaurant',
         ];
     }
 

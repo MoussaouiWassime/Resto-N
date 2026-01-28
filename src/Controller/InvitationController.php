@@ -48,7 +48,7 @@ final class InvitationController extends AbstractController
                 $newRole = new Role();
                 $newRole->setUser($serverUser);
                 $newRole->setRestaurant($restaurant);
-                $newRole->setRole(RestaurantRole::OWNER);
+                $newRole->setRole(RestaurantRole::SERVER);
                 $newRole->setInvitationToken($token);
 
                 $entityManager->persist($newRole);

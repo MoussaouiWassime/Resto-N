@@ -179,7 +179,7 @@ Le code suit les recommandations [Symfony](https://symfony.com/doc/current/contr
 
 ### Configurer PhpStorm
 
-Configurez l'intégration de PHP Coding Standards Fixer en fixant le jeu de règles sur `Custom` et en désignant `.php-cs-fixer.php` comme fichier de configuration.
+Configurez l'intégration de PHP Coding Standards Fixer en fixant le jeu de règles sur `Custom` et en désignant `.php-cs-fixer.dist.php` comme fichier de configuration.
 
 ---
 

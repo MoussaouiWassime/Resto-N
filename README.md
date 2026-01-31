@@ -211,5 +211,5 @@ src/
 
 ## Remerciments et utilisations de l'ia
 
-Merci à Damien HO, qui a participé au developpement de ce projet.
+Merci à Damien HO, qui a participé au développement de ce projet.
 La mise en forme de ce projet a été réalisée avec l'aide de l'IA Gemini 3 Pro. Une refonte est en cours.

@@ -37,7 +37,7 @@
 1. **Clonez le dépôt** :
 
 ```bash
-git clone <url-du-repo>
+git clone https://github.com/MoussaouiWassime/Resto-N/
 cd sae3-01
 ```
 
@@ -141,9 +141,9 @@ Le site est déployé ici : https://moussaoui-wassime.hikarima.com/
 
 | Email | Rôle supplémentaire |
 |-------|---------------------|
-| `cutrona@example.com` | Propriétaire "Restaurant Cutrona" + Admin |
-| `ho@example.com` | Serveur "Restaurant Cutrona" + Admin |
-| `moussaoui@example.com` | Serveur "Restaurant Cutrona" + Admin |
+| `owner@example.com` | Propriétaire "Restaurant Gourmet" |
+| `server@example.com` | Serveur "Restaurant Gourmet" |
+| `client@example.com` | Client |
 
 ### Structure des rôles
 

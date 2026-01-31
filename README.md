@@ -1,65 +1,217 @@
-# Resto'N
+# Resto'N - Application de Gestion de Restaurants
+ 
 
-## Auteurs :
+## Présentation du projet
 
-- HO Damien
-- MOUSSAOUI Wassime  
-- VIGNE Lucas  
+### Introduction
 
-## Présentation du projet : 
+**Resto'N** est une application web Symfony permettant aux restaurateurs de gérer les commandes, réservations, stocks, et d'accéder à diverses fonctionnalités comme les statistiques et un chatbot intelligent.
 
-### Introduction :
+---
 
-Le Resto'N est une application permettant aux restaurateurs de gérer les commandes, réservations depuis ce site, et accéder à divers fonctionnalités comme les statistiques.
+## Fonctionnalités
 
-## Fonctionnalités :
+- **Page d'accueil** : Liste des restaurants triés par catégories avec barre de recherche
+- **Gestion de profil** : Inscription, connexion, modification des informations personnelles
+- **Gestion des restaurants** : Création, modification et suppression de restaurants
+- **Réservations** : Système de réservation avec vérification des horaires et disponibilité des tables
+- **Commandes** : Prise de commandes en ligne (sur place ou à emporter)
+- **Statistiques** : 
+  - Chiffre d'affaires journalier
+  - Nombre de visites par jour
+  - Nombre de commandes par jour
+- **Avis clients** : Système de notation et commentaires
+- **Gestion des stocks** : Suivi des produits et stocks par restaurant
+- **Chatbot IA** : Assistant intelligent pour guider les utilisateurs (Mistral AI)
+- **Gestion des rôles** : Propriétaires, serveurs et système d'invitations par email
+- **Interface d'administration** : EasyAdmin pour la gestion globale (accessible aux admins)
 
-- La page d'accueil contient la liste de tous les restaurants triés par catégories. Dans la barre de navigation, vous trouverez deux boutons : un pour créer un compte (inscription), et un autre pour se connecter (connexion).
-- Une fois connecté, un nouveau bouton apparaîtra dans la barre de navigation, il vous emmènera dans votre profil où vous pouvez faire réaliser plusieurs actions tels que créer un restaurant, se déconnecter, modifier les informations du compte, et créer un restaurants. Vous pouvez également accéder à vos historiques de réservations/commandes. Par ailleurs, si vous travaillez dans un restaurant, il sera affiché sur votre profil avec un lien vers ce restaurant.
-- Vous pouvez naviguer dans la liste des restaurants et réserver/commander au restaurant de votre choix. Vous serez emmené dans un formulaire où vous devrez le remplir. Une fois validé, vous serez emmené dans l'historique de vos réservations/commandes.
-- En tant que propriétaire/serveur d'un restaurant, vous avez accès à la gestion du restaurant depuis la page des détails de celui-ci : Vous pourrez gérer les réservations/commandes. Par ailleurs, en tant que propriétaire, vous pouvez également accéder aux statistiques du restaurant, modifier ses informations, ajouter un plat, et le supprimer. De plus, vous avez la possibilité d'inviter une personne à devenir serveur dans votre restaurant : un mail sera envoyé à ce dernier,  s'il n'a pas de compte dans le site, il sera invité à en créer un.
-- Il y a 3 types de statistiques :
-  - Le chiffre d'affaires journalier
-  - Le nombre de visites par jour
-  - Le nombre de commandes par jour
+---
 
-  Ces données sont mises à jour à chaque fois qu'une réservation/commande est crée/annulée/supprimée ou modifiée dans le cas de la réservation.
-- Le site comprend un chatbot qui pourra guider le client vers la page demandée.
-- En tant que propriétaire, vous avez accès à la gestion de vos stocks depuis un lien dans le menu "Gestion du Restaurant". Vous pouvez ajouter, supprimer et modifier des produits dans vos stocks.
-- L'administrateur du site a accès au back-office depuis le bouton "admin" dans la barre de navigation, où il peut naviguer à travers les différentes entités de la base de données, afin de supprimer/modifier/créer, selon l'entité.
+## Installation avec Docker
 
-## Configuration :
+### Prérequis
 
-Afin de tester le site en local, veuillez suivre ces étapes : 
-- Installation des dépendances avec`composer install`
-- Copier le fichier `.env` en `.env.local` et : 
-  - Adapter la variable `DATABASE_URL` selon ce modèle : `DATABASE_URL="mysql://<login>:<password>@mysql:3306/<db_name>?serverVersion=mariadb-10.2.25&charset=utf8mb4"`
-  - Adapter la variable du google mailer. Le mot de passe d'application d'un compte google obtensible par cette méthode : https://support.google.com/mail/answer/185833?hl=fr
-  - Obtener votre clé api mistral pour le chat bot ici (gratuit dispo) : https://console.mistral.ai/home 
-- Créer une migration `php bin/console make:migration`
-- Lancer ce script : `composer db` afin de créer la base de données, et générer les fixtures
-- Lancer le serveur local (voir Scripts)
+- [Docker](https://www.docker.com/get-started) et Docker Compose installés
 
-### Identifiants : 
+### Configuration
 
-Le mot de passe de tous les comptes est "test".
+1. **Clonez le dépôt** :
 
-- cutrona@example.com : propriétaire "Restaurant Cutrona" + admin
-- ho@example.com : serveur "Restaurant Cutrona" + admin
-- moussaoui@example.com : serveur "Restaurant Cutrona" + admin
+```bash
+git clone <url-du-repo>
+cd sae3-01
+```
 
-## Déploiement : 
+2. **Configurez les variables d'environnement** dans le fichier `compose.yml` :
 
-Le site est déployé ici : http://10.31.33.99/
+```yaml
+environment:
+    # Configuration email (Gmail) - Mot de passe d'application requis
+    - MAILER_DSN=gmail://VOTRE_EMAIL@gmail.com:VOTRE_MOT_DE_PASSE_APPLICATION@default
+    
+    # Clé API Mistral pour le chatbot (gratuit sur https://console.mistral.ai/home)
+    - MISTRAL_API_KEY=votre_cle_api_mistral
+```
 
-## Scripts :
+### Démarrage
 
-- `composer start` : Lancer le serveur local 
-- `composer db` : construire la base de données, et charger les données factices 
-- `composer fix:phpcs` : Lancer la commande de correctifs de PHP CS Fixer
-- `composer test:phpcs` : Lancer la commande de tests de PHP CS Fixer
-- `composer fix:twigcs` : Lancer la commande de correctifs de Twig CS Fixer
-- `composer test:twigcs` : Lancer la commande de tests de Twig CS Fixer
-- `composer fix` Lancer les commandes de correctifs de PHP CS Fixer et de Twig CS Fixer
-- `composer test` Lancer les commandes de tests de PHP CS Fixer et de Twig CS Fixer
-- `test:codeception` Lancer les commandes de tests de CodeCeption
+1. **Construisez et lancez les conteneurs** :
+
+```bash
+docker compose up -d --build
+```
+
+2. **Installez les dépendances Composer** (dans le conteneur) :
+
+```bash
+docker exec -it symfony_app composer install
+```
+
+3. **Initialisez la base de données** :
+
+```bash
+docker exec -it symfony_app composer db
+```
+
+### Accès à l'application
+
+Naviguez vers : [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
+
+---
+
+## Installation sans Docker (Serveur Web local)
+
+### Prérequis
+
+- PHP >= 8.2 avec extensions : intl, mysql, zip, gd, mbstring, curl, xml, bcmath
+- [Composer](https://getcomposer.org/)
+- [Symfony CLI](https://symfony.com/download)
+- MySQL 8.0 ou MariaDB
+
+### Installation
+
+1. **Installez les dépendances** :
+
+```bash
+composer install
+```
+
+2. **Copiez le fichier `.env` en `.env.local`** et configurez :
+
+```env
+# Base de données
+DATABASE_URL="mysql://login:password@127.0.0.1:3306/nom_base?serverVersion=8.0&charset=utf8mb4"
+
+# Email (Gmail avec mot de passe d'application)
+# Voir : https://support.google.com/mail/answer/185833?hl=fr
+MAILER_DSN=gmail://votre_email@gmail.com:mot_de_passe_app@default
+
+# Clé API Mistral pour le chatbot
+# Obtenir sur : https://console.mistral.ai/home
+MISTRAL_API_KEY=votre_cle_api
+```
+
+3. **Créez une migration et initialisez la base de données** :
+
+```bash
+php bin/console make:migration
+composer db
+```
+
+### Démarrer le serveur Web
+
+```bash
+composer start
+```
+
+Accédez à : [https://127.0.0.1:8000/](https://127.0.0.1:8000/)
+
+---
+
+## Déploiement
+
+Le site est déployé ici : https://moussaoui-wassime.hikarima.com/
+
+---
+
+## Identifiants de connexion (Fixtures)
+
+> **Mot de passe pour tous les comptes** : `test`
+
+### Administrateurs
+
+| Email | Rôle supplémentaire |
+|-------|---------------------|
+| `cutrona@example.com` | Propriétaire "Restaurant Cutrona" + Admin |
+| `ho@example.com` | Serveur "Restaurant Cutrona" + Admin |
+| `moussaoui@example.com` | Serveur "Restaurant Cutrona" + Admin |
+
+### Structure des rôles
+
+Pour chaque restaurant créé (5 au total) :
+- **1 Propriétaire** (OWNER) : Accès complet à la gestion du restaurant
+- **3 Serveurs** (SERVER) : Accès aux commandes et réservations
+
+### Utilisateurs supplémentaires
+
+- **10 utilisateurs aléatoires** sont générés automatiquement avec le mot de passe `test`
+
+---
+
+## Scripts Composer disponibles
+
+| Commande | Description |
+|----------|-------------|
+| `composer start` | Lance le serveur web Symfony (`symfony serve`) |
+| `composer db` | Réinitialise complètement la base de données avec les fixtures |
+| `composer test:phpcs` | Vérifie le code PHP avec PHP CS Fixer |
+| `composer fix:phpcs` | Corrige automatiquement le code PHP |
+| `composer test:twigcs` | Vérifie le code Twig avec Twig CS Fixer |
+| `composer fix:twigcs` | Corrige automatiquement le code Twig |
+| `composer test` | Exécute `test:phpcs` et `test:twigcs` |
+| `composer fix` | Exécute `fix:phpcs` et `fix:twigcs` |
+| `composer test:codeception` | Lance les tests Codeception |
+
+---
+
+## Style de codage
+
+Le code suit les recommandations [Symfony](https://symfony.com/doc/current/contributing/code/standards.html).
+
+### Configurer PhpStorm
+
+Configurez l'intégration de PHP Coding Standards Fixer en fixant le jeu de règles sur `Custom` et en désignant `.php-cs-fixer.php` comme fichier de configuration.
+
+---
+
+## Architecture technique
+
+### Stack technologique
+
+- **Framework** : Symfony 7.3
+- **Base de données** : MySQL 8.0 (Doctrine ORM)
+- **Front-end** : Twig, Stimulus, Turbo
+- **Administration** : EasyAdmin 4
+- **Tests** : Codeception, PHPUnit
+- **Conteneurisation** : Docker (Ubuntu 24.04, Apache, PHP 8.2)
+
+### Structure du projet
+
+```
+src/
+├── Controller/         # Contrôleurs (API, pages, admin)
+│   └── Admin/          # Contrôleurs EasyAdmin
+├── Entity/             # Entités Doctrine
+├── Enum/               # Énumérations (DishCategory, OrderStatus, etc.)
+├── Factory/            # Factories Zenstruck Foundry
+├── Form/               # Formulaires Symfony
+├── Repository/         # Repositories Doctrine
+├── Security/           # Voters et authentification
+└── Service/            # Services métier (StatisticService, MistralAiService)
+```
+
+## Remerciments et utilisations de l'ia
+
+Merci à Damien HO, qui a participé au developpement de ce projet.
+La mise en forme de ce projet a été réalisée avec l'aide de l'IA Gemini 3 Pro. Une refonte est en cours.

@@ -26,22 +26,24 @@ class ReviewFixtures extends Fixture
             'categories' => RestaurantCategoryFactory::randomRange(1, 2),
         ]);
 
-        $users = UserFactory::randomRange(3, 3);
+        $owner = UserFactory::createOne(['email' => 'owner@example.com']);
+        $server = UserFactory::createOne(['email' => 'server@example.com']);
+        $client = UserFactory::createOne(['email' => 'client@example.com']);
 
         RoleFactory::createOne([
             'restaurant' => $restaurant,
-            'user' => $users[0],
+            'user' => $owner,
             'role' => RestaurantRole::OWNER,
         ]);
         RoleFactory::createOne([
             'restaurant' => $restaurant,
-            'user' => $users[1],
+            'user' => $server,
             'role' => RestaurantRole::SERVER,
         ]);
 
         ReviewFactory::createOne([
             'restaurant' => $restaurant,
-            'user' => $users[2],
+            'user' => $client,
             'rating' => 4,
             'comment' => "C'était très bon, je me suis régalé!",
         ]);

@@ -1,6 +1,4 @@
 # Resto'N - Application de Gestion de Restaurants
- 
-
 ## Présentation du projet
 
 ### Introduction
